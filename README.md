@@ -27,7 +27,7 @@ You plug in the pendrive, all the needed information will be retrieved from the 
 ![image](https://user-images.githubusercontent.com/36286877/127732910-fae06dea-f5eb-4854-915f-28c08022b776.png)
 ![image](https://user-images.githubusercontent.com/36286877/127732918-dc3f9e70-3792-4a59-b80a-974704725898.png)
 
-( "yes" for true and "no" for false )
+( "yes" for true and "no" for false ) - These are the main useful things in this file :)
 
 # How to compile ( from `.py` to `.exe` )
 Run these commands to make it working
