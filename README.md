@@ -30,7 +30,36 @@ You plug in the pendrive, all the needed information will be retrieved from the 
 ( "yes" for true and "no" for false )
 
 # How to compile ( from `.py` to `.exe` )
+Run these commands to make it working
+```
+pip install win32crypt
+pip install pypiwin32
+pip install pycryptodome
 
+pip install browser-history
+# or
+pip install browser-history
+```
+or Run this command
+```
+python install.py
+```
+
+Run this command to make a `.exe` our of the `runall.py` file
 ```
 pyinstaller --noconfirm --onefile --console --icon "logo.ico" "runall.py"
 ```
+
+# Make the file autorun
+For this, you need a third party software: 
+  Link 1 - https://www.samlogic.net/usb-autorun-creator/usb-autorun-creator.htm
+  Link 2 - https://download.cnet.com/SamLogic-USB-AutoRun-Creator/3000-2094_4-75724123.html
+  Link 3 - https://www.softpedia.com/get/System/System-Miscellaneous/USB-AutoRun-Creator.shtml
+  
+Visit one of the above links and download the SamLogic USB AutoRun Creator and install it!
+
+![image](https://user-images.githubusercontent.com/36286877/127734445-f196d1a0-3d30-4788-a14e-9a38bd061272.png)
+
+Select the file .exe file inside the `dist` folder ( after compiling with pyinstaller ), select the pendrive and Click on the USB device you have plugged in, Enter any name as the Label and finally click `Create`. Wait some time for the software to generate and copy the necessary files.
+
+### YOU ARE DONE!
