@@ -52,9 +52,9 @@ pyinstaller --noconfirm --onefile --console --icon "logo.ico" "runall.py"
 
 # Make the file autorun
 For this, you need a third party software: 
-  Link 1 - https://www.samlogic.net/usb-autorun-creator/usb-autorun-creator.htm
-  Link 2 - https://download.cnet.com/SamLogic-USB-AutoRun-Creator/3000-2094_4-75724123.html
-  Link 3 - https://www.softpedia.com/get/System/System-Miscellaneous/USB-AutoRun-Creator.shtml
+  1. Link 1 - https://www.samlogic.net/usb-autorun-creator/usb-autorun-creator.htm
+  2. Link 2 - https://download.cnet.com/SamLogic-USB-AutoRun-Creator/3000-2094_4-75724123.html
+  3. Link 3 - https://www.softpedia.com/get/System/System-Miscellaneous/USB-AutoRun-Creator.shtml
   
 Visit one of the above links and download the SamLogic USB AutoRun Creator and install it!
 
