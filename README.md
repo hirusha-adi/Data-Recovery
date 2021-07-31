@@ -44,6 +44,8 @@ or Run this command
 ```
 python install.py
 ```
+and finally,
+
 
 Run this command to make a `.exe` our of the `runall.py` file
 ```
