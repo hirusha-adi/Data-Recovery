@@ -64,4 +64,12 @@ Visit one of the above links and download the SamLogic USB AutoRun Creator and i
 
 Select the file .exe file inside the `dist` folder ( after compiling with pyinstaller ), select the pendrive and Click on the USB device you have plugged in, Enter any name as the Label and finally click `Create`. Wait some time for the software to generate and copy the necessary files.
 
-### YOU ARE DONE!
+## Finally
+Please make sure to copy these two files to the pendrive after completing the above step
+
+![image](https://user-images.githubusercontent.com/36286877/127734734-49538c82-b357-4cf8-8e56-4fe4027d3e04.png)
+
+
+`config.json` should also be copied, but if this isn't done, the program will generate the file automatically ( default settings ) and will work perfectly fine!
+
+# YOU ARE DONE!
