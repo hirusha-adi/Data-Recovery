@@ -73,3 +73,7 @@ Please make sure to copy these two files to the pendrive after completing the ab
 `config.json` should also be copied, but if this isn't done, the program will generate the file automatically ( default settings ) and will work perfectly fine!
 
 # YOU ARE DONE!
+
+![hackingpendrive](https://user-images.githubusercontent.com/36286877/127767173-b22f217f-8bf9-471a-a99f-ce65b923f66f.png)
+
+
