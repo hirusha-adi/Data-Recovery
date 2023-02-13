@@ -7,8 +7,8 @@ import tempfile
 import time
 from getpass import getuser
 
-date = time.strftime("%d%m%Y_%H%M%S")
-tmp = tempfile.gettempdir()
+
+
 
 class Constant:
     
@@ -27,6 +27,7 @@ class Constant:
     # Stuff about Computer
     username = getuser()
     drive = u'C'
+    temp_dir = tempfile.gettempdir()
     
     profile = {
         'HOMEDRIVE': u'{drive}:'.format(drive=drive),
