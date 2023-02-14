@@ -34,3 +34,6 @@ class Constant:
     
     # Log file name
     log_filename = f'{username}-{datetime}.log'
+
+    # File Content
+    seperator = "="*20

