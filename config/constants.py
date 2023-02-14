@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- 
-
 import os
 import random
 import string
@@ -29,7 +27,6 @@ class Constant:
 
     # Stuff about Computer
     username = getuser()
-    drive = u'C'
     temp_dir = tempfile.gettempdir()
     
     # Log file name
