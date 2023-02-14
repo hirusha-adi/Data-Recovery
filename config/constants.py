@@ -16,12 +16,14 @@ class Constant:
     # -----------------------------------
     
     QUIET_MODE = False
+    LOG_TO_FILE = True
     
     
     # Paths and Stuff
     # -----------------------------------
     
-    # Stuff needed to grabbing data
+    # Base Stuff
+    datetime = time.strftime("%d%m%Y_%H%M%S")
     main_folder_name = os.getcwd()
     base_output_folder = 'output'
 
@@ -29,3 +31,6 @@ class Constant:
     username = getuser()
     drive = u'C'
     temp_dir = tempfile.gettempdir()
+    
+    # Log file name
+    log_filename = f'{username}-{datetime}.log'
