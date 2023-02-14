@@ -23,6 +23,7 @@ class Constant:
     
     # Stuff needed to grabbing data
     main_folder_name = os.getcwd()
+    base_output_folder = 'output'
 
     # Stuff about Computer
     username = getuser()
