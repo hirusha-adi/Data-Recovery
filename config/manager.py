@@ -31,7 +31,7 @@ class ModuleManager:
                 
         # ########## Log File ##########
         if Constant.LOG_TO_FILE:
-            if not os.path.isfile():
+            if not os.path.isfile(self.log_filename):
                 with open(self.log_filename, 'w', encoding='utf-8') as _file:
                     _file.write(f'[{datetime.now()}] [ModuleManager] -> Log File Created')
 
