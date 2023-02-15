@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-from config.manager import ModuleManager
+from config import ModuleManager
 
 
 class NetworkInfoStealer(ModuleManager):
