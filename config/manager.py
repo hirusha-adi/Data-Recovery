@@ -26,6 +26,7 @@ class ModuleManager:
                 user_dir = os.path.join(self.output_folder, f'{Constant.username}-{i}')
                 if not os.path.exists(user_dir):
                     os.makedirs(user_dir)
+                    self.output_folder_user = user_dir
                     break
                 i += 1
                 
