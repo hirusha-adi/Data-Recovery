@@ -18,8 +18,11 @@ class WebBookmars(ModuleManager):
             os.makedirs(self.browsers_folder)
     
     def run(self):
-        outputs = get_bookmarks()
-    
+        try:
+            outputs = get_bookmarks()
+        except:
+            return
+        
         if Constant.browser_bookmark_csv:
             try:
                 outputs.save(f'{self.output_filename_csv}')
