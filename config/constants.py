@@ -17,6 +17,15 @@ class Constant:
     LOG_TO_FILE = True
     
     
+    # Save Formats
+    # -----------------------------------
+    browser_history_csv = True
+    browser_history_json = True
+    
+    browser_bookmark_csv = True
+    browser_bookmark_json = True
+    
+    
     # Paths and Stuff
     # -----------------------------------
     
