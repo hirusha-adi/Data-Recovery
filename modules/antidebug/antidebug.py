@@ -18,16 +18,12 @@ import getmac
 import OpenSSL
 import psutil
 import requests
-
-from modules.antidebug.data import *
-
-# ################# Time Out Stuff #################
-
 from func_timeout import func_set_timeout
 from func_timeout.exceptions import FunctionTimedOut
 
+from modules.antidebug.data import *
 
-# ################# Main Code #################
+
 class SSLPinner:
     def __init__(self, host):
         self.host = host
