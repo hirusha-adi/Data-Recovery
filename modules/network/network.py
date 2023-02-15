@@ -8,7 +8,7 @@ class NetworkInfoStealer(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name = "NetworkInfoStealer")
 
-        self.systeminfo_folder = os.path.join(self.output_folder_user, 'systeminfo')
+        self.systeminfo_folder = os.path.join(self.output_folder_user, 'network')
         self.ipconfig_filename = os.path.join(self.systeminfo_folder, 'ipconfig.txt')
         self.ipconfiguration_filename = os.path.join(self.systeminfo_folder, 'ipconfiguration.txt')
         self.physical_adapters_filename = os.path.join(self.systeminfo_folder, 'physical_adapters.txt')
