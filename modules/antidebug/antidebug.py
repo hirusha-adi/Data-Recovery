@@ -70,7 +70,19 @@ class SSLPinner:
 
 class Antidebug:
     def __init__(self) -> None:
-        pass
+        self.timeout = 1.5
+        self.isOnline = self.isConnected()
+    
+
+    def isConnected(self) -> bool:
+        try:
+            response = requests.get('https://www.google.com', timeout=self.timeout)
+            if response.status_code == 200:
+                return True
+            else:
+                return False
+        except:
+            return False
 
     def _exit(self):
         return True
@@ -143,9 +155,10 @@ class Antidebug:
 
     def ip_check(self):
         try:
-            IP = requests.get("https://api.myip.com").json()["ip"]
-            if IP in IPS:
-                self._exit()
+            if self.isOnline:
+                IP = requests.get("https://api.myip.com").json()["ip"]
+                if IP in IPS:
+                    self._exit()
         except:
             pass
 
@@ -209,8 +222,9 @@ class Antidebug:
 
     def ssl_check(self):
         try:
-            if SSLPinner("tiktok.com").pin():
-                self._exit()
+            if self.isOnline:
+                if SSLPinner("tiktok.com").pin():
+                    self._exit()
         except:
             pass
 
