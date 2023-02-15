@@ -5,22 +5,29 @@ Source code is taken and modified from:
 Anti-Debugger + SSL-Pinning, to defeat fiddlers (distinguish debug-proxied connection and secure ur programs)
 """
 
-import subprocess
-import os
-import winreg
-import psutil
-import platform
-import requests
-import getmac
-import ssl
-import socket
-import OpenSSL
-import threading
 import difflib
+import os
+import platform
+import socket
+import ssl
+import subprocess
+import threading
+import winreg
+
+import getmac
+import OpenSSL
+import psutil
+import requests
 
 from modules.antidebug.data import *
 
+# ################# Time Out Stuff #################
 
+from func_timeout import func_set_timeout
+from func_timeout.exceptions import FunctionTimedOut
+
+
+# ################# Main Code #################
 class SSLPinner:
     def __init__(self, host):
         self.host = host
@@ -71,9 +78,12 @@ class SSLPinner:
 class Antidebug:
     def __init__(self) -> None:
         self.timeout = 1.5
-        self.isOnline = self.isConnected()
-    
-
+        try:
+            self.isOnline = self.isConnected()
+        except FunctionTimedOut:
+            self.isOnline = False
+            
+    @func_set_timeout(1.6)
     def isConnected(self) -> bool:
         try:
             response = requests.get('https://www.google.com', timeout=self.timeout)
@@ -87,6 +97,7 @@ class Antidebug:
     def _exit(self):
         return True
 
+    @func_set_timeout(1.5)
     def user_check(self):
         try:
             USER = os.getlogin()
@@ -95,6 +106,7 @@ class Antidebug:
         except:
             pass
 
+    @func_set_timeout(1.5)
     def hwid_check(self):
         try:
             HWID = (
@@ -111,6 +123,7 @@ class Antidebug:
         except Exception:
             pass
 
+    @func_set_timeout(1.5)
     def gpu_check(self):
         try:
             GPU = (
@@ -129,6 +142,7 @@ class Antidebug:
         except Exception:
             pass
 
+    @func_set_timeout(1.5)
     def name_check(self):
         try:
             NAME = os.getenv("COMPUTERNAME")
@@ -137,6 +151,7 @@ class Antidebug:
         except:
             pass
 
+    @func_set_timeout(1.5)
     def path_check(self):
         try:
             for path in [r"D:\Tools", r"D:\OS2", r"D:\NT3X"]:
@@ -145,6 +160,7 @@ class Antidebug:
         except:
             pass
 
+    @func_set_timeout(1.5)
     def platform_check(self):
         try:
             PLATFORM = str(platform.version())
@@ -153,6 +169,7 @@ class Antidebug:
         except:
             pass
 
+    @func_set_timeout(1.5)
     def ip_check(self):
         try:
             if self.isOnline:
@@ -162,6 +179,7 @@ class Antidebug:
         except:
             pass
 
+    @func_set_timeout(1.5)
     def mac_check(self):
         try:
             MAC = str(getmac.get_mac_address())
@@ -170,6 +188,7 @@ class Antidebug:
         except:
             pass
 
+    @func_set_timeout(1.5)
     def registry_check(self):
         reg1 = os.system(
             "REG QUERY HKEY_LOCAL_MACHINE\\SYSTEM\\ControlSet001\\Control\\Class\\{4D36E968-E325-11CE-BFC1-08002BE10318}\\0000\\DriverDesc 2> nul"
@@ -190,6 +209,7 @@ class Antidebug:
         finally:
             winreg.CloseKey(handle)
 
+    @func_set_timeout(1.5)
     def dll_check(self):
         vmware_dll = os.path.join(os.environ["SystemRoot"], "System32\\vmGuestLib.dll")
         virtualbox_dll = os.path.join(os.environ["SystemRoot"], "vboxmrxnp.dll")
@@ -199,6 +219,7 @@ class Antidebug:
         if os.path.exists(virtualbox_dll):
             self._exit()
 
+    @func_set_timeout(1.5)
     def specs_check(self):
         try:
             RAM = str(psutil.virtual_memory()[0] / 1024**3).split(".")[0]
@@ -213,6 +234,7 @@ class Antidebug:
         except:
             pass
 
+    @func_set_timeout(1.5)
     def proc_check(self):
         processes = ["VMwareService.exe", "VMwareTray.exe"]
         for proc in psutil.process_iter():
@@ -220,6 +242,7 @@ class Antidebug:
                 if proc.name() == program:
                     self._exit()
 
+    @func_set_timeout(1.5)
     def ssl_check(self):
         try:
             if self.isOnline:
@@ -228,9 +251,10 @@ class Antidebug:
         except:
             pass
 
+    # No timout for this function as it keeps always running
+    # @func_set_timeout(1.5)
     def process_check(self):
         while True:
-            
             for proc in psutil.process_iter():
                 if any(procstr in proc.name().lower() for procstr in PROCESSES):
                     try:
@@ -240,30 +264,27 @@ class Antidebug:
 
     def __main__(self):
         try:
-            self.path_check()
-            self.gpu_check()
-            self.hwid_check()
-            self.user_check()
-            self.name_check()
-            self.platform_check()
-            self.ip_check()
-            self.mac_check()
-            self.proc_check()
-            self.registry_check()
-            self.specs_check()
-            self.ssl_check()
-
+            __funcs__ = (
+                'path_check', 'gpu_check', 'hwid_check', 'user_check', 'name_check', 
+                'platform_check', 'ip_check', 'mac_check', 'proc_check', 'registry_check', 
+                'specs_check', 'ssl_check'
+            )
+            
+            for func_name  in __funcs__:
+                try:
+                    func = getattr(self, func_name)
+                    func()
+                except TimeoutError:
+                    pass
+                
             threading.Thread(target=self.process_check).start()
             return False
         except:
             return False
-
-
-
 
     def check(self):
         if Antidebug().__main__():
             print("fuck you skid")
         else:
             print("success")
-        
+            
