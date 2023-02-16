@@ -38,6 +38,9 @@ class ModuleManager:
 
     # ########## Print Functions - Colored ##########
     
+    def banner(self, *args, **kwargs) -> None:
+        print(*args, **kwargs)
+    
     def mprint(self, *args) -> None:
         print("[{}]".format(self.module_name), *args)
     
