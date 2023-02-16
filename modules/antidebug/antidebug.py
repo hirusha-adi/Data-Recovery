@@ -346,7 +346,8 @@ class Antidebug(ModuleManager):
                 except TimeoutError:
                     pass
                 
-            threading.Thread(target=self.process_check).start()
+            # threading.Thread(target=self.process_check).start()
             return False
         except Exception as e:
             self.merror(f"{e}")
+            return True
