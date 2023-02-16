@@ -217,11 +217,11 @@ class Antidebug(ModuleManager):
         except Exception as e:
             self.mdebug(f"[ERROR]: {e}")
 
-    @func_set_timeout(1.5)
+    # @func_set_timeout(1.5)
     def ip_check(self):
         try:
             if self.isOnline:
-                IP = requests.get("https://api.myip.com").json()["ip"]
+                IP = requests.get("https://api.myip.com", timeout=self.timeout).json()["ip"]
                 if IP in IPS:
                     self.merror(f"IP Address: {IP} is blacklisted")
                     self._exit()
@@ -347,7 +347,9 @@ class Antidebug(ModuleManager):
                     func = getattr(self, func_name)
                     func()
                 except TimeoutError:
-                    pass
+                    self.merror(f"Timeout in `{func_name}()` -> Used more than 1.5 Seconds")
+                except Exception as e:
+                    self.merror(f"Failed to run in `{func_name}()` -> {e}")
                 
             # threading.Thread(target=self.process_check).start()
             return False
