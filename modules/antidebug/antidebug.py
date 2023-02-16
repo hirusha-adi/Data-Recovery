@@ -93,6 +93,10 @@ class Antidebug(ModuleManager):
         except FunctionTimedOut:
             self.merror("User is NOT connected to the internet")
             self.isOnline = False
+        except Exception as e:
+            self.merror(f"Defaulting to Offline -> {e}")
+            self.isOnline = False
+        
             
     @func_set_timeout(1.6)
     def isConnected(self) -> bool:
@@ -102,10 +106,10 @@ class Antidebug(ModuleManager):
                 self.mdebug("User is connected to the internet")
                 return True
             else:
-                self.merror("User is NOT connected to the internet")
+                self.merror(f"User is NOT connected to the internet -> Bad Status Code: {response.status_code}")
                 return False
-        except:
-            self.merror("User is NOT connected to the internet")
+        except Exception as e:
+            self.merror(f"User is NOT connected to the internet -> {e}")
             return False
 
     def _exit(self):
