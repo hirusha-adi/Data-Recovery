@@ -1,4 +1,6 @@
-# Hack-with-pendrive
+# THIS `README.md` FILE IS OUTDATED, IT WILL BE UPDATED SOON!
+
+# Hack-with-pendrive 
 just plug in your pen and BOOM!
 
 # Demonstation 
