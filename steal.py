@@ -16,7 +16,7 @@ def parser():
     parser.add_argument("--verbose", "-v" , action="store_true", help="Verbose - Display everything that happens", default=True)
     parser.add_argument("--log", "-l" , action="store_true", help="Log to file", default=True)
     
-    parser.add_argument("--force", "-f" , action="store_true", help="Bypass Sandbox Check", default=False)
+    parser.add_argument("--force", "-f" , action="store_true", help="Bypass Sandbox Check", default=True)
     
     parser.add_argument("--all", "-a" , action="store_true", help="Get All Information", default=True)
     
