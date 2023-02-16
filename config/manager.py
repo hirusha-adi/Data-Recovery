@@ -45,29 +45,34 @@ class ModuleManager:
             print(*args, **kwargs)
     
     def mprint(self, *args) -> None:
-        if not Constant.Args.silent:
+        if not(Constant.Args.silent):
             print("[{}]".format(self.module_name), *args)
-            if Constant.Args.silent:
-                self.log(*args)
+            
+        if Constant.Args.log:
+            self.log(*args)
     
     def merror(self, *args) -> None:
-        if not Constant.Args.silent:
+        if not (Constant.Args.silent):
             print("{color}[{module_name}] [ERROR]".format(color=Colors.RED, module_name=self.module_name),*args, end=f"{Colors.RESET}\n")
-            if Constant.Args.silent:
-                self.log('[ERROR]', *args)
+        
+        if Constant.Args.log:
+            self.log('[ERROR]', *args)
                 
     def mdebug(self, *args) -> None:
-        if not(Constant.Args.silent) and Constant.Args.verbose:
+        c = not(Constant.Args.silent) and Constant.Args.verbose
+        if c:
             print("{color}[{module_name}] [DEBUG]".format(color=Colors.GREY, module_name=self.module_name),*args, end=f"{Colors.RESET}\n")
-            if Constant.Args.silent:
-                self.log('[DEBUG]', *args)
+        
+        if Constant.Args.log:
+            self.log('[DEBUG]', *args)
+    
     
     # ########## Log To File Stuff ##########
 
     def log(self, *args) -> None:
         if Constant.LOG_TO_FILE:
-            with open(self.log_filename, 'w+', encoding='utf-8') as file:
-                file.write(f"[{datetime.now()}] [{self.module_name}] -> {' '.join(args)}")
+            with open(self.log_filename, 'a', encoding='utf-8') as file:
+                file.write(f"\n[{datetime.now()}] [{self.module_name}] -> {' '.join(args)}")
     
     # ########## Save Data to File ##########
     
