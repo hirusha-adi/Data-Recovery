@@ -47,7 +47,6 @@ class Constant:
     # Arguments
     class Args:
         silent = True
-        disguise = False
         verbose = False
         log = False
         
