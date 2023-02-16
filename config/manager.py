@@ -14,24 +14,18 @@ class ModuleManager:
         self.module_name = module_name
 
         # ########## File/Directory Names ##########
-        self.output_folder = os.path.join(Constant.main_folder_name, Constant.base_output_folder)
-        self.output_folder_user = os.path.join(Constant.main_folder_name, Constant.base_output_folder, Constant.username)
+        self.output_folder = Constant.final_output_folder
+        self.output_folder_user = Constant.final_output_folder_user
         
         # ########## Main User Directory ##########
-        if not os.path.exists(self.output_folder_user):
-            os.makedirs(self.output_folder_user)
-        else:
-            i = 1
-            while True:
-                user_dir = os.path.join(self.output_folder, f'{Constant.username}-{i}')
-                if not os.path.exists(user_dir):
-                    os.makedirs(user_dir)
-                    self.output_folder_user = user_dir
-                    break
-                i += 1
+        if not Constant.made_once:
+            if not os.path.exists(self.output_folder_user):
+                os.makedirs(self.output_folder_user)
+                print("="*20, "\nFolder Doesnt exist:", self.output_folder_user)
+                Constant.made_once = True                
                 
-        self.log_filename = os.path.join(self.output_folder_user, Constant.log_filename)
-                
+        self.log_filename = os.path.join(Constant.final_output_folder_user, Constant.log_filename)
+        
         # ########## Log File ##########
         if Constant.LOG_TO_FILE:
             if not os.path.isfile(self.log_filename):

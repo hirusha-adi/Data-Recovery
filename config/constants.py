@@ -1,11 +1,7 @@
 import os
-import random
-import string
 import tempfile
 import time
 from getpass import getuser
-
-
 
 
 class Constant:
@@ -34,17 +30,21 @@ class Constant:
     main_folder_name = os.getcwd()
     base_output_folder = 'output'
 
-    # Stuff about Computer
     username = getuser()
     temp_dir = tempfile.gettempdir()
     
-    # Log file name
     log_filename = f'{username}-{datetime}.log'
 
+    # Final Base Stuff
+    final_output_folder = os.path.join(main_folder_name, base_output_folder)
+    final_output_folder_user = os.path.join(main_folder_name, base_output_folder, username)
+    made_once = False
+    
     # File Content
     seperator = "\n\n" + "="*20 + "\n\n"
     
     # Arguments
+    # -----------------------------------
     class Args:
         
         # Display Modes
