@@ -55,7 +55,7 @@ class ChromiumStealer(ModuleManager):
         `--)-(--`       | |_____| | | | |  | |_| | | | | | |_| | | | |
        __[=== o]___      \______)_| |_|_|   \___/|_|_|_|_|____/|_|_|_|
       |:::::::::::|\    
-      `-=========-`()       Passwords + Cookies + Cards + Other
+      `-=========-`()        Passwords + Cookies + Cards + Other
               """)
         
         self.browsers_folder = os.path.join(self.output_folder_user, 'browsers')
