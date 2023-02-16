@@ -3,6 +3,7 @@ import typing as t
 from datetime import datetime
 
 from config.constants import Constant
+from config.colors import Colors
 
 
 class ModuleManager:
@@ -48,7 +49,7 @@ class ModuleManager:
         print("[{}]".format(self.module_name),*args)
     
     def mdebug(self, *args) -> None:
-        print("[{}]".format(self.module_name),*args)
+        print("{color}[{module_name}] [DEBUG]".format(color=Colors.GREY, module_name=self.module_name),*args, end=f"{Colors.RESET}\n")
         
     # ########## Log To File Stuff ##########
 
