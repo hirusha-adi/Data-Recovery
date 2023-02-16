@@ -16,7 +16,6 @@ class ModuleManager:
         # ########## File/Directory Names ##########
         self.output_folder = os.path.join(Constant.main_folder_name, Constant.base_output_folder)
         self.output_folder_user = os.path.join(Constant.main_folder_name, Constant.base_output_folder, Constant.username)
-        self.log_filename = os.path.join(self.output_folder_user, Constant.log_filename)
         
         # ########## Main User Directory ##########
         if not os.path.exists(self.output_folder_user):
@@ -31,6 +30,8 @@ class ModuleManager:
                     break
                 i += 1
                 
+        self.log_filename = os.path.join(self.output_folder_user, Constant.log_filename)
+                
         # ########## Log File ##########
         if Constant.LOG_TO_FILE:
             if not os.path.isfile(self.log_filename):
@@ -40,17 +41,27 @@ class ModuleManager:
     # ########## Print Functions - Colored ##########
     
     def banner(self, *args, **kwargs) -> None:
-        print(*args, **kwargs)
+        if not Constant.Args.silent:
+            print(*args, **kwargs)
     
     def mprint(self, *args) -> None:
-        print("[{}]".format(self.module_name), *args)
+        if not Constant.Args.silent:
+            print("[{}]".format(self.module_name), *args)
+            if Constant.Args.silent:
+                self.log(*args)
     
     def merror(self, *args) -> None:
-        print("{color}[{module_name}] [ERROR]".format(color=Colors.RED, module_name=self.module_name),*args, end=f"{Colors.RESET}\n")
-    
+        if not Constant.Args.silent:
+            print("{color}[{module_name}] [ERROR]".format(color=Colors.RED, module_name=self.module_name),*args, end=f"{Colors.RESET}\n")
+            if Constant.Args.silent:
+                self.log('[ERROR]', *args)
+                
     def mdebug(self, *args) -> None:
-        print("{color}[{module_name}] [DEBUG]".format(color=Colors.GREY, module_name=self.module_name),*args, end=f"{Colors.RESET}\n")
-        
+        if not(Constant.Args.silent) and Constant.Args.verbose:
+            print("{color}[{module_name}] [DEBUG]".format(color=Colors.GREY, module_name=self.module_name),*args, end=f"{Colors.RESET}\n")
+            if Constant.Args.silent:
+                self.log('[DEBUG]', *args)
+    
     # ########## Log To File Stuff ##########
 
     def log(self, *args) -> None:
