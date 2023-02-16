@@ -46,7 +46,7 @@ class ModuleManager:
         print("[{}]".format(self.module_name), *args)
     
     def merror(self, *args) -> None:
-        print("[{}]".format(self.module_name),*args)
+        print("{color}[{module_name}] [ERROR]".format(color=Colors.RED, module_name=self.module_name),*args, end=f"{Colors.RESET}\n")
     
     def mdebug(self, *args) -> None:
         print("{color}[{module_name}] [DEBUG]".format(color=Colors.GREY, module_name=self.module_name),*args, end=f"{Colors.RESET}\n")
