@@ -43,3 +43,11 @@ class Constant:
 
     # File Content
     seperator = "\n\n" + "="*20 + "\n\n"
+    
+    # Arguments
+    class Args:
+        silent = True
+        disguise = False
+        verbose = False
+        log = False
+        
