@@ -18,7 +18,7 @@ class WebHistoryStealer(ModuleManager):
     `--)-(--`       | |   | | |___ | | || |_| | |   | |_| |
    __[=== o]___     |_|   |_|_(___/   \__)___/|_|    \__  |
   |:::::::::::|\                                    (____/ 
-  `-=========-`()   
+  `-=========-`()  Stealing History from all support browsers
               """)
 
 
