@@ -346,7 +346,6 @@ class Antidebug(ModuleManager):
                     self.mdebug(f"Running function/check: `{func_name}()`")
                     func = getattr(self, func_name)
                     func()
-                    self.mdebug(f"Ran function/check: `{func_name}()` Successfully")
                 except TimeoutError:
                     pass
                 
