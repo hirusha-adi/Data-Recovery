@@ -54,3 +54,7 @@ l10n/
 
 hirusha/
 browsers/
+
+# PyInstaller Files
+build/
+*.spec
