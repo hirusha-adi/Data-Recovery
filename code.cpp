@@ -14,8 +14,22 @@
 #include <stdexcept>
 #include <iomanip>
 #include <windows.h>
+#include <conio.h>
+#include <cstdio>
 
 using namespace std;
+
+void checkFileExists(std::string filename)
+{
+    if (std::remove(filename.c_str()) != 0)
+    {
+        std::cout << "No existing file " << filename << " to delete." << std::endl;
+    }
+    else
+    {
+        std::cout << "Existing file " << filename << " deleted." << std::endl;
+    }
+}
 
 void mdebug(std::string message)
 {
@@ -63,6 +77,7 @@ void merror(std::string message)
 
 void recoverWifiPasswords(std::string wifi_passwords_filename)
 {
+    checkFileExists(wifi_passwords_filename);
     std::ofstream file(wifi_passwords_filename, std::ios::out | std::ios::app);
     if (!file)
     {
@@ -157,6 +172,9 @@ void recoverWifiPasswords(std::string wifi_passwords_filename)
 int main()
 {
     recoverWifiPasswords("wifi.txt");
-    cout << "Ended" << endl;
+
+    std::cout << "\n\nPress [Enter] to close the console window..." << std::endl;
+    while (_getch() != 13)
+        ;
     return 0;
 }
