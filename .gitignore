@@ -58,3 +58,6 @@ browsers/
 # PyInstaller Files
 build/
 *.spec
+
+# c++
+*.exe
