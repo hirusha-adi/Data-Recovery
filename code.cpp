@@ -19,22 +19,11 @@
 
 using namespace std;
 
-void checkFileExists(std::string filename)
-{
-    if (std::remove(filename.c_str()) != 0)
-    {
-        std::cout << "No existing file " << filename << " to delete." << std::endl;
-    }
-    else
-    {
-        std::cout << "Existing file " << filename << " deleted." << std::endl;
-    }
-}
+static bool consoleHasColors = false;
+static HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 
 void mdebug(std::string message)
 {
-    static bool consoleHasColors = false;
-    static HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
     if (!consoleHasColors)
     {
         DWORD consoleMode;
@@ -55,8 +44,6 @@ void mdebug(std::string message)
 
 void merror(std::string message)
 {
-    static bool consoleHasColors = false;
-    static HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
     if (!consoleHasColors)
     {
         DWORD consoleMode;
@@ -75,8 +62,31 @@ void merror(std::string message)
     }
 }
 
+void checkFileExists(std::string filename)
+{
+    if (std::remove(filename.c_str()) != 0)
+    {
+        mdebug("No existing file " + filename + " to delete.");
+    }
+    else
+    {
+        merror("Existing file " + filename + " deleted.");
+    }
+}
+
 void recoverWifiPasswords(std::string wifi_passwords_filename)
 {
+
+    cout << "      _______         _  _  _ _       _______ _ " << std::endl;
+    cout << "     |.-----.|       (_)(_)(_|_)     (_______|_)" << std::endl;
+    cout << "     ||x . x||        _  _  _ _ _____ _____   _" << std::endl;
+    cout << "     ||_.-._||       | || || | (_____)  ___) | |" << std::endl;
+    cout << "     `--)-(--`       | || || | |     | |     | |" << std::endl;
+    cout << "    __[=== o]___      \\_____/|_|     |_|     |_|" << std::endl;
+    cout << "   |:::::::::::|\\    " << std::endl;
+    cout << "   `-=========-`()            Passwords\n\n"
+         << std::endl;
+
     checkFileExists(wifi_passwords_filename);
     std::ofstream file(wifi_passwords_filename, std::ios::out | std::ios::app);
     if (!file)
