@@ -1,3 +1,7 @@
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#endif
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -9,23 +13,67 @@
 #include <array>
 #include <stdexcept>
 #include <iomanip>
+#include <windows.h>
 
 using namespace std;
 
-void stealWifiPasswords()
+void mdebug(std::string message)
 {
-    std::string wifi_passwords_filename = "wifi.txt";
+    static bool consoleHasColors = false;
+    static HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (!consoleHasColors)
+    {
+        DWORD consoleMode;
+        if (GetConsoleMode(consoleHandle, &consoleMode))
+        {
+            consoleHasColors = SetConsoleMode(consoleHandle, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+        }
+    }
+    if (consoleHasColors)
+    {
+        std::cout << "\33[90m" << message << "\033[0m" << std::endl;
+    }
+    else
+    {
+        std::cout << message << std::endl;
+    }
+}
+
+void merror(std::string message)
+{
+    static bool consoleHasColors = false;
+    static HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (!consoleHasColors)
+    {
+        DWORD consoleMode;
+        if (GetConsoleMode(consoleHandle, &consoleMode))
+        {
+            consoleHasColors = SetConsoleMode(consoleHandle, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+        }
+    }
+    if (consoleHasColors)
+    {
+        std::cout << "\033[31m" << message << "\033[0m" << std::endl;
+    }
+    else
+    {
+        std::cout << message << std::endl;
+    }
+}
+
+void recoverWifiPasswords(std::string wifi_passwords_filename)
+{
     std::ofstream file(wifi_passwords_filename, std::ios::out | std::ios::app);
     if (!file)
     {
         throw std::runtime_error("Error opening file");
     }
 
-    std::cout << "Created file and starting to save wifi passwords to it -> " << wifi_passwords_filename << std::endl;
-    std::cout << "Running command: `netsh wlan show profiles`" << std::endl;
+    mdebug("Created file and starting to save wifi passwords to it -> " + wifi_passwords_filename);
+    mdebug("Running command: `netsh wlan show profiles`");
 
     std::string command = "netsh wlan show profiles";
-    std::array<char, 128> buffer{};
+    std::array<char, 128> buffer{}; // Initializes all elements to 0
     std::string data;
     FILE *pipe = _popen(command.c_str(), "r");
     if (!pipe)
@@ -50,14 +98,14 @@ void stealWifiPasswords()
         }
     }
 
-    std::cout << "Found a total of " << profiles.size() << " WiFi networks" << std::endl;
+    mdebug("Found a total of " + std::to_string(profiles.size()) + " WiFi networks");
 
     for (const auto &i : profiles)
     {
         try
         {
             std::string command = "netsh wlan show profile " + i + " key=clear";
-            std::cout << "Running command: `" << command << "`" << std::endl;
+            mdebug("Running command: `" + command + "`");
             std::array<char, 128> buffer{};
             std::string results;
             FILE *pipe = _popen(command.c_str(), "r");
@@ -85,7 +133,7 @@ void stealWifiPasswords()
 
             if (!keys.empty())
             {
-                std::cout << "Found password of " << i << " wifi network" << std::endl;
+                mdebug("Found password of " + i + " wifi network");
                 file << std::left << std::setw(30) << i << "|  " << keys[0] << std::endl;
             }
             else
@@ -97,19 +145,18 @@ void stealWifiPasswords()
         }
         catch (const std::exception &ex)
         {
-            std::cout << "Unable to get the wifi password of " << i << " network -> " << ex.what() << std::endl;
+            merror("Unable to get the wifi password of " + i + " network -> " + ex.what());
             file << std::left << std::setw(30) << i << "|  "
                  << "ENCODING ERROR" << std::endl;
         }
     }
 
-    std::cout << "Saved all wifi password to " << wifi_passwords_filename << std::endl;
+    mdebug("Saved all wifi passwords to " + wifi_passwords_filename);
 }
 
 int main()
 {
-    // system("ipconfig /all > output.txt");
-    stealWifiPasswords();
+    recoverWifiPasswords("wifi.txt");
     cout << "Ended" << endl;
     return 0;
 }
