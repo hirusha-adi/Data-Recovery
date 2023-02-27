@@ -1,1 +1,1 @@
-from .system import SystemInfoStealer
+from .system import SystemInfoRecovery

