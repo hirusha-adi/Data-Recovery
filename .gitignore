@@ -54,6 +54,9 @@ l10n/
 
 hirusha/
 browsers/
+.vscode
+*.exe
+test.py
 
 # PyInstaller Files
 build/
