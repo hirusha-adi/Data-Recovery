@@ -4,7 +4,7 @@ import subprocess
 from config.manager import ModuleManager
 
 
-class Recover(ModuleManager):
+class SystemInfoStealer(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name = "SystemInfoStealer")
         

