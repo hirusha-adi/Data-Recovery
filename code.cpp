@@ -2,6 +2,15 @@
 #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
 #endif
 
+#ifdef _WIN32
+#include <direct.h>
+#define getcwd _getcwd
+#else
+#include <unistd.h>
+#endif
+
+
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -265,10 +274,43 @@ void name_check()
     }
 }
 
+
+bool directory_exists(const std::string& dir_path) {
+    bool result = false;
+
+#ifdef _WIN32
+    if (_access(dir_path.c_str(), 0) == 0) {
+        result = true;
+    }
+#else
+    if (access(dir_path.c_str(), F_OK) == 0) {
+        result = true;
+    }
+#endif
+    return result;
+}
+
+void path_check() {
+    try {
+        std::vector<std::string> paths = {"D:\\Tools", "D:\\OS2", "D:\\NT3X"};
+        for (const auto& path : paths) {
+            if (directory_exists(path)) {
+                std::cerr << "PATH: " << path << " is blacklisted" << std::endl;
+            }
+        }
+        mdebug("Path Check has passed");
+    }
+    catch (const std::exception& e) {
+        std::cerr << "[ERROR]: " << e.what() << std::endl;
+    }
+}
+
+
 void anti_debug() {
     user_check();
     hwid_check();
     name_check();
+    path_check();
 }
 
 int main()
