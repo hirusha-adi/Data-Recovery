@@ -60,6 +60,35 @@ The data recovery process is secure, as the application does not store or share 
 
 Your compiled `Data Recovery.exe` is available at `./dist`
 
+# Options
+
+```
+$ python .\recover.py --help
+
+usage: recover.py [-h] [--silent] [--verbose] [--log] [--all] [--browser-all] [--browser-passwords] [--browser-history] [--browser-bookmakrs] [--network-all] [--network-wifi]
+                  [--network-info] [--system-all]
+
+Data Recovery | Built by @hirusha-adi
+
+options:
+  -h, --help            show this help message and exit
+  --silent, -s          Silent Mode - No Console Output
+  --verbose, -v         Verbose - Display everything that happens
+  --log, -l             Log to file
+  --all, -a             Get All Information
+  --browser-all, -ba    Get Browser Passwords, Cookies, Cards and History and Bookmarks
+  --browser-passwords, -bp
+                        Get Browser Passwords, Cookies, Cards and History DB File
+  --browser-history, -bh
+                        Get Browser History
+  --browser-bookmakrs, -bb
+                        Get Browser Bookmarks
+  --network-all, -na    Get All Network Information and Wifi Passwords
+  --network-wifi, -nw   Get Wifi Passwords
+  --network-info, -ni   Get All Network Information
+  --system-all, -sa     Get All Network Information and Wifi Passwords
+```
+
 # Use Cases
 
 - ## Data Recovery
