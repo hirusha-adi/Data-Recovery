@@ -53,8 +53,6 @@ class Constant:
         log = True
         
         # What to Run
-        bypassDebugModeCheck = False
-        
         all = True
         
         browser_all = True
