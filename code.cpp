@@ -14,52 +14,23 @@
 #include <stdexcept>
 #include <iomanip>
 #include <windows.h>
-#include <conio.h>
-#include <cstdio>
 
 using namespace std;
 
-static bool consoleHasColors = false;
-static HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-void mdebug(std::string message)
+void mdebug(const std::string &message)
 {
-    if (!consoleHasColors)
-    {
-        DWORD consoleMode;
-        if (GetConsoleMode(consoleHandle, &consoleMode))
-        {
-            consoleHasColors = SetConsoleMode(consoleHandle, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
-        }
-    }
-    if (consoleHasColors)
-    {
-        std::cout << "\33[90m" << message << "\033[0m" << std::endl;
-    }
-    else
-    {
-        std::cout << message << std::endl;
-    }
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, 9);
+    std::cout << message << std::endl;
+    SetConsoleTextAttribute(hConsole, 15);
 }
 
-void merror(std::string message)
+void merror(const std::string &message)
 {
-    if (!consoleHasColors)
-    {
-        DWORD consoleMode;
-        if (GetConsoleMode(consoleHandle, &consoleMode))
-        {
-            consoleHasColors = SetConsoleMode(consoleHandle, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
-        }
-    }
-    if (consoleHasColors)
-    {
-        std::cout << "\033[31m" << message << "\033[0m" << std::endl;
-    }
-    else
-    {
-        std::cout << message << std::endl;
-    }
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, 12);
+    std::cout << message << std::endl;
+    SetConsoleTextAttribute(hConsole, 15);
 }
 
 void checkFileExists(std::string filename)
@@ -170,7 +141,7 @@ void recoverWifiPasswords(std::string wifi_passwords_filename)
         }
         catch (const std::exception &ex)
         {
-            merror("Unable to get the wifi password of " + i + " network -> " + ex.what());
+            merror("Unable to get the wifi password of " + i + " network");
             file << std::left << std::setw(30) << i << "|  "
                  << "ENCODING ERROR" << std::endl;
         }
@@ -181,10 +152,21 @@ void recoverWifiPasswords(std::string wifi_passwords_filename)
 
 int main()
 {
+
+    std::string username = std::getenv("USER");
+    std::string dir_path = "./" + username;
+    std::string file_path = dir_path + "/wifi.txt";
+
+    if (std::system(("mkdir " + dir_path).c_str()) != 0)
+    {
+        std::cerr << "Error creating directory" << std::endl;
+        return 1;
+    }
+
     recoverWifiPasswords("wifi.txt");
 
-    std::cout << "\n\nPress [Enter] to close the console window..." << std::endl;
-    while (_getch() != 13)
-        ;
+    // std::cout << "\n\nPress [Enter] to close the console window..." << std::endl;
+    // while (_getch() != 13)
+    //     ;
     return 0;
 }
