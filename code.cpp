@@ -189,14 +189,14 @@ int main()
     std::string username = getenv("USERNAME");
     std::string dir_path = ".\\" + username;
 
-    std::string file_path = dir_path + "/wifi.txt";
+    std::string file_path = dir_path + "\\wifi.txt";
 
     if (std::system(("mkdir " + dir_path).c_str()) != 0)
     {
         std::cerr << "Directory " << username << " already exists." << std::endl;
     }
 
-    recoverWifiPasswords("wifi.txt");
+    recoverWifiPasswords(file_path);
 
     std::cout << "\n\nPress [Enter] to close the console window..." << std::endl;
     while (_getch() != 13)
