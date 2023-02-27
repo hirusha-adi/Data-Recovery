@@ -62,3 +62,5 @@ build/
 # c++
 *.exe
 .vscode/
+wifi.txt
+test.py
