@@ -43,13 +43,13 @@ The data recovery process is secure, as the application does not store or share 
     - Normal Mode
 
       ```
-      pyinstaller steal.py --noconfirm --onefile --name 'Data Recovery' --console 
+      pyinstaller recover.py --noconfirm --onefile --name "Data Recovery" --console 
       ```
 
     - Hidden Mode
 
       ```
-      pyinstaller steal.py --noconfirm --onefile --name 'Data Recovery' --windowed 
+      pyinstaller recover.py --noconfirm --onefile --name "Data Recovery" --windowed 
       ```
 
 8. Deactive the virtual enviroment
