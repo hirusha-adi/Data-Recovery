@@ -10,7 +10,7 @@ from modules import SystemInfoStealer # system
 
 
 def parser():
-    parser = argparse.ArgumentParser(description="Data Stealer | Data Recovery Tool | Built by @hirusha-adi")
+    parser = argparse.ArgumentParser(description="Data Recovery | Built by @hirusha-adi")
     parser.add_argument("--silent", "-s" , action="store_true", help="Silent Mode - No Console Output", default=False)
     parser.add_argument("--verbose", "-v" , action="store_true", help="Verbose - Display everything that happens", default=True)
     parser.add_argument("--log", "-l" , action="store_true", help="Log to file", default=True)
