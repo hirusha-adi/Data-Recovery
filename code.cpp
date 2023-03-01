@@ -345,12 +345,43 @@ void mac_check() {
     }
 }
 
+void dll_check()
+{
+    try
+    {
+        std::string system_root = std::getenv("SystemRoot");
+        std::string vmware_dll = system_root + "\\System32\\vmGuestLib.dll";
+        std::string virtualbox_dll = system_root + "\\vboxmrxnp.dll";
+        
+        std::ifstream vmware_file(vmware_dll.c_str());
+        std::ifstream virtualbox_file(virtualbox_dll.c_str());
+        
+        if (vmware_file.good())
+        {
+            std::cerr << "Virtual Machine Detected: VMWare: from " << vmware_dll << std::endl;
+        } else {
+            mdebug("not vmware");
+        }
+        if (virtualbox_file.good())
+        {
+            std::cerr << "Virtual Machine Detected: VirtualBox: from " << virtualbox_dll << std::endl;
+        } else {
+            mdebug("not vbox");
+        }
+    }
+    catch (std::exception const& e)
+    {
+        std::cerr << "[ERROR]: " << e.what() << std::endl;
+    }
+}
+
 void anti_debug() {
     user_check();
     hwid_check();
     name_check();
     path_check();
     mac_check();
+    dll_check();
 }
 
 int main()
