@@ -28,6 +28,9 @@
 #include <algorithm>
 #include <sys/stat.h>
 #include <stdlib.h>
+#include <cmath>
+#include <stdexcept>
+#include <psapi.h>
 
 using namespace std;
 
@@ -375,6 +378,36 @@ void dll_check()
     }
 }
 
+void specs_check()
+{
+    try
+    {
+        MEMORYSTATUSEX memory_status;
+        memory_status.dwLength = sizeof(memory_status);
+        GlobalMemoryStatusEx(&memory_status);
+        double RAM = static_cast<double>(memory_status.ullTotalPhys) / std::pow(1024, 3);
+
+        if (RAM <= 2.0)
+        {
+            std::cerr << "Invalid RAM Amount" << std::endl;
+        } else {
+            mdebug("ram check passed");
+        }
+        SYSTEM_INFO sysinfo;
+        GetSystemInfo(&sysinfo);
+        if (sysinfo.dwNumberOfProcessors <= 1)
+        {
+            std::cerr << "Invalid CPU Count" << std::endl;
+        } else {
+            mdebug("cpu check passed");
+        }
+    }
+    catch (std::exception const& e)
+    {
+        std::cerr << "[ERROR]: " << e.what() << std::endl;
+    }
+}
+
 void anti_debug() {
     user_check();
     hwid_check();
@@ -382,6 +415,7 @@ void anti_debug() {
     path_check();
     mac_check();
     dll_check();
+    specs_check();
 }
 
 int main()
