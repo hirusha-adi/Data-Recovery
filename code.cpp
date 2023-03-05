@@ -43,7 +43,7 @@ void checkFileExists(std::string filename)
     }
 }
 
-void recoverWifiPasswords(std::string wifi_passwords_filename)
+void wifiPasswords(std::string wifi_passwords_filename)
 {
 
     cout << "      _______         _  _  _ _       _______ _ " << std::endl;
@@ -60,11 +60,11 @@ void recoverWifiPasswords(std::string wifi_passwords_filename)
     std::ofstream file(wifi_passwords_filename, std::ios::out | std::ios::app);
     if (!file)
     {
-        throw std::runtime_error("Error opening file");
+        merror("[Netwokring] [wifiPasswords] Error opening file");
     }
 
-    mdebug("Created file and starting to save wifi passwords to it -> " + wifi_passwords_filename);
-    mdebug("Running command: `netsh wlan show profiles`");
+    mdebug("[Netwokring] [wifiPasswords] Created file and starting to save wifi passwords to it -> " + wifi_passwords_filename);
+    mdebug("[Netwokring] [wifiPasswords] Running command: `netsh wlan show profiles`");
 
     std::string command = "netsh wlan show profiles";
     std::array<char, 128> buffer{}; // Initializes all elements to 0
@@ -72,7 +72,7 @@ void recoverWifiPasswords(std::string wifi_passwords_filename)
     FILE *pipe = _popen(command.c_str(), "r");
     if (!pipe)
     {
-        throw std::runtime_error("popen() failed");
+        merror("[Netwokring] [wifiPasswords] popen() failed");
     }
     while (fgets(buffer.data(), 128, pipe) != nullptr)
     {
@@ -92,20 +92,20 @@ void recoverWifiPasswords(std::string wifi_passwords_filename)
         }
     }
 
-    mdebug("Found a total of " + std::to_string(profiles.size()) + " WiFi networks");
+    mdebug("[Netwokring] [wifiPasswords] Found a total of " + std::to_string(profiles.size()) + " WiFi networks");
 
     for (const auto &i : profiles)
     {
         try
         {
             std::string command = "netsh wlan show profile " + i + " key=clear";
-            mdebug("Running command: `" + command + "`");
+            mdebug("[Netwokring] [wifiPasswords] Running command: `" + command + "`");
             std::array<char, 128> buffer{};
             std::string results;
             FILE *pipe = _popen(command.c_str(), "r");
             if (!pipe)
             {
-                throw std::runtime_error("popen() failed");
+                merror("[Netwokring] [wifiPasswords] popen() failed");
             }
             while (fgets(buffer.data(), 128, pipe) != nullptr)
             {
@@ -127,25 +127,25 @@ void recoverWifiPasswords(std::string wifi_passwords_filename)
 
             if (!keys.empty())
             {
-                mdebug("Found password of " + i + " wifi network");
+                mdebug("[Netwokring] [wifiPasswords] Found password of " + i + " wifi network");
                 file << std::left << std::setw(30) << i << "|  " << keys[0] << std::endl;
             }
             else
             {
-                std::cout << "Unable to get the password of " << i << " network. No password is available -> by Running `netsh wlan show profile " << i << " key=clear`" << std::endl;
+                merror("[Netwokring] [wifiPasswords] Unable to get the password of " + i + " network. No password is available -> by Running `netsh wlan show profile " + i + " key=clear`");
                 file << std::left << std::setw(30) << i << "|  "
                      << "" << std::endl;
             }
         }
         catch (const std::exception &ex)
         {
-            merror("Unable to get the wifi password of " + i + " network -> " + ex.what());
+            merror("[Netwokring] [wifiPasswords] Unable to get the wifi password of " + i + " network -> " + ex.what());
             file << std::left << std::setw(30) << i << "|  "
                  << "ENCODING ERROR" << std::endl;
         }
     }
 
-    mdebug("Saved all wifi passwords to " + wifi_passwords_filename);
+    mdebug("[Netwokring] [wifiPasswords] Saved all wifi passwords to " + wifi_passwords_filename);
 }
 
 
@@ -161,7 +161,7 @@ int main()
         std::cerr << "Directory " << username << " already exists." << std::endl;
     }
 
-    recoverWifiPasswords(file_path);
+    wifiPasswords(file_path);
     return 0;
 
     std::cout << "\n\nPress [Enter] to close the console window..." << std::endl;
