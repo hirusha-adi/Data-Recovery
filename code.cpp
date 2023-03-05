@@ -148,23 +148,6 @@ void recoverWifiPasswords(std::string wifi_passwords_filename)
     mdebug("Saved all wifi passwords to " + wifi_passwords_filename);
 }
 
-std::string execute_command(const char* cmd) {
-    std::string output = "";
-    char buffer[128];
-    FILE* pipe = _popen(cmd, "r");
-    if (pipe == NULL) {
-        throw std::runtime_error("popen failed");
-    }
-    while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
-        output += buffer;
-    }
-    _pclose(pipe);
-    // Remove newline characters from the output string
-    output.erase(std::remove(output.begin(), output.end(), '\n'), output.end());
-    output.erase(std::remove(output.begin(), output.end(), '\r'), output.end());
-    return output;
-}
-
 
 int main()
 {   
