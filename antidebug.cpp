@@ -65,16 +65,16 @@ void user_check()
         std::string USER = getenv("USERNAME");
         if (std::find(USERS.begin(), USERS.end(), USER) != USERS.end())
         {
-            merror("Username: " + USER + " is blacklisted");
+            merror("[AntiDebug] [user_check()] Username: " + USER + " is blacklisted");
         }
         else
         {
-            mdebug("No Debug Mode Detected by Username of Machine");
+            mdebug("[AntiDebug] [user_check()] No Debug Mode Detected by Username of Machine");
         }
     }
     catch (const std::exception &e)
     {
-        mdebug("[ERROR]: " + std::string(e.what()));
+        merror("[AntiDebug] [hwid_check()] [ERROR]: " + std::string(e.what()));
     }
 }
 
@@ -145,12 +145,12 @@ void hwid_check()
         }
         else
         {
-            mdebug("HWID check passed");
+            mdebug("[AntiDebug] [hwid_check()] HWID check passed");
         }
     }
     catch (const std::exception &e)
     {
-        std::cerr << "[ERROR]: " << e.what() << std::endl;
+        merror("[AntiDebug] [hwid_check()] [ERROR]: " + std::string(e.what()));
     }
 }
 
@@ -163,16 +163,16 @@ void name_check()
         std::string NAME = getenv("COMPUTERNAME");
         if (std::find(NAMES.begin(), NAMES.end(), NAME) != NAMES.end())
         {
-            merror("Computer Name: " + NAME + " is blacklisted");
+            merror("[AntiDebug] [name_check()] Computer Name: " + NAME + " is blacklisted");
         }
         else
         {
-            mdebug("No Debug Mode Detected by Username of Machine");
+            mdebug("[AntiDebug] [name_check()] No Debug Mode Detected by Username of Machine");
         }
     }
     catch (const std::exception &e)
     {
-        mdebug("[ERROR]: " + std::string(e.what()));
+        merror("[AntiDebug] [name_check()] [ERROR]: " + std::string(e.what()));
     }
 }
 
@@ -203,14 +203,15 @@ void path_check()
         {
             if (directory_exists(path))
             {
-                std::cerr << "PATH: " << path << " is blacklisted" << std::endl;
+                merror("[AntiDebug] [path_check()] PATH: " + path + " is blacklisted");
             }
         }
-        mdebug("Path Check has passed");
+        mdebug("[AntiDebug] [path_check()] Path Check has passed");
     }
     catch (const std::exception &e)
     {
         std::cerr << "[ERROR]: " << e.what() << std::endl;
+        merror("[AntiDebug] [path_check()] [ERROR]: " + std::string(e.what()));
     }
 }
 
@@ -231,13 +232,13 @@ void mac_check()
         // Check if the MAC address is blacklisted
         if (std::find(macs.begin(), macs.end(), mac) != macs.end())
         {
-            std::cerr << "MAC Address: " << mac << " is blacklisted" << std::endl;
+            merror("[AntiDebug] [mac_check()] MAC Address: " + mac + " is blacklisted");
         }
-        mdebug("Mac Check Passed");
+        mdebug("[AntiDebug] [mac_check()] Mac Check Passed");
     }
     catch (const std::exception &e)
     {
-        std::cerr << "[ERROR]: " << e.what() << std::endl;
+        merror("[AntiDebug] [mac_check()] [ERROR]: " + std::string(e.what()));
     }
 }
 
@@ -254,24 +255,24 @@ void dll_check()
 
         if (vmware_file.good())
         {
-            std::cerr << "Virtual Machine Detected: VMWare: from " << vmware_dll << std::endl;
+            merror("[AntiDebug] [dll_check()] [ERROR]: Virtual Machine Detected: VMWare: from " + vmware_dll);
         }
         else
         {
-            mdebug("not vmware");
+            mdebug("[AntiDebug] [dll_check()] not vmware");
         }
         if (virtualbox_file.good())
         {
-            std::cerr << "Virtual Machine Detected: VirtualBox: from " << virtualbox_dll << std::endl;
+            merror("[AntiDebug] [dll_check()] [ERROR]: Virtual Machine Detected: VirtualBox: from " + virtualbox_dll);
         }
         else
         {
-            mdebug("not vbox");
+            mdebug("[AntiDebug] [dll_check()] not vbox");
         }
     }
     catch (std::exception const &e)
     {
-        std::cerr << "[ERROR]: " << e.what() << std::endl;
+        merror("[AntiDebug] [dll_check()] [ERROR]: " + std::string(e.what()));
     }
 }
 
@@ -286,26 +287,26 @@ void specs_check()
 
         if (RAM <= 2.0)
         {
-            std::cerr << "Invalid RAM Amount" << std::endl;
+            merror("[AntiDebug] [specs_check()] [ERROR]: Invalid RAM Amount");
         }
         else
         {
-            mdebug("ram check passed");
+            mdebug("[AntiDebug] [specs_check()] Ram check passed");
         }
         SYSTEM_INFO sysinfo;
         GetSystemInfo(&sysinfo);
         if (sysinfo.dwNumberOfProcessors <= 1)
         {
-            std::cerr << "Invalid CPU Count" << std::endl;
+            merror("[AntiDebug] [specs_check()] [ERROR]: Invalid CPU Count");
         }
         else
         {
-            mdebug("cpu check passed");
+            mdebug("[AntiDebug] [specs_check()] CPU check passed");
         }
     }
     catch (std::exception const &e)
     {
-        std::cerr << "[ERROR]: " << e.what() << std::endl;
+        merror("[AntiDebug] [specs_check()] [ERROR]: " + std::string(e.what()));
     }
 }
 
@@ -322,12 +323,8 @@ void anti_debug()
 
 int main()
 {
-    // Anti Debug Mocde Check
+    // Anti Debug Mode Check
     anti_debug();
-    return 0;
 
-    std::cout << "\n\nPress [Enter] to close the console window..." << std::endl;
-    while (_getch() != 13)
-        ;
     return 0;
 }
