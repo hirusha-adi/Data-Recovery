@@ -69,7 +69,7 @@ void user_check()
         }
         else
         {
-            mdebug("[AntiDebug] [user_check()] No Debug Mode Detected by Username of Machine");
+            mdebug("[AntiDebug] [user_check()] Username check passed!");
         }
     }
     catch (const std::exception &e)
@@ -145,7 +145,7 @@ void hwid_check()
         }
         else
         {
-            mdebug("[AntiDebug] [hwid_check()] HWID check passed");
+            mdebug("[AntiDebug] [hwid_check()] HWID check passed!");
         }
     }
     catch (const std::exception &e)
@@ -167,7 +167,7 @@ void name_check()
         }
         else
         {
-            mdebug("[AntiDebug] [name_check()] No Debug Mode Detected by Username of Machine");
+            mdebug("[AntiDebug] [name_check()] Computer Name check passed!");
         }
     }
     catch (const std::exception &e)
@@ -206,7 +206,7 @@ void path_check()
                 merror("[AntiDebug] [path_check()] PATH: " + path + " is blacklisted");
             }
         }
-        mdebug("[AntiDebug] [path_check()] Path Check has passed");
+        mdebug("[AntiDebug] [path_check()] Path Check passed!");
     }
     catch (const std::exception &e)
     {
@@ -234,7 +234,7 @@ void mac_check()
         {
             merror("[AntiDebug] [mac_check()] MAC Address: " + mac + " is blacklisted");
         }
-        mdebug("[AntiDebug] [mac_check()] Mac Check Passed");
+        mdebug("[AntiDebug] [mac_check()] Mac Check passed!");
     }
     catch (const std::exception &e)
     {
@@ -259,7 +259,7 @@ void dll_check()
         }
         else
         {
-            mdebug("[AntiDebug] [dll_check()] not vmware");
+            mdebug("[AntiDebug] [dll_check()] DLL Check for VMWare passed!");
         }
         if (virtualbox_file.good())
         {
@@ -267,7 +267,7 @@ void dll_check()
         }
         else
         {
-            mdebug("[AntiDebug] [dll_check()] not vbox");
+            mdebug("[AntiDebug] [dll_check()] DLL Check for VirtualBox passed]");
         }
     }
     catch (std::exception const &e)
@@ -291,7 +291,7 @@ void specs_check()
         }
         else
         {
-            mdebug("[AntiDebug] [specs_check()] Ram check passed");
+            mdebug("[AntiDebug] [specs_check()] Ram check passed!");
         }
         SYSTEM_INFO sysinfo;
         GetSystemInfo(&sysinfo);
@@ -301,7 +301,7 @@ void specs_check()
         }
         else
         {
-            mdebug("[AntiDebug] [specs_check()] CPU check passed");
+            mdebug("[AntiDebug] [specs_check()] CPU check passed!");
         }
     }
     catch (std::exception const &e)
