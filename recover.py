@@ -11,11 +11,9 @@ from modules import SystemInfoRecovery  # system
 
 class args:
     all = False
-    browser_all = False
     browser_passwords = False
     browser_history = False
     browser_bookmakrs = False
-    network_all = False
     network_wifi = False
     network_info = False
     system_all = False
@@ -24,8 +22,7 @@ class args:
 def parser():
 
     __help_message = r"""
-usage: recover.py [-h] [--silent] [--verbose] [--log] [--all] [--browser-all] [--browser-passwords] [--browser-history] [--browser-bookmakrs] [--network-all]
-                  [--network-wifi] [--network-info] [--system-all]
+usage: [-h] [--silent] [--verbose] [--log] [--all] [--browser-all] [--browser-passwords] [--browser-history] [--browser-bookmakrs] [--network-all] [--network-wifi] [--network-info] [--system-all]
 
 Data Recovery | Built by @hirusha-adi
 
@@ -56,7 +53,7 @@ options:
 
     # Silent mode
     if ("--silent" in argsv) or ("-s" in argsv):
-        Constant.Args.silent = False
+        Constant.Args.silent = True
         Constant.Args.verbose = False
         Constant.Args.log = False
     elif ("--verbose" in argsv) or ("-v" in argsv) or ("--log" in argsv) or ("-l" in argsv):
@@ -71,6 +68,55 @@ options:
         Constant.Args.silent = False
         Constant.Args.verbose = True
         Constant.Args.log = True
+
+    # browser recovery
+    if ("--browser-all" in argsv) or ("-ba" in argsv):
+        args.browser_passwords = True
+        args.browser_history = True
+        args.browser_bookmakrs = True
+    elif ("--browser-passwords" in argsv) or ("-bp" in argsv) or ("--browser-history" in argsv) or ("-bh" in argsv) or ("--browser-bookmakrs" in argsv) or ("-bb" in argsv):
+        if ("--browser-passwords" in argsv) or ("-bp" in argsv):
+            args.browser_passwords = True
+        else:
+            args.browser_passwords = False
+        if ("--browser-history" in argsv) or ("-bh" in argsv):
+            args.browser_history = True
+        else:
+            args.browser_bookmakrs = False
+        if ("--browser-bookmakrs" in argsv) or ("-bb" in argsv):
+            args.browser_bookmakrs = True
+        else:
+            args.browser_bookmakrs = False
+    else:
+        args.browser_passwords = False
+        args.browser_bookmakrs = False
+        args.browser_bookmakrs = False
+
+    # network info
+    if ("--network-all" in argsv) or ("-na" in argsv):
+        args.network_wifi = True
+        args.network_info = True
+    elif ("--network-wifi" in argsv) or ("-nw" in argsv) or ("--network-info" in argsv) or ("-ni" in argsv):
+        if ("--network-wifi" in argsv) or ("-nw" in argsv):
+            args.network_wifi = True
+        else:
+            args.network_wifi = False
+        if ("--network-info" in argsv) or ("-ni" in argsv):
+            args.network_info = True
+        else:
+            args.network_info = False
+    else:
+        args.network_wifi = False
+        args.network_info = False
+
+    if ("--system-all" in argsv) or ("-sa" in argsv):
+        args.system_all = True
+    else:
+        args.system_all = False
+
+    if not (args.browser_passwords or args.browser_history or args.browser_bookmakrs or args.network_info or args.network_wifi or args.system_all):
+        print(__help_message)
+        exit()
 
 
 def cexit():
@@ -112,22 +158,22 @@ def main():
     """
     parser()
 
-    if Constant.Args.browser_passwords:
+    if args.browser_passwords:
         ChromiumRecovery().run()
 
-    if Constant.Args.browser_history:
+    if args.browser_history:
         WebHistoryRecovery().run()
 
-    if Constant.Args.browser_bookmakrs:
+    if args.browser_bookmakrs:
         WebBookmarksRecovery().run()
 
-    if Constant.Args.network_wifi:
+    if args.network_wifi:
         WifiPasswordRecovery().run()
 
-    if Constant.Args.network_info:
+    if args.network_info:
         NetworkInfoRecovery().run()
 
-    if Constant.Args.system_all:
+    if args.system_all:
         SystemInfoRecovery().run()
 
     cexit()
