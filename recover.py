@@ -120,7 +120,8 @@ options:
 
 
 def cexit():
-    print(f"""
+    if not (Constant.Args.silent):
+        print(f"""
 {Colors.GREEN}   __,_,
 {Colors.GREEN}  [_|_/                {Colors.CYAN}   Made by {Colors.MAGENTA}{Colors.UNDERLINE}@hirusha-ad{Colors.RESET}
 {Colors.GREEN}   //                  {Colors.CYAN} ------------------------
@@ -138,24 +139,11 @@ def cexit():
     {Colors.RED}THIS TOOL IS FOR EDUCATIONAL PURPOSES ONLY
 {Colors.GREY}---------------------------------------------------
           """)
-    input(f"{Colors.MAGENTA}Press [ENTER] to Exit{Colors.RESET}")
+        input(f"{Colors.MAGENTA}Press [ENTER] to Exit{Colors.RESET}")
     exit()
 
 
 def main():
-    """
-    Order ->
-        1) Browsers
-            1. Passwords, Cookies, Cards and History DB (Web Data)
-            2. History
-            3. Bookmakrs
-        2) Network
-            1. Wifi Passwords
-            2. Network Information
-        3) System
-            1. System Information 
-                (including detailed hardware information)
-    """
     parser()
 
     if args.browser_passwords:
