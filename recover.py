@@ -1,73 +1,78 @@
-import argparse
+import sys
 
 
 from config import Constant
 from config import Colors
 
-from modules import ChromiumRecovery, WebHistoryRecovery, WebBookmarksRecovery # browser
-from modules import NetworkInfoRecovery, WifiPasswordRecovery # network
-from modules import SystemInfoRecovery # system
+from modules import ChromiumRecovery, WebHistoryRecovery, WebBookmarksRecovery  # browser
+from modules import NetworkInfoRecovery, WifiPasswordRecovery  # network
+from modules import SystemInfoRecovery  # system
+
+
+class args:
+    all = False
+    browser_all = False
+    browser_passwords = False
+    browser_history = False
+    browser_bookmakrs = False
+    network_all = False
+    network_wifi = False
+    network_info = False
+    system_all = False
 
 
 def parser():
-    parser = argparse.ArgumentParser(description="Data Recovery | Built by @hirusha-adi")
-    parser.add_argument("--silent", "-s" , action="store_true", help="Silent Mode - No Console Output", default=False)
-    parser.add_argument("--verbose", "-v" , action="store_true", help="Verbose - Display everything that happens", default=True)
-    parser.add_argument("--log", "-l" , action="store_true", help="Log to file", default=True)
-    
-    parser.add_argument("--all", "-a" , action="store_true", help="Get All Information", default=True)
-    
-    parser.add_argument("--browser-all", "-ba" , action="store_true", help="Get Browser Passwords, Cookies, Cards and History and Bookmarks", default=False)
-    parser.add_argument("--browser-passwords", "-bp" , action="store_true", help="Get Browser Passwords, Cookies, Cards and History DB File", default=False)
-    parser.add_argument("--browser-history", "-bh" , action="store_true", help="Get Browser History", default=False)
-    parser.add_argument("--browser-bookmakrs", "-bb" , action="store_true", help="Get Browser Bookmarks", default=False)
-    
-    parser.add_argument("--network-all", "-na" , action="store_true", help="Get All Network Information and Wifi Passwords", default=False)
-    parser.add_argument("--network-wifi", "-nw" , action="store_true", help="Get Wifi Passwords", default=False)
-    parser.add_argument("--network-info", "-ni" , action="store_true", help="Get All Network Information", default=False)
-    
-    parser.add_argument("--system-all", "-sa" , action="store_true", help="Get All Network Information and Wifi Passwords", default=False)
-    
-    args = parser.parse_args()
-    
-    Constant.Args.silent = args.silent
-    Constant.Args.verbose = args.verbose
-    Constant.Args.log = args.log
-    
-    Constant.Args.all = args.all 
-    Constant.Args.browser_all = args.browser_all 
-    Constant.Args.browser_passwords = args.browser_passwords 
-    Constant.Args.browser_history = args.browser_history 
-    Constant.Args.browser_bookmakrs = args.browser_bookmakrs 
-    Constant.Args.network_all = args.network_all 
-    Constant.Args.network_wifi = args.network_wifi 
-    Constant.Args.network_info = args.network_info 
-    Constant.Args.system_all = args.system_all
-    
-    if Constant.Args.browser_all:
-        Constant.Args.browser_passwords = True
-        Constant.Args.browser_history = True
-        Constant.Args.browser_bookmakrs = True
-    
-    if Constant.Args.network_all:
-        Constant.Args.network_wifi = True
-        Constant.Args.network_info = True
-    
-    if Constant.Args.all:
-        Constant.Args.browser_passwords = True
-        Constant.Args.browser_history = True
-        Constant.Args.browser_bookmakrs = True
-        Constant.Args.network_wifi = True
-        Constant.Args.network_info = True
-        Constant.Args.system_all = True
-    
-    if Constant.Args.silent:
-        Constant.Args.verbose = False
+
+    __help_message = r"""
+usage: recover.py [-h] [--silent] [--verbose] [--log] [--all] [--browser-all] [--browser-passwords] [--browser-history] [--browser-bookmakrs] [--network-all]
+                  [--network-wifi] [--network-info] [--system-all]
+
+Data Recovery | Built by @hirusha-adi
+
+options:
+  -h, --help            show this help message and exit
+  --silent, -s          Silent Mode - No Console Output
+  --verbose, -v         Verbose - Display everything that happens
+  --log, -l             Log to file
+  --all, -a             Get All Information
+  --browser-all, -ba    Get Browser Passwords, Cookies, Cards and History and Bookmarks
+  --browser-passwords, -bp
+                        Get Browser Passwords, Cookies, Cards and History DB File
+  --browser-history, -bh
+                        Get Browser History
+  --browser-bookmakrs, -bb
+                        Get Browser Bookmarks
+  --network-all, -na    Get All Network Information and Wifi Passwords
+  --network-wifi, -nw   Get Wifi Passwords
+  --network-info, -ni   Get All Network Information
+  --system-all, -sa     Get All Network Information and Wifi Passwords
+    """
+
+    argsv = sys.argv[:]
+
+    if ("--help" in argsv) or ("-h" in argsv):
+        print(__help_message)
+        exit()
+
+    # Silent mode
+    if ("--silent" in argsv) or ("-s" in argsv):
         Constant.Args.silent = False
+        Constant.Args.verbose = False
         Constant.Args.log = False
-    
-    return args
-    
+    elif ("--verbose" in argsv) or ("-v" in argsv) or ("--log" in argsv) or ("-l" in argsv):
+        # Verbose
+        if ("--verbose" in argsv) or ("-v" in argsv):
+            Constant.Args.verbose = True
+        # Log to File
+        if ("--log" in argsv) or ("-l" in argsv):
+            Constant.Args.log = False
+    else:
+        # Default if no args
+        Constant.Args.silent = False
+        Constant.Args.verbose = True
+        Constant.Args.log = True
+
+
 def cexit():
     print(f"""
 {Colors.GREEN}   __,_,
@@ -90,6 +95,7 @@ def cexit():
     input(f"{Colors.MAGENTA}Press [ENTER] to Exit{Colors.RESET}")
     exit()
 
+
 def main():
     """
     Order ->
@@ -105,27 +111,27 @@ def main():
                 (including detailed hardware information)
     """
     parser()
-    
+
     if Constant.Args.browser_passwords:
         ChromiumRecovery().run()
-    
+
     if Constant.Args.browser_history:
         WebHistoryRecovery().run()
-    
+
     if Constant.Args.browser_bookmakrs:
         WebBookmarksRecovery().run()
-    
+
     if Constant.Args.network_wifi:
         WifiPasswordRecovery().run()
-    
+
     if Constant.Args.network_info:
         NetworkInfoRecovery().run()
-    
+
     if Constant.Args.system_all:
         SystemInfoRecovery().run()
-    
+
     cexit()
+
 
 if __name__ == "__main__":
     main()
-    
