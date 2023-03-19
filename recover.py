@@ -10,7 +10,6 @@ from modules import SystemInfoRecovery  # system
 
 
 class args:
-    all = False
     browser_passwords = False
     browser_history = False
     browser_bookmakrs = False
@@ -115,6 +114,14 @@ options:
         args.system_all = True
     else:
         args.system_all = False
+
+    if ("--all" in argsv) or ("-a" in argsv):
+        args.browser_bookmakrs = True
+        args.browser_history = True
+        args.browser_passwords = True
+        args.network_info = True
+        args.network_wifi = True
+        args.system_all = True
 
     if not (args.browser_passwords or args.browser_history or args.browser_bookmakrs or args.network_info or args.network_wifi or args.system_all):
         print(__help_message)
