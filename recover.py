@@ -135,8 +135,9 @@ def cexit():
 {Colors.GREEN}     _)(  )(_          {Colors.CYAN} Discord ->
 {Colors.GREEN}    `---''---`         {Colors.CYAN}     {Colors.UNDERLINE}{Colors.MAGENTA}hirushaadi#8626{Colors.RESET}
     
+                  Data Recovery
 {Colors.GREY}---------------------------------------------------
-    {Colors.RED}THIS TOOL IS FOR EDUCATIONAL PURPOSES ONLY
+   {Colors.RED}THIS TOOL IS FOR DATA RECOVERY PURPOSES ONLY
 {Colors.GREY}---------------------------------------------------
           """)
         input(f"{Colors.MAGENTA}Press [ENTER] to Exit{Colors.RESET}")
