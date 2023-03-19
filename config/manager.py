@@ -21,7 +21,9 @@ class ModuleManager:
         if not Constant.made_once:
             if not os.path.exists(self.output_folder_user):
                 os.makedirs(self.output_folder_user)
-                print("="*20, "\nFolder Doesnt exist:", self.output_folder_user)
+                if not (Constant.Args.silent):
+                    print("="*20, "\nFolder Doesnt exist:",
+                          self.output_folder_user)
                 Constant.made_once = True
 
         self.log_filename = os.path.join(
