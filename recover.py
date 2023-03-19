@@ -62,11 +62,13 @@ options:
             Constant.Args.verbose = True
         # Log to File
         if ("--log" in argsv) or ("-l" in argsv):
-            Constant.Args.log = False
+            Constant.Args.log = True
     else:
         # Default if no args
         Constant.Args.silent = False
         Constant.Args.verbose = True
+        Constant.Args.log = True
+    if ("--log" in argsv) or ("-l" in argsv):
         Constant.Args.log = True
 
     # browser recovery
