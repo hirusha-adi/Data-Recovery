@@ -30,7 +30,9 @@ class Constant:
 
     username = getuser()
     temp_dir = tempfile.gettempdir()
-
+    local_dir = os.getenv('LOCALAPPDATA')
+    roaming_dir = os.getenv('APPDATA')
+    
     log_filename = f'{username}-{datetime}.log'
 
     # Final Base Stuff
@@ -41,7 +43,7 @@ class Constant:
 
     # File Content
     seperator = "\n\n" + "="*20 + "\n\n"
-
+    
     # Arguments
     # -----------------------------------
     class Args:
