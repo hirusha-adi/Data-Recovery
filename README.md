@@ -14,13 +14,7 @@ The data recovery process is secure, as the application does not store or share 
   - Can control everything through command line arguments
   - Faster and Smaller Executable size once compiled compared to the Python (Anti Debug) Version
 
-- ## Python (Anti Debug): [click here](https://github.com/hirusha-adi/Data-Recovery/tree/python-antidebug)
-
-  - Better User Experience
-  - Can control everything through command line arguments
-  - Slower and Larger Executable size once compiled compared to the normal Python Version
-
 - ## C++: [click here](https://github.com/hirusha-adi/Data-Recovery/tree/c++)
 
   - Very Small Executable
-  - Comparatively faster than both Python Versions
+  - Comparatively faster than the Python Version
