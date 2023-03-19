@@ -150,7 +150,7 @@ def cexit():
 {Colors.GREY}---------------------------------------------------
           """)
         input(f"{Colors.MAGENTA}Press [ENTER] to Exit{Colors.RESET}")
-    exit()
+    sys.exit()
 
 
 def main():
