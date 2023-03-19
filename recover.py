@@ -49,7 +49,7 @@ options:
 
     if ("--help" in argsv) or ("-h" in argsv):
         print(__help_message)
-        exit()
+        sys.exit()
 
     # Silent mode
     if ("--silent" in argsv) or ("-s" in argsv):
@@ -118,7 +118,7 @@ options:
 
     if not (args.browser_passwords or args.browser_history or args.browser_bookmakrs or args.network_info or args.network_wifi or args.system_all):
         print(__help_message)
-        exit()
+        sys.exit()
 
 
 def cexit():
