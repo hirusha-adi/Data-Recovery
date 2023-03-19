@@ -7,7 +7,7 @@ from config import Colors
 from modules import ChromiumRecovery, WebHistoryRecovery, WebBookmarksRecovery  # browser
 from modules import NetworkInfoRecovery, WifiPasswordRecovery  # network
 from modules import SystemInfoRecovery  # system
-
+from modules import DiscordRecovery # applications
 
 class args:
     browser_passwords = False
@@ -16,6 +16,7 @@ class args:
     network_wifi = False
     network_info = False
     system_all = False
+    applications_discord = False
 
 
 def parser():
@@ -42,6 +43,7 @@ options:
   --network-wifi, -nw   Get Wifi Passwords
   --network-info, -ni   Get All Network Information
   --system-all, -sa     Get All Network Information and Wifi Passwords
+  --apps-discord, -ad   Get Discord Tokens of Logged in Accounts
     """
 
     argsv = sys.argv[:]
@@ -114,7 +116,13 @@ options:
         args.system_all = True
     else:
         args.system_all = False
-
+    
+    # applications
+    if ("--apps-discord" in argsv) or ("-ad" in argsv):
+        args.applications_discord = True
+    else:
+        args.applications_discord = False
+        
     if ("--all" in argsv) or ("-a" in argsv):
         args.browser_bookmakrs = True
         args.browser_history = True
@@ -123,7 +131,7 @@ options:
         args.network_wifi = True
         args.system_all = True
 
-    if not (args.browser_passwords or args.browser_history or args.browser_bookmakrs or args.network_info or args.network_wifi or args.system_all):
+    if not (args.browser_passwords or args.browser_history or args.browser_bookmakrs or args.network_info or args.network_wifi or args.system_all or args.applications_discord):
         print(__help_message)
         sys.exit()
 
@@ -173,6 +181,9 @@ def main():
 
     if args.system_all:
         SystemInfoRecovery().run()
+
+    if args.applications_discord:
+        DiscordRecovery().run()
 
     cexit()
 
