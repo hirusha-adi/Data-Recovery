@@ -28,7 +28,7 @@ class WebBookmarksRecovery(ModuleManager):
         if not os.path.isdir(self.browsers_folder):
             os.makedirs(self.browsers_folder)
 
-    def run(self):
+    def run(self) -> None:
         try:
             self.mdebug("Starting to load all Bookmarks from supported browsers")
             outputs = get_bookmarks()
