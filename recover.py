@@ -1,6 +1,5 @@
 import sys
 
-
 from config import Constant
 from config import Colors
 
@@ -8,6 +7,7 @@ from modules import ChromiumRecovery, WebHistoryRecovery, WebBookmarksRecovery  
 from modules import NetworkInfoRecovery, WifiPasswordRecovery  # network
 from modules import SystemInfoRecovery  # system
 from modules import DiscordRecovery # applications
+
 
 class args:
     browser_passwords = False
@@ -19,7 +19,7 @@ class args:
     applications_discord = False
 
 
-def parser():
+def parser() -> None:
 
     __help_message = r"""
 usage: [-h] [--silent] [--verbose] [--log] [--all] [--browser-all] [--browser-passwords] [--browser-history] [--browser-bookmakrs] [--network-all] [--network-wifi] [--network-info] [--system-all]
@@ -116,13 +116,13 @@ options:
         args.system_all = True
     else:
         args.system_all = False
-    
+
     # applications
     if ("--apps-discord" in argsv) or ("-ad" in argsv):
         args.applications_discord = True
     else:
         args.applications_discord = False
-        
+
     if ("--all" in argsv) or ("-a" in argsv):
         args.browser_bookmakrs = True
         args.browser_history = True
@@ -161,7 +161,7 @@ def cexit():
     sys.exit()
 
 
-def main():
+def main() -> None:
     parser()
 
     if args.browser_passwords:

