@@ -1,0 +1,3 @@
+pywin32==305
+pycryptodome==3.17
+browser-history==0.3.2
