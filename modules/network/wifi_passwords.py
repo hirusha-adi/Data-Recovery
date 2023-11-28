@@ -8,7 +8,7 @@ class WifiPasswordRecovery(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name = "WifiPasswordStealer")
         
-        self.banner("""
+        self.banner(r"""
      _______         _  _  _ _       _______ _ 
     |.-----.|       (_)(_)(_|_)     (_______|_)
     ||x . x||        _  _  _ _ _____ _____   _ 

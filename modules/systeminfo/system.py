@@ -8,7 +8,7 @@ class SystemInfoRecovery(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name = "SystemInfoStealer")
         
-        self.banner("""
+        self.banner(r"""
          _______          ______                              
         |.-----.|        / _____)             _               
         ||x . x||       ( (____  _   _  ___ _| |_ _____ ____  

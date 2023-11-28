@@ -10,7 +10,7 @@ class WebHistoryRecovery(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name="WebHistoryStealer")
 
-        self.banner("""
+        self.banner(r"""
      _______         _     _ _                             
     |.-----.|       (_)   (_|_)       _                    
     ||x . x||        _______ _  ___ _| |_ ___   ____ _   _ 
@@ -31,7 +31,7 @@ class WebHistoryRecovery(ModuleManager):
         if not os.path.isdir(self.browsers_folder):
             os.makedirs(self.browsers_folder)
 
-    def run(self) -> None:
+    def run(self):
         try:
             self.mdebug("Starting to load History from supported browsers")
             outputs = get_history()
