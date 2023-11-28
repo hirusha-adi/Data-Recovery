@@ -144,11 +144,11 @@ def cexit():
 {Colors.GREEN}   //                  {Colors.CYAN} ------------------------
 {Colors.GREEN} _//    __             {Colors.CYAN} 
 {Colors.GREEN}(_|)   |@@|            {Colors.CYAN} Check out my other
-{Colors.GREEN} \ \__ \--/ __         {Colors.CYAN} projects at Github
-{Colors.GREEN}  \o__|----|  |   __   {Colors.CYAN} 
-{Colors.GREEN}      \ () /\ )_ / _\  {Colors.CYAN} Email ->
-{Colors.GREEN}      /\__/\ \__O (__  {Colors.CYAN}     {Colors.UNDERLINE}{Colors.MAGENTA}hirushaadi@gmail.com{Colors.RESET}
-{Colors.GREEN}     (--/\--)    \__/  {Colors.CYAN}
+{Colors.GREEN} \\ \\__ \\--/ __         {Colors.CYAN} projects at Github
+{Colors.GREEN}  \\o__|----|  |   __   {Colors.CYAN} 
+{Colors.GREEN}      \\ () /\\ )_ / _\\  {Colors.CYAN} Email ->
+{Colors.GREEN}      /\\__/\\ \\__O (__  {Colors.CYAN}     {Colors.UNDERLINE}{Colors.MAGENTA}hirushaadi@gmail.com{Colors.RESET}
+{Colors.GREEN}     (--/\\--)    \\__/  {Colors.CYAN}
 {Colors.GREEN}     _)(  )(_          {Colors.CYAN} Discord ->
 {Colors.GREEN}    `---''---`         {Colors.CYAN}     {Colors.UNDERLINE}{Colors.MAGENTA}hirushaadi#8626{Colors.RESET}
     
