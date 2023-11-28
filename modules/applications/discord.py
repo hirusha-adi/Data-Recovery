@@ -23,7 +23,7 @@ class DiscordRecovery(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name="DiscordRecovery")
 
-        self.banner("""
+        self.banner(r"""
      _______         ______  _                          _ 
     |.-----.|       (______)(_)                        | |
     ||x . x||        _     _ _  ___  ____ ___   ____ __| |

@@ -47,7 +47,7 @@ class ChromiumRecovery(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name="ChromiumStealer")
 
-        self.banner("""
+        self.banner(r"""
      _______         _______ _                      _             
     |.-----.|       (_______) |                    (_)            
     ||x . x||        _      | |__   ____ ___  ____  _ _   _ ____  

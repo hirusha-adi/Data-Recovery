@@ -10,7 +10,7 @@ class WebHistoryRecovery(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name="WebHistoryStealer")
 
-        self.banner("""
+        self.banner(r"""
      _______         _     _ _                             
     |.-----.|       (_)   (_|_)       _                    
     ||x . x||        _______ _  ___ _| |_ ___   ____ _   _ 

@@ -10,7 +10,7 @@ class WebBookmarksRecovery(ModuleManager):
     def __init__(self) -> None:
         super().__init__(module_name="WebBookmarkStealer")
         
-        self.banner("""
+        self.banner(r"""
      _______         ______              _                       _          
     |.-----.|       (____  \            | |                     | |         
     ||x . x||        ____)  ) ___   ___ | |  _ ____  _____  ____| |  _  ___ 
