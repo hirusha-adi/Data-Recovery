@@ -1,4 +1,5 @@
 import sys
+import argparse
 
 
 from config import Constant
@@ -7,134 +8,67 @@ from config import Colors
 from modules import ChromiumRecovery, WebHistoryRecovery, WebBookmarksRecovery  # browser
 from modules import NetworkInfoRecovery, WifiPasswordRecovery  # network
 from modules import SystemInfoRecovery  # system
-from modules import DiscordRecovery # applications
-
-class args:
-    browser_passwords = False
-    browser_history = False
-    browser_bookmakrs = False
-    network_wifi = False
-    network_info = False
-    system_all = False
-    applications_discord = False
-
+from modules import DiscordRecovery, ZipFiles # applications
 
 def parser():
+    parser = argparse.ArgumentParser(description="Data Recovery | Built by @hirusha-adi")
 
-    __help_message = r"""
-usage: [-h] [--silent] [--verbose] [--log] [--all] [--browser-all] [--browser-passwords] [--browser-history] [--browser-bookmakrs] [--network-all] [--network-wifi] [--network-info] [--system-all]
+    parser.add_argument("--all", "-a", action="store_true", help="Get All Information")
 
-Data Recovery | Built by @hirusha-adi
+    parser.add_argument("--silent", "-s", action="store_true", help="Silent Mode - No Console Output")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose - Display everything that happens")
+    parser.add_argument("--log", "-l", action="store_true", help="Log to file")
 
-options:
-  -h, --help            show this help message and exit
-  --silent, -s          Silent Mode - No Console Output
-  --verbose, -v         Verbose - Display everything that happens
-  --log, -l             Log to file
-  --all, -a             Get All Information
-  --browser-all, -ba    Get Browser Passwords, Cookies, Cards and History and Bookmarks
-  --browser-passwords, -bp
-                        Get Browser Passwords, Cookies, Cards and History DB File
-  --browser-history, -bh
-                        Get Browser History
-  --browser-bookmakrs, -bb
-                        Get Browser Bookmarks
-  --network-all, -na    Get All Network Information and Wifi Passwords
-  --network-wifi, -nw   Get Wifi Passwords
-  --network-info, -ni   Get All Network Information
-  --system-all, -sa     Get All Network Information and Wifi Passwords
-  --apps-discord, -ad   Get Discord Tokens of Logged in Accounts
-    """
+    browser_group = parser.add_argument_group("Browser Options")
+    browser_group.add_argument("--browser-all", "-ba", action="store_true", help="Get Browser Passwords, Cookies, Cards, History, and Bookmarks")
+    browser_group.add_argument("--browser-passwords", "-bp", action="store_true", help="Get Browser Passwords, Cookies, Cards, and History DB File")
+    browser_group.add_argument("--browser-history", "-bh", action="store_true", help="Get Browser History")
+    browser_group.add_argument("--browser-bookmarks", "-bb", action="store_true", help="Get Browser Bookmarks")
 
-    argsv = sys.argv[:]
+    network_group = parser.add_argument_group("Network Options")
+    network_group.add_argument("--network-all", "-na", action="store_true", help="Get All Network Information and Wifi Passwords")
+    network_group.add_argument("--network-wifi", "-nw", action="store_true", help="Get Wifi Passwords")
+    network_group.add_argument("--network-info", "-ni", action="store_true", help="Get All Network Information")
 
-    if any(arg in argsv for arg in ["--help", "-h"]):
-        print(__help_message)
-        sys.exit()
+    system_group = parser.add_argument_group("System Options")
+    system_group.add_argument("--system-all", "-sa", action="store_true", help="Get All System Information")
 
-    # Silent mode
-    if any(arg in argsv for arg in ["--silent", "-s"]):
-        Constant.Args.silent = True
-        Constant.Args.verbose = False
-        Constant.Args.log = False
-    elif any(arg in argsv for arg in ["--verbose", "-v", "--log", "-l"]):
-        # Verbose
-        if any(arg in argsv for arg in ["--verbose", "-v"]):
-            Constant.Args.verbose = True
-        # Log to File
-        if any(arg in argsv for arg in ["--log", "-l"]):
-            Constant.Args.log = True
-    else:
-        # Default if no args
-        Constant.Args.silent = False
-        Constant.Args.verbose = True
-        Constant.Args.log = True
-    if any(arg in argsv for arg in ["--log", "-l"]):
-        Constant.Args.log = True
+    application_group = parser.add_argument_group("Application Options")
+    application_group.add_argument("--apps-all", "-Aa", action="store_true", help="Get Discord Tokens of Logged in Accounts")
+    application_group.add_argument("--apps-discord", "-Ad", action="store_true", help="Get Discord Tokens of Logged in Accounts")
+    application_group.add_argument("--apps-zip", "-Az", action="store_true", help="Zip and Copy Important Accounts")
 
-    # browser recovery
-    if any(arg in argsv for arg in ["--browser-all", "-ba"]):
-        args.browser_passwords = True
-        args.browser_history = True
-        args.browser_bookmakrs = True
-    elif any(arg in argsv for arg in ["--browser-passwords", "-bp", "--browser-history", "-bh", "--browser-bookmakrs", "-bb"]):
-        if any(arg in argsv for arg in ["--browser-passwords", "-bp"]):
-            args.browser_passwords = True
-        else:
-            args.browser_passwords = False
-        if any(arg in argsv for arg in ["--browser-history", "-bh"]):
-            args.browser_history = True
-        else:
-            args.browser_bookmakrs = False
-        if any(arg in argsv for arg in ["--browser-bookmakrs", "-bb"]):
-            args.browser_bookmakrs = True
-        else:
-            args.browser_bookmakrs = False
-    else:
-        args.browser_passwords = False
-        args.browser_bookmakrs = False
-        args.browser_bookmakrs = False
+    args = parser.parse_args()
 
-    # network info
-    if any(arg in argsv for arg in ["--network-all", "-na"]):
-        args.network_wifi = True
-        args.network_info = True
-    elif any(arg in argsv for arg in ["--network-wifi", "-nw", "--network-info", "-ni"]):
-        if any(arg in argsv for arg in ["--network-wifi", "-nw"]):
-            args.network_wifi = True
-        else:
-            args.network_wifi = False
-        if any(arg in argsv for arg in ["--network-info", "-ni"]):
-            args.network_info = True
-        else:
-            args.network_info = False
-    else:
-        args.network_wifi = False
-        args.network_info = False
+    if args.silent and args.verbose:
+        parser.error("Only one of --silent or --verbose can be true")
 
-    if any(arg in argsv for arg in ["--system-all", "-sa"]):
-        args.system_all = True
-    else:
-        args.system_all = False
+    # set values for args class
+    args_values = vars(args)
+    for key, value in args_values.items():
+        setattr(args, key, value)
+
+    setTrue = lambda *args: [setattr(args, arg, True) for arg in args]
+
+    # conflicts
+    if args.all:
+        args.browser_all = args.network_all = args.system_all = args.apps_all = True
+
+    if args.browser_all:
+        args.browser_passwords = args.browser_history = args.browser_bookmarks = True
+
+    if args.network_all:
+        args.network_wifi = args.network_info = True
+
+    # if args_user.system_all:
+        # pass 
+
+    if args.apps_all:
+        args.apps_discord = args.apps_zip = True
+
+    print(args)
     
-    # applications
-    if any(arg in argsv for arg in ["--apps-discord", "-ad"]):
-        args.applications_discord = True
-    else:
-        args.applications_discord = False
-        
-    if any(arg in argsv for arg in ["--all", "-a"]):
-        args.browser_bookmakrs = True
-        args.browser_history = True
-        args.browser_passwords = True
-        args.network_info = True
-        args.network_wifi = True
-        args.system_all = True
-
-    if not (args.browser_passwords or args.browser_history or args.browser_bookmakrs or args.network_info or args.network_wifi or args.system_all or args.applications_discord):
-        print(__help_message)
-        sys.exit()
-
+    return args
 
 def cexit():
     if not (Constant.Args.silent):
@@ -162,7 +96,8 @@ def cexit():
 
 
 def main():
-    parser()
+    
+    args = parser()
 
     if args.browser_passwords:
         ChromiumRecovery().run()
@@ -170,7 +105,7 @@ def main():
     if args.browser_history:
         WebHistoryRecovery().run()
 
-    if args.browser_bookmakrs:
+    if args.browser_bookmarks:
         WebBookmarksRecovery().run()
 
     if args.network_wifi:
@@ -182,8 +117,11 @@ def main():
     if args.system_all:
         SystemInfoRecovery().run()
 
-    if args.applications_discord:
+    if args.apps_discord:
         DiscordRecovery().run()
+    
+    if args.apps_zip:
+        ZipFiles().run()
 
     cexit()
 
