@@ -46,15 +46,15 @@ class WebHistoryRecovery(ModuleManager):
                 outputs.save(f'{self.output_filename_csv}')
                 self.mprint(
                     f"Saved Browser History as CSV to: {self.output_filename_csv}")
-            except:
+            except Exception as e:
                 self.merror(
-                    f"Unable to save Browser History as CSV to: {self.output_filename_csv}")
+                    f"Unable to save Browser History as CSV to: {self.output_filename_csv}; Exception: {e}")
 
         if Constant.browser_history_json:
             try:
                 outputs.save(f'{self.output_filename_json}')
                 self.mprint(
-                    f"Saved Browser History as JSON to: {self.output_filename_csv}")
-            except:
+                    f"Saved Browser History as JSON to: {self.output_filename_json}")
+            except Exception as e:
                 self.merror(
-                    f"Unable to save Browser History as JSON to: {self.output_filename_csv}")
+                    f"Unable to save Browser History as JSON to: {self.output_filename_json}; Exception: {e}")
