@@ -1,1 +1,0 @@
-        pathC = path + arg
