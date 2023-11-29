@@ -32,7 +32,7 @@ class ZipFiles(ModuleManager):
             
     def zipApplication(self, pathToZip, outputFileName, excludeDirs, ) -> None:
         try:
-            with ZipFile(outputFileName, 'w') as zipf:
+            with ZipFile(os.path.join(self.zip_folder, outputFileName), 'w') as zipf:
                 for foldername, subfolders, filenames in os.walk(pathToZip):
                     subfolders[:] = [d for d in subfolders if d not in excludeDirs]
 
