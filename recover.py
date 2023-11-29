@@ -48,45 +48,45 @@ options:
 
     argsv = sys.argv[:]
 
-    if ("--help" in argsv) or ("-h" in argsv):
+    if any(arg in argsv for arg in ["--help", "-h"]):
         print(__help_message)
         sys.exit()
 
     # Silent mode
-    if ("--silent" in argsv) or ("-s" in argsv):
+    if any(arg in argsv for arg in ["--silent", "-s"]):
         Constant.Args.silent = True
         Constant.Args.verbose = False
         Constant.Args.log = False
-    elif ("--verbose" in argsv) or ("-v" in argsv) or ("--log" in argsv) or ("-l" in argsv):
+    elif any(arg in argsv for arg in ["--verbose", "-v", "--log", "-l"]):
         # Verbose
-        if ("--verbose" in argsv) or ("-v" in argsv):
+        if any(arg in argsv for arg in ["--verbose", "-v"]):
             Constant.Args.verbose = True
         # Log to File
-        if ("--log" in argsv) or ("-l" in argsv):
+        if any(arg in argsv for arg in ["--log", "-l"]):
             Constant.Args.log = True
     else:
         # Default if no args
         Constant.Args.silent = False
         Constant.Args.verbose = True
         Constant.Args.log = True
-    if ("--log" in argsv) or ("-l" in argsv):
+    if any(arg in argsv for arg in ["--log", "-l"]):
         Constant.Args.log = True
 
     # browser recovery
-    if ("--browser-all" in argsv) or ("-ba" in argsv):
+    if any(arg in argsv for arg in ["--browser-all", "-ba"]):
         args.browser_passwords = True
         args.browser_history = True
         args.browser_bookmakrs = True
-    elif ("--browser-passwords" in argsv) or ("-bp" in argsv) or ("--browser-history" in argsv) or ("-bh" in argsv) or ("--browser-bookmakrs" in argsv) or ("-bb" in argsv):
-        if ("--browser-passwords" in argsv) or ("-bp" in argsv):
+    elif any(arg in argsv for arg in ["--browser-passwords", "-bp", "--browser-history", "-bh", "--browser-bookmakrs", "-bb"]):
+        if any(arg in argsv for arg in ["--browser-passwords", "-bp"]):
             args.browser_passwords = True
         else:
             args.browser_passwords = False
-        if ("--browser-history" in argsv) or ("-bh" in argsv):
+        if any(arg in argsv for arg in ["--browser-history", "-bh"]):
             args.browser_history = True
         else:
             args.browser_bookmakrs = False
-        if ("--browser-bookmakrs" in argsv) or ("-bb" in argsv):
+        if any(arg in argsv for arg in ["--browser-bookmakrs", "-bb"]):
             args.browser_bookmakrs = True
         else:
             args.browser_bookmakrs = False
@@ -96,15 +96,15 @@ options:
         args.browser_bookmakrs = False
 
     # network info
-    if ("--network-all" in argsv) or ("-na" in argsv):
+    if any(arg in argsv for arg in ["--network-all", "-na"]):
         args.network_wifi = True
         args.network_info = True
-    elif ("--network-wifi" in argsv) or ("-nw" in argsv) or ("--network-info" in argsv) or ("-ni" in argsv):
-        if ("--network-wifi" in argsv) or ("-nw" in argsv):
+    elif any(arg in argsv for arg in ["--network-wifi", "-nw", "--network-info", "-ni"]):
+        if any(arg in argsv for arg in ["--network-wifi", "-nw"]):
             args.network_wifi = True
         else:
             args.network_wifi = False
-        if ("--network-info" in argsv) or ("-ni" in argsv):
+        if any(arg in argsv for arg in ["--network-info", "-ni"]):
             args.network_info = True
         else:
             args.network_info = False
@@ -112,18 +112,18 @@ options:
         args.network_wifi = False
         args.network_info = False
 
-    if ("--system-all" in argsv) or ("-sa" in argsv):
+    if any(arg in argsv for arg in ["--system-all", "-sa"]):
         args.system_all = True
     else:
         args.system_all = False
     
     # applications
-    if ("--apps-discord" in argsv) or ("-ad" in argsv):
+    if any(arg in argsv for arg in ["--apps-discord", "-ad"]):
         args.applications_discord = True
     else:
         args.applications_discord = False
         
-    if ("--all" in argsv) or ("-a" in argsv):
+    if any(arg in argsv for arg in ["--all", "-a"]):
         args.browser_bookmakrs = True
         args.browser_history = True
         args.browser_passwords = True
