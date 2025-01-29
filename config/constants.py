@@ -43,10 +43,10 @@ class Constant:
     # File Content
     separator: str = "\n\n" + "=" * 20 + "\n\n"
     
-class Args:
-    """
-    Store states of command-line arguments for script behavior.
-    """
-    silent: bool = False
-    verbose: bool = True
-    log: bool = True
+    class Args:
+        """
+        Store states of command-line arguments for script behavior.
+        """
+        silent: bool = False
+        verbose: bool = True
+        log: bool = True
