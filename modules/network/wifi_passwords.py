@@ -1,5 +1,6 @@
 import os
 import subprocess
+from pathlib import Path
 
 from config import ModuleManager
 
@@ -19,11 +20,10 @@ class WifiPasswordRecovery(ModuleManager):
   `-=========-`()            Passwords
                     """)
 
-        self.systeminfo_folder = os.path.join(self.output_folder_user, 'network')
-        self.wifi_passwords_filename = os.path.join(self.systeminfo_folder, 'wifi_passwords.txt')
+        self.systeminfo_folder: Path = self.output_folder_user / "network"
+        self.wifi_passwords_filename: Path = self.systeminfo_folder / "wifi_passwords.txt"
 
-        if not os.path.isdir(self.systeminfo_folder):
-            os.makedirs(self.systeminfo_folder)
+        self.systeminfo_folder.mkdir(parents=True, exist_ok=True)
     
     def run(self) -> None:
         with open(self.wifi_passwords_filename, 'w+') as file:
