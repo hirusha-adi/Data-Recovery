@@ -1,6 +1,6 @@
 import os
 
-from browser_history import  get_bookmarks
+from browser_history import get_bookmarks
 
 from config import Constant
 from config import ModuleManager
