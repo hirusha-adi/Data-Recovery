@@ -32,6 +32,7 @@ class Constant:
     temp_dir = tempfile.gettempdir()
     local_dir = os.getenv('LOCALAPPDATA')
     roaming_dir = os.getenv('APPDATA')
+    userprofile_dir = os.getenv('USERPROFILE')
     
     log_filename = f'{username}-{datetime}.log'
 
