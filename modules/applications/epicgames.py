@@ -9,14 +9,15 @@ class EpicGamesRecovery(ModuleManager):
         super().__init__(module_name = "EpicGamesRecovery")
         
         self.banner(r"""
-     _______          __   __   _                                   ____  _   
-    |.-----.|        (__)_(__) (_) _       ____        _           (____)(_)_ 
-    ||x . x||       (_) (_) (_) _ (_)__   (____)  ___ (_)__  ____ (_)__  (___)
-    ||_.-._||       (_) (_) (_)(_)(____) (_)_(_)_(___)(____)(____)(____) (_)  
-    `--)-(--`       (_)     (_)(_)(_) (_)(__)__(_)___ (_)  ( )_( )(_)    (_)_ 
-   __[=== o]___     (_)     (_)(_)(_) (_) (____)(____)(_)   (__)_)(_)     (__)
-  |:::::::::::|\    
-  `-=========-`()               Recover lost minecraft accounts
+     _______         ______         _             _____                                 
+    |.-----.|       (______)       (_)           (_____)                     ____  ____ 
+    ||x . x||       (_)__    ____   _    ___    (_)  ___   ____   __   __   (____)(____)
+    ||_.-._||       (____)  (____) (_) _(___)   (_) (___) (____) (__)_(__) (_)_(_)(_)__ 
+    `--)-(--`       (_)____ (_)_(_)(_)(_)___    (_)___(_)( )_( )(_) (_) (_)(__)__  _(__)
+   __[=== o]___     (______)(____) (_) (____)    (_____)  (__)_)(_) (_) (_) (____)(____)
+  |:::::::::::|\            (_)                                                         
+  `-=========-`()           (_)                                                                     
+                                   Recovery lost Epic Games accounts
                     """)
 
         self.epic_folder = os.path.join(self.output_folder_user, 'applications', 'epicgames')
@@ -25,7 +26,7 @@ class EpicGamesRecovery(ModuleManager):
             os.makedirs(self.epic_folder)
         
         self.epicPath = os.path.join(Constant.userprofile_dir, "EpicGamesLauncher", "Saved", "Config", "Windows")
-    
+
     def run(self) -> None:
         recovered = False
         if os.path.isdir(self.epicPath):
