@@ -41,9 +41,7 @@ def recover_all(ctx: click.Context) -> None:
     ctx.invoke(recover_browser, passwords=True, history=True, bookmarks=True)
     ctx.invoke(recover_network, wifi=True, info=True)
     ctx.invoke(recover_system)
-    ctx.invoke(recover_discord, discord=True)
-
-    Messages.cexit()
+    ctx.invoke(recover_apps, discord=True, minecraft=True, epicgames=True)
 
 @cli.command(name="browser", help="Recover browser data")
 @click.option("--passwords", "-p", is_flag=True, help="Recover browser passwords")
@@ -63,8 +61,6 @@ def recover_browser(ctx: click.Context, passwords: bool, history: bool, bookmark
     if bookmarks:
         WebBookmarksRecovery().run()
 
-    Messages.cexit()
-
 @cli.command(name="network", help="Recover network data")
 @click.option("--wifi", "-w", is_flag=True, help="Recover saved WiFi passwords")
 @click.option("--info", "-i", is_flag=True, help="Recover network information")
@@ -80,37 +76,30 @@ def recover_network(ctx: click.Context, wifi: bool, info: bool) -> None:
     if info:
         NetworkInfoRecovery().run()
    
-    Messages.cexit()
-
-
 @cli.command(name="system", help="Recover system information")
 @click.pass_context
 def recover_system(ctx: click.Context) -> None:
     """Recover system information"""
     SystemInfoRecovery().run()
-    
-    Messages.cexit()
-
 
 @cli.command(name="apps", help="Recover application data")
 @click.option("--discord", "-d", is_flag=True, help="Recover Discord tokens")
 @click.option("--minecraft", "-mc", is_flag=True, help="Recover Minecraft accounts")
 @click.option("--epicgames", "-eg", is_flag=True, help="Recover Minecraft accounts")
 @click.pass_context
-def recover_discord(ctx: click.Context, discord: bool, minecraft: bool, epicgames: bool) -> None:
+def recover_apps(ctx: click.Context, discord: bool, minecraft: bool, epicgames: bool) -> None:
     """Recover application-related data"""
-    if discord:
-        DiscordRecovery().run()
-    elif minecraft:
-        MinecraftRecovery().run()
-    elif epicgames:
-        EpicGamesRecovery().run()
-    else:
+    if not (discord or minecraft or epicgames):
         click.echo("No application recovery options specified. Use --help for more info.")
         sys.exit()
-    
-    Messages.cexit()
 
+    if discord:
+        DiscordRecovery().run()
+    if minecraft:
+        MinecraftRecovery().run()
+    if epicgames:
+        EpicGamesRecovery().run()
 
 if __name__ == "__main__":
     cli()
+    Messages.cexit()
