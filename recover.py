@@ -43,6 +43,7 @@ def recover_all(ctx: click.Context) -> None:
     ctx.invoke(recover_system)
     ctx.invoke(recover_discord, discord=True)
 
+    Messages.cexit()
 
 @cli.command(name="browser", help="Recover browser data")
 @click.option("--passwords", "-p", is_flag=True, help="Recover browser passwords")
@@ -62,6 +63,7 @@ def recover_browser(ctx: click.Context, passwords: bool, history: bool, bookmark
     if bookmarks:
         WebBookmarksRecovery().run()
 
+    Messages.cexit()
 
 @cli.command(name="network", help="Recover network data")
 @click.option("--wifi", "-nw", is_flag=True, help="Recover saved WiFi passwords")
@@ -77,6 +79,8 @@ def recover_network(ctx: click.Context, wifi: bool, info: bool) -> None:
         WifiPasswordRecovery().run()
     if info:
         NetworkInfoRecovery().run()
+   
+    Messages.cexit()
 
 
 @cli.command(name="system", help="Recover system information")
@@ -84,6 +88,8 @@ def recover_network(ctx: click.Context, wifi: bool, info: bool) -> None:
 def recover_system(ctx: click.Context) -> None:
     """Recover system information"""
     SystemInfoRecovery().run()
+    
+    Messages.cexit()
 
 
 @cli.command(name="apps", help="Recover application data")
@@ -96,8 +102,9 @@ def recover_discord(ctx: click.Context, discord: bool) -> None:
     else:
         click.echo("No application recovery options specified. Use --help for more info.")
         sys.exit()
+    
+    Messages.cexit()
 
 
 if __name__ == "__main__":
     cli()
-    Messages.cexit()
