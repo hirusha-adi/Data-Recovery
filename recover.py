@@ -9,7 +9,7 @@ from modules import (
     ChromiumRecovery, WebHistoryRecovery, WebBookmarksRecovery,  # Browser
     NetworkInfoRecovery, WifiPasswordRecovery,  # Network
     SystemInfoRecovery,  # System
-    DiscordRecovery  # Applications
+    DiscordRecovery, MinecraftRecovery  # Applications
 )
 
 
@@ -66,8 +66,8 @@ def recover_browser(ctx: click.Context, passwords: bool, history: bool, bookmark
     Messages.cexit()
 
 @cli.command(name="network", help="Recover network data")
-@click.option("--wifi", "-nw", is_flag=True, help="Recover saved WiFi passwords")
-@click.option("--info", "-ni", is_flag=True, help="Recover network information")
+@click.option("--wifi", "-w", is_flag=True, help="Recover saved WiFi passwords")
+@click.option("--info", "-i", is_flag=True, help="Recover network information")
 @click.pass_context
 def recover_network(ctx: click.Context, wifi: bool, info: bool) -> None:
     """Recover network-related data"""
@@ -93,12 +93,15 @@ def recover_system(ctx: click.Context) -> None:
 
 
 @cli.command(name="apps", help="Recover application data")
-@click.option("--discord", "-ad", is_flag=True, help="Recover Discord tokens")
+@click.option("--discord", "-d", is_flag=True, help="Recover Discord tokens")
+@click.option("--minecraft", "-mc", is_flag=True, help="Recover Minecraft accounts")
 @click.pass_context
-def recover_discord(ctx: click.Context, discord: bool) -> None:
+def recover_discord(ctx: click.Context, discord: bool, minecraft: bool) -> None:
     """Recover application-related data"""
     if discord:
         DiscordRecovery().run()
+    elif minecraft:
+        MinecraftRecovery().run()
     else:
         click.echo("No application recovery options specified. Use --help for more info.")
         sys.exit()
