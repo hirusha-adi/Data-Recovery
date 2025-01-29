@@ -53,6 +53,9 @@ class MinecraftRecovery(ModuleManager):
                 except Exception as e:
                     self.merror(f"[{name}] Unable to copy {path} to {self.output_folder} -> {e}")
             else:
-                self.merror(f"[{name}] Unable to find Minecraft installation at: {path}")
+                self.mdebug(f"[{name}] Unable to find Minecraft installation at: {path}")
         
-        self.mprint(f"Found a total of {totalDone} Minecraft Installations")
+        if totalDone == 0:
+            self.merror("Unable to find any Minecraft Installations")
+        else:
+            self.mprint(f"Found a total of {totalDone} Minecraft Installations")

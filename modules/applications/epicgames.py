@@ -48,9 +48,9 @@ class EpicGamesRecovery(ModuleManager):
                         except Exception:
                             pass
             else:
-                self.merror(f"Unable to find {loginFile}")
+                self.mdebug(f"Unable to find {loginFile}")
         else:
-            self.merror(f"Unable to find EpicGames Launcher installation at: {self.epicPath}")
+            self.mdebug(f"Unable to find EpicGames Launcher installation at: {self.epicPath}")
         if recovered:
             self.mprint(f"Recovered Epic Games")
         else:
