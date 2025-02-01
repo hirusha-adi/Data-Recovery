@@ -20,12 +20,10 @@ class EpicGamesRecovery(ModuleManager):
                                    Recovery lost Epic Games accounts
                     """)
 
-        self.epic_folder = os.path.join(self.output_folder_user, 'applications', 'epicgames')
+        self.epic_folder = self.output_folder_user / 'applications' / 'epicgames'
+        self.epicPath = Constant.userprofile_dir / "EpicGamesLauncher" / "Saved" / "Config" / "Windows"
 
-        if not os.path.isdir(self.epic_folder):
-            os.makedirs(self.epic_folder)
-        
-        self.epicPath = os.path.join(Constant.userprofile_dir, "EpicGamesLauncher", "Saved", "Config", "Windows")
+        self.epic_folder.mkdir(parents=True, exist_ok=True)
 
     def run(self) -> None:
         recovered = False

@@ -19,11 +19,10 @@ class MinecraftRecovery(ModuleManager):
   `-=========-`()               Recover lost minecraft accounts
                     """)
 
-        self.minecraft_folder = os.path.join(self.output_folder_user, 'applications', 'minecraft')
+        self.minecraft_folder = self.output_folder_user / 'applications' / 'minecraft'
 
-        if not os.path.isdir(self.minecraft_folder):
-            os.makedirs(self.minecraft_folder)
-        
+        self.minecraft_folder.mkdir(parents=True, exist_ok=True)
+
         self.minecraftInstallations = {
             "Intent": os.path.join(Constant.userprofile_dir, "intentlauncher", "launcherconfig"),
             "Lunar": os.path.join(Constant.userprofile_dir, ".lunarclient", "settings", "game", "accounts.json"),

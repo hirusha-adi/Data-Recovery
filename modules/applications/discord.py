@@ -34,11 +34,10 @@ class DiscordRecovery(ModuleManager):
   `-=========-`()       Recover Lost Discord Accounts
                 """)
 
-        self.discord_folder = os.path.join(self.output_folder_user, 'applications', 'discord')
+        self.discord_folder = self.output_folder_user / 'applications' / 'discord'
 
-        if not os.path.isdir(self.discord_folder):
-            os.makedirs(self.discord_folder)
-        
+        self.discord_folder.mkdir(parents=True, exist_ok=True)
+
         self.discordInstallations = [
                 [f"{Constant.roaming_dir}/Discord","Discord"],
                 [f"{Constant.roaming_dir}/Lightcord","Lightcord"],

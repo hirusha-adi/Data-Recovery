@@ -26,8 +26,7 @@ class NetworkInfoRecovery(ModuleManager):
         self.physical_adapters_filename: Path = self.systeminfo_folder / 'physical_adapters.txt'
         self.getnet_ipconfig_filename: Path = self.systeminfo_folder / 'getnet_ipinfo.txt'
 
-        if not os.path.isdir(self.systeminfo_folder):
-            os.makedirs(self.systeminfo_folder)
+        self.systeminfo_folder.mkdir(parents=True, exist_ok=True)
 
     def ipconfig(self) -> None:
         self.mdebug("[ipconfig] Running command: `ipconfig /all`")
