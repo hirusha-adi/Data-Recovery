@@ -1,5 +1,6 @@
 import os
 import subprocess
+from pathlib import Path
 
 from config import ModuleManager
 
@@ -19,43 +20,39 @@ class NetworkInfoRecovery(ModuleManager):
   `-=========-`()                   Information
                     """)
 
-        self.systeminfo_folder = os.path.join(self.output_folder_user, 'network')
-        self.ipconfig_filename = os.path.join(self.systeminfo_folder, 'ipconfig.txt')
-        self.ipconfiguration_filename = os.path.join(self.systeminfo_folder, 'ipconfiguration.txt')
-        self.physical_adapters_filename = os.path.join(self.systeminfo_folder, 'physical_adapters.txt')
-        self.getnet_ipconfig_filename = os.path.join(self.systeminfo_folder, 'getnet_ipinfo.txt')
+        self.systeminfo_folder: Path = self.output_folder_user / 'network'
+        self.ipconfig_filename: Path = self.systeminfo_folder / 'ipconfig.txt'
+        self.ipconfiguration_filename: Path = self.systeminfo_folder / 'ipconfiguration.txt'
+        self.physical_adapters_filename: Path = self.systeminfo_folder / 'physical_adapters.txt'
+        self.getnet_ipconfig_filename: Path = self.systeminfo_folder / 'getnet_ipinfo.txt'
 
         if not os.path.isdir(self.systeminfo_folder):
             os.makedirs(self.systeminfo_folder)
-            
+
     def ipconfig(self) -> None:
         self.mdebug("[ipconfig] Running command: `ipconfig /all`")
         data = subprocess.check_output(['ipconfig', '/all']).decode('utf-8', errors="backslashreplace")
-        with open(self.ipconfig_filename, 'w', encoding='utf-8') as _file:
-            _file.write(data)
-            self.mprint(f"[ipinfo] Saved result to {self.ipconfig_filename}")
+        self.ipconfig_filename.write_text(data, encoding="utf-8")
+        self.mprint(f"[ipinfo] Saved result to {self.ipconfig_filename}")
     
     def ipconfiguration(self) -> None:
         self.mdebug("[ipconfig] Running command: `powershell get-wmiobject Win32_NetworkAdapterConfiguration`")
         data = subprocess.check_output(['powershell', 'get-wmiobject Win32_NetworkAdapterConfiguration']).decode('utf-8', errors="backslashreplace")
-        with open(self.ipconfiguration_filename, 'w', encoding='utf-8') as _file:
-            _file.write(data)
-            self.mprint(f"[ipconfiguration] Saved result to {self.ipconfiguration_filename}")
-        
+        self.ipconfiguration_filename.write_text(data, encoding="utf-8")
+        self.mprint(f"[ipconfiguration] Saved result to {self.ipconfiguration_filename}")
+
     def physical_adapters(self) -> None:
         self.mdebug("[ipconfig] Running command: `powershell Get-NetAdapter -physical| where status -eq 'up'`")
         data = subprocess.check_output(['powershell', "Get-NetAdapter -physical| where status -eq 'up'"]).decode('utf-8', errors="backslashreplace")
-        with open(self.physical_adapters_filename, 'w', encoding='utf-8') as _file:
-            _file.write(data)
-            self.mprint(f"[physical_adapters] Saved result to {self.physical_adapters_filename}")
-    
+        self.physical_adapters_filename.write_text(data, encoding="utf-8")
+        self.mprint(f"[physical_adapters] Saved result to {self.physical_adapters_filename}")
+
     def getnet_ipconfig(self) -> None:
         self.mdebug("[ipconfig] Running command: `powershell Get-NetIPConfiguration -All`")
         data = subprocess.check_output(['powershell', "Get-NetIPConfiguration -All"]).decode('utf-8', errors="backslashreplace")
-        with open(self.getnet_ipconfig_filename, 'w', encoding='utf-8') as _file:
-            _file.write(data)
-            self.mprint(f"[getnet_ipconfig] Saved result to {self.getnet_ipconfig_filename}")
-    
+        self.getnet_ipconfig_filename.write_text(data, encoding="utf-8")
+        self.mprint(f"[getnet_ipconfig] Saved result to {self.getnet_ipconfig_filename}")
+
     def run(self) -> None:
         __funcs__ = (
             'ipconfig', 'ipconfiguration', 
