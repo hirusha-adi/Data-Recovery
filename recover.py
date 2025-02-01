@@ -9,7 +9,7 @@ from modules import (
     ChromiumRecovery, WebHistoryRecovery, WebBookmarksRecovery,  # Browser
     NetworkInfoRecovery, WifiPasswordRecovery,  # Network
     SystemInfoRecovery,  # System
-    DiscordRecovery, MinecraftRecovery, EpicGamesRecovery  # Applications
+    DiscordRecovery, MinecraftRecovery, EpicGamesRecovery, UplayRecovery  # Applications
 )
 
 
@@ -41,7 +41,7 @@ def recover_all(ctx: click.Context) -> None:
     ctx.invoke(recover_browser, passwords=True, history=True, bookmarks=True)
     ctx.invoke(recover_network, wifi=True, info=True)
     ctx.invoke(recover_system)
-    ctx.invoke(recover_apps, discord=True, minecraft=True, epicgames=True)
+    ctx.invoke(recover_apps, discord=True, minecraft=True, epicgames=True, uplay=True)
 
 @cli.command(name="browser", help="Recover browser data")
 @click.option("--passwords", "-p", is_flag=True, help="Recover browser passwords")
@@ -86,10 +86,11 @@ def recover_system(ctx: click.Context) -> None:
 @click.option("--discord", "-d", is_flag=True, help="Recover Discord tokens")
 @click.option("--minecraft", "-mc", is_flag=True, help="Recover Minecraft accounts")
 @click.option("--epicgames", "-eg", is_flag=True, help="Recover Minecraft accounts")
+@click.option("--uplay", "-up", is_flag=True, help="Recover Uplay accounts")
 @click.pass_context
-def recover_apps(ctx: click.Context, discord: bool, minecraft: bool, epicgames: bool) -> None:
+def recover_apps(ctx: click.Context, discord: bool, minecraft: bool, epicgames: bool, uplay: bool) -> None:
     """Recover application-related data"""
-    if not (discord or minecraft or epicgames):
+    if not (discord or minecraft or epicgames or uplay):
         click.echo("No application recovery options specified. Use --help for more info.")
         sys.exit()
 
@@ -99,6 +100,8 @@ def recover_apps(ctx: click.Context, discord: bool, minecraft: bool, epicgames: 
         MinecraftRecovery().run()
     if epicgames:
         EpicGamesRecovery().run()
+    if uplay:
+        UplayRecovery().run()
 
 if __name__ == "__main__":
     cli()
