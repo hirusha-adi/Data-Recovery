@@ -13,7 +13,7 @@ class ModuleManager:
     directory management, and standardized output functionalities.
     """
 
-    def __init__(self, module_name: str) -> None:
+    def __init__(self, module_name: str, module_path: t.Union[str, Path]) -> None:
 
         # ########## Module Related ##########
         self.module_name: str = module_name
@@ -21,6 +21,7 @@ class ModuleManager:
         # ########## File/Directory Names ##########
         self.output_folder: Path = Path(Constant.final_output_folder)
         self.output_folder_user: Path = Path(Constant.final_output_folder_user)
+        self.module_output: Path = self.output_folder_user / module_path
 
         self.log_filename: Path = self.output_folder_user / Constant.log_filename
 
@@ -32,11 +33,17 @@ class ModuleManager:
 
     def _initialize_directories(self) -> None:
         """Ensure required directories exist before proceeding."""
+        # main output folder of user
+        # make it only once - first run
         if not Constant.made_once:
             self.output_folder_user.mkdir(parents=True, exist_ok=True)
             if not Constant.Args.silent:
                 print("=" * 20, "\nCreating folder:", self.output_folder_user)
             Constant.made_once = True
+        
+        # module output folder
+        self.module_output.mkdir(parents=True, exist_ok=True)
+        print("=" * 20, "\nCreating folder:", self.module_output)
     
     def _initialize_log_file(self) -> None:
         """Create log file if logging is enabled and file does not exist."""

