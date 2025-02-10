@@ -8,8 +8,8 @@ on:
 
 jobs:
   build:
-    if: github.event.pull_request.merged == true  # Ensures it's a merge
-    runs-on: windows-latest
+    # if: github.event.pull_request.merged == true  # Ensures it's a merge
+    runs-on: windows-2019
 
     steps:
       - name: Checkout Repository
