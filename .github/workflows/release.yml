@@ -1,57 +1,53 @@
-name: Build & Release Executable
+name: Windows Build & Release
 
 on:
   push:
     branches:
-      - main  # Runs only on push to main
-  workflow_dispatch:  # Allow manual trigger
+      - main
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: '3.12'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build Executables
+      - name: Build executables with PyInstaller
         run: |
           pyinstaller recover.py --noconfirm --onefile --name "Data Recovery - Console" --console
           pyinstaller recover.py --noconfirm --onefile --name "Data Recovery - Hidden" --windowed
 
-      - name: Rename Executables
+      - name: Rename files
         run: |
-          mv dist/"Data Recovery - Console.exe" dist/data_recovery_console.exe
-          mv dist/"Data Recovery - Hidden.exe" dist/data_recovery_hidden.exe
-
-      - name: Get Last Commit Hash
-        id: get_commit
-        run: echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          Rename-Item -Path dist/"Data Recovery - Console.exe" -NewName data_recovery_console.exe
+          Rename-Item -Path dist/"Data Recovery - Hidden.exe" -NewName data_recovery_hidden.exe
 
       - name: Create Tag
+        id: create_tag
         run: |
-          git tag ${{ env.COMMIT_HASH }}
-          git push origin ${{ env.COMMIT_HASH }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          $TAG="v1.0.$env:GITHUB_RUN_NUMBER"
+          echo "TAG_NAME=$TAG" >> $env:GITHUB_ENV
+          git tag $TAG
+          git push origin $TAG
+        shell: pwsh
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ env.COMMIT_HASH }}
-          name: Release ${{ env.COMMIT_HASH }}  # Corrected 'release_name' to 'name'
+          tag_name: ${{ env.TAG_NAME }}
+          name: "Release ${{ env.TAG_NAME }}"
           draft: false
           prerelease: false
           files: |
