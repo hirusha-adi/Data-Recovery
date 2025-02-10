@@ -1,3 +1,4 @@
 pywin32==306
 pycryptodome==3.17
 browser-history==0.3.2
+click==8.1.8
