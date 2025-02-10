@@ -121,3 +121,5 @@ options:
 
   - Very Small Executable
   - Comparatively faster than both Python Versions
+
+Font name: Pawp. https://manytools.org/hacker-tools/ascii-banner/

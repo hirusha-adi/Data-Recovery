@@ -1,6 +1,6 @@
 import os
 
-from browser_history import  get_bookmarks
+from browser_history import get_bookmarks
 
 from config import Constant
 from config import ModuleManager
@@ -8,7 +8,7 @@ from config import ModuleManager
 
 class WebBookmarksRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name="WebBookmarkStealer")
+        super().__init__(module_name="WebBookmarkStealer", module_path="browsers/bookmarks")
         
         self.banner(r"""
      _______         ______              _                       _          
@@ -21,12 +21,8 @@ class WebBookmarksRecovery(ModuleManager):
   `-=========-`()       Stealing bookmarks from all supported browsers
                 """)
         
-        self.browsers_folder = os.path.join(self.output_folder_user, 'browsers')
-        self.output_filename_csv = os.path.join(self.browsers_folder, 'browser_bookmarks_all.csv')
-        self.output_filename_json = os.path.join(self.browsers_folder, 'browser_bookmarks_all.json')
-        
-        if not os.path.isdir(self.browsers_folder):
-            os.makedirs(self.browsers_folder)
+        self.output_filename_csv = self.module_output / 'browser_bookmarks_all.csv'
+        self.output_filename_json = self.module_output / 'browser_bookmarks_all.json'
 
     def run(self):
         try:

