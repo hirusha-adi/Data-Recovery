@@ -1,0 +1,54 @@
+name: Build & Release Executable
+
+on:
+  push:
+    branches:
+      - main  # Runs on each push to main
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build:
+    if: github.event.pull_request.merged == true  # Ensures it's a merge
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build Executables
+        run: |
+          pyinstaller recover.py --noconfirm --onefile --name "Data Recovery - Console" --console
+          pyinstaller recover.py --noconfirm --onefile --name "Data Recovery - Hidden" --windowed
+
+      - name: Rename Executables
+        run: |
+          mv dist/"Data Recovery - Console.exe" dist/data_recovery_console.exe
+          mv dist/"Data Recovery - Hidden.exe" dist/data_recovery_hidden.exe
+
+      - name: Get Last Commit Hash
+        id: get_commit
+        run: |
+          echo "commit_hash=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ env.commit_hash }}
+          release_name: ${{ env.commit_hash }}
+          draft: false
+          prerelease: false
+          files: |
+            dist/data_recovery_console.exe
+            dist/data_recovery_hidden.exe
