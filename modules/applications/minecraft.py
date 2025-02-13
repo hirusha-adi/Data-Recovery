@@ -6,7 +6,7 @@ from config import ModuleManager, Constant
 
 class MinecraftRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name = "MinecraftRecovery", module_path="applications/minecraft")
+        super().__init__(module_path="applications/minecraft")
         
         self.banner(r"""
      _______          __   __   _                                   ____  _   

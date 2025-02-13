@@ -8,7 +8,7 @@ from config import Utils
 
 class NetworkInfoRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name = "NetworkInfoStealer", module_path="network/general")
+        super().__init__(module_path="network/general")
         
         self.banner(r"""
      _______         _______                               _       

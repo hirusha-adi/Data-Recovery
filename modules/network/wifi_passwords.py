@@ -7,7 +7,7 @@ from config import ModuleManager
 
 class WifiPasswordRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name="WifiPasswordStealer", module_path="network/wifi")
+        super().__init__(module_path="network/wifi")
         self.banner(r"""
      _______         _  _  _ _       _______ _ 
     |.-----.|       (_)(_)(_|_)     (_______|_)

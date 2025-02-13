@@ -13,10 +13,10 @@ class ModuleManager:
     directory management, and standardized output functionalities.
     """
 
-    def __init__(self, module_name: str, module_path: t.Union[str, Path]) -> None:
+    def __init__(self, module_path: t.Union[str, Path], module_name: t.Optional[str] = None) -> None:
 
         # ########## Module Related ##########
-        self.module_name: str = module_name
+        self.module_name: str = module_name or self.__class__.__name__
 
         # ########## File/Directory Names ##########
         self.output_folder: Path = Path(Constant.final_output_folder)

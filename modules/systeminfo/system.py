@@ -10,7 +10,7 @@ class SystemInfoRecovery(ModuleManager):
     Module for gathering system information and saving it to files.
     """
     def __init__(self) -> None:
-        super().__init__(module_name = "SystemInfoStealer", module_path="systeminfo/general")
+        super().__init__(module_path="systeminfo/general")
         
         self.banner(r"""
          _______          ______                              

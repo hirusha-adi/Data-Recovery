@@ -21,7 +21,7 @@ class DATA_BLOB(Structure):
 
 class DiscordRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name="DiscordRecovery", module_path="applications/discord")
+        super().__init__(module_path="applications/discord")
 
         self.banner(r"""
      _______         ______  _                          _ 

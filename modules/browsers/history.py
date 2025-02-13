@@ -8,7 +8,7 @@ from config import ModuleManager
 
 class WebHistoryRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name="WebHistoryStealer", module_path="browsers/history")
+        super().__init__(module_path="browsers/history")
 
         self.banner(r"""
      _______         _     _ _                             

