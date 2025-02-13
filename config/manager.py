@@ -26,10 +26,10 @@ class ModuleManager:
         self.log_filename: Path = self.output_folder_user / Constant.log_filename
 
         # ########## Initialize Stuff ##########
+        self._initialize_logger()
+
         self._initialize_directories()
         self._initialize_log_file()
-
-        self._initialize_logger()
 
     # ########## Initialize Stuff ##########
 
@@ -50,12 +50,12 @@ class ModuleManager:
         if not Constant.made_once:
             self.output_folder_user.mkdir(parents=True, exist_ok=True)
             if not Constant.Args.silent:
-                print("=" * 20, "\nCreating folder:", self.output_folder_user)
+                self.mprint("Creating folder:", self.output_folder_user)
             Constant.made_once = True
         
         # module output folder
         self.module_output.mkdir(parents=True, exist_ok=True)
-        print("=" * 20, "\nCreating folder:", self.module_output)
+        self.mprint("Creating folder:", self.module_output)
     
     def _initialize_log_file(self) -> None:
         """Create log file if logging is enabled and file does not exist."""
