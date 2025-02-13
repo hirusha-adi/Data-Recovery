@@ -2,7 +2,6 @@ import subprocess
 from pathlib import Path
 
 from config.manager import ModuleManager
-from config.utils import Utils
 
 
 class SystemInfoRecovery(ModuleManager):
@@ -30,19 +29,19 @@ class SystemInfoRecovery(ModuleManager):
         self.sounds_filename: Path = self.module_output / "sounds.txt"
 
     def systeminfo(self) -> None:
-        Utils.exec_n_save(["systeminfo"], self.systeminfo_filename, sub_module_name="systeminfo")
+        self.exec_n_save(["systeminfo"], self.systeminfo_filename, sub_module_name="systeminfo")
     
     def computerinfo(self) -> None:
-        Utils.exec_n_save(["powershell", "Get-ComputerInfo"], self.computerinfo_filename, sub_module_name="computerinfo")
+        self.exec_n_save(["powershell", "Get-ComputerInfo"], self.computerinfo_filename, sub_module_name="computerinfo")
     
     def motherboard(self) -> None:
-        Utils.exec_n_save(["powershell", "Get-WmiObject win32_baseboard"], self.motherboard_filename, sub_module_name="motherboard")
+        self.exec_n_save(["powershell", "Get-WmiObject win32_baseboard"], self.motherboard_filename, sub_module_name="motherboard")
     
     def cpu(self) -> None:
-        Utils.exec_n_save(["powershell", "Get-WmiObject -Class Win32_Processor -ComputerName. | Select-Object -Property [a-z]*"], self.cpu_filename, sub_module_name="cpu")
+        self.exec_n_save(["powershell", "Get-WmiObject -Class Win32_Processor -ComputerName. | Select-Object -Property [a-z]*"], self.cpu_filename, sub_module_name="cpu")
     
     def sound(self) -> None:
-        Utils.exec_n_save(["powershell", "Get-CimInstance win32_sounddevice | fl *"], self.sounds_filename, sub_module_name="sound")
+        self.exec_n_save(["powershell", "Get-CimInstance win32_sounddevice | fl *"], self.sounds_filename, sub_module_name="sound")
 
     def run(self) -> None:
         __funcs__ = (

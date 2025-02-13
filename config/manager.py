@@ -1,11 +1,11 @@
-import os
+import os, sys, subprocess
 import typing as t
 from datetime import datetime
 from pathlib import Path
+from loguru import logger
 
 from config.constants import Constant
 from config.colors import Colors
-
 
 class ModuleManager:
     """
@@ -29,7 +29,19 @@ class ModuleManager:
         self._initialize_directories()
         self._initialize_log_file()
 
+        self._initialize_logger()
+
     # ########## Initialize Stuff ##########
+
+    def _initialize_logger(self) -> None:
+        """Configure loguru to write logs to a new file every time the program runs."""
+        log_file = self.log_filename
+        
+        if Constant.Args.log and not Constant.Args.silent:
+            logger.remove()  # Remove any previous logger configurations
+            
+            logger.add(log_file, rotation="1 week", encoding="utf-8", level="DEBUG")
+            logger.add(sys.stdout, level="DEBUG")
 
     def _initialize_directories(self) -> None:
         """Ensure required directories exist before proceeding."""
@@ -50,40 +62,23 @@ class ModuleManager:
         if Constant.LOG_TO_FILE and not self.log_filename.exists():
             self.log_filename.write_text(f'[{datetime.now()}] [ModuleManager] -> Log File Created\n', encoding='utf-8')
 
-    # ########## Print Functions - Colored ##########
+    # ########## Logging ##########
 
     def banner(self, *args, **kwargs) -> None:
         if not (Constant.Args.silent):
             print(*args, **kwargs)
 
     def mprint(self, *args: t.Any) -> None:
-        """Module-specific print function with optional logging."""
-        if not Constant.Args.silent:
-            print(f"[{self.module_name}]", *args)
-        if Constant.Args.log:
-            self.log(*args)
+        if Constant.Args.log and not Constant.Args.silent:
+            logger.info(f"[{self.module_name}] " + " ".join(map(str, args)))
     
     def merror(self, *args: t.Any) -> None:
-        """Print error messages in red with logging support."""
-        if not Constant.Args.silent:
-            print(f"{Colors.RED}[{self.module_name}] [ERROR]", *args, f"{Colors.RESET}")
-        if Constant.Args.log:
-            self.log("[ERROR]", *args)
+        if Constant.Args.log and not Constant.Args.silent:
+            logger.error(f"[{self.module_name}] [ERROR] " + " ".join(map(str, args)))
     
     def mdebug(self, *args: t.Any) -> None:
-        """Print debug messages in grey if verbose mode is enabled."""
         if Constant.Args.verbose and not Constant.Args.silent:
-            print(f"{Colors.GREY}[{self.module_name}] [DEBUG]", *args, f"{Colors.RESET}")
-        if Constant.Args.log:
-            self.log("[DEBUG]", *args)
-
-    # ########## Log To File Stuff ##########
-
-    def log(self, *args: t.Any) -> None:
-        """Append log messages to the log file if logging is enabled."""
-        if Constant.LOG_TO_FILE:
-            with self.log_filename.open('a', encoding='utf-8') as file:
-                file.write(f"[{datetime.now()}] [{self.module_name}] -> {' '.join(map(str, args))}\n")
+            logger.debug(f"[{self.module_name}] [DEBUG] " + " ".join(map(str, args)))
 
     # ########## Save Data to File ##########
 
@@ -92,3 +87,24 @@ class ModuleManager:
         file_path = Path(filename)
         file_path.parent.mkdir(parents=True, exist_ok=True)
         file_path.write_text(data, encoding='utf-8')
+
+    # ########## Run and Save Output ##########
+
+    def exec_n_save(self, command: list[str], output_file: Path, sub_module_name: t.Optional[str] = None) -> None:
+        
+        logger_beginning = f"[{self.module_name}] "
+        if sub_module_name:
+            logger_beginning += f"({sub_module_name}) "
+        
+        self.mprint(f"{logger_beginning} Running command: {' '.join(command)}")
+        try:
+            result = subprocess.run(command, capture_output=True, text=True, errors="backslashreplace", check=True)
+            cleaned_output = result.stdout.replace("\r\n", "\n").strip()
+            output_file.write_text(cleaned_output, encoding="utf-8")
+            self.mprint(f"{logger_beginning} Output saved to {output_file}")
+
+        except subprocess.CalledProcessError as e:
+            self.merror(f"{logger_beginning} Command failed: {e}")
+
+        except Exception as e:
+            self.merror(f"{logger_beginning} Unexpected error: {e}", exc_info=True)

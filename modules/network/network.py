@@ -3,7 +3,6 @@ import subprocess
 from pathlib import Path
 
 from config import ModuleManager
-from config import Utils
 
 
 class NetworkInfoRecovery(ModuleManager):
@@ -27,16 +26,16 @@ class NetworkInfoRecovery(ModuleManager):
         self.getnet_ipconfig_filename: Path = self.module_output / 'getnet_ipinfo.txt'
 
     def ipconfig(self) -> None:
-        Utils.exec_n_save(["ipconfig", "/all"], self.ipconfig_filename, sub_module_name="ipinfo")
+        self.exec_n_save(["ipconfig", "/all"], self.ipconfig_filename, sub_module_name="ipinfo")
     
     def ipconfiguration(self) -> None:
-        Utils.exec_n_save(["powershell", "get-wmiobject Win32_NetworkAdapterConfiguration"], self.ipconfiguration_filename, sub_module_name="ipconfiguration")
+        self.exec_n_save(["powershell", "get-wmiobject Win32_NetworkAdapterConfiguration"], self.ipconfiguration_filename, sub_module_name="ipconfiguration")
 
     def physical_adapters(self) -> None:
-        Utils.exec_n_save(["powershell", "Get-NetAdapter -physical| where status -eq 'up'"], self.physical_adapters_filename, sub_module_name="physical_adapters")
+        self.exec_n_save(["powershell", "Get-NetAdapter -physical| where status -eq 'up'"], self.physical_adapters_filename, sub_module_name="physical_adapters")
 
     def getnet_ipconfig(self) -> None:
-        Utils.exec_n_save(["powershell", "Get-NetIPConfiguration -All"], self.getnet_ipconfig_filename, sub_module_name="getnet_ipconfig")
+        self.exec_n_save(["powershell", "Get-NetIPConfiguration -All"], self.getnet_ipconfig_filename, sub_module_name="getnet_ipconfig")
 
     def run(self) -> None:
         __funcs__ = (
