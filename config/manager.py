@@ -74,11 +74,11 @@ class ModuleManager:
     
     def merror(self, *args: t.Any) -> None:
         if Constant.Args.log and not Constant.Args.silent:
-            logger.error(f"[{self.module_name}] [ERROR] " + " ".join(map(str, args)))
+            logger.error(f"[{self.module_name}] " + " ".join(map(str, args)))
     
     def mdebug(self, *args: t.Any) -> None:
         if Constant.Args.verbose and not Constant.Args.silent:
-            logger.debug(f"[{self.module_name}] [DEBUG] " + " ".join(map(str, args)))
+            logger.debug(f"[{self.module_name}] " + " ".join(map(str, args)))
 
     # ########## Save Data to File ##########
 
@@ -92,9 +92,9 @@ class ModuleManager:
 
     def exec_n_save(self, command: list[str], output_file: Path, sub_module_name: t.Optional[str] = None) -> None:
         
-        logger_beginning = f"[{self.module_name}] "
+        logger_beginning = ""
         if sub_module_name:
-            logger_beginning += f"({sub_module_name}) "
+            logger_beginning = f"({sub_module_name}) "
         
         self.mprint(f"{logger_beginning} Running command: {' '.join(command)}")
         try:
