@@ -1,125 +1,111 @@
-# Data Recovery
+# Data Recovery Tool
 
-This application is designed to help users recover lost or forgotten data such as Wi-Fi passwords, browser data, browser passwords, and other sensitive information from their computers.
+A powerful and flexible data recovery tool built using Python and Click, designed to recover browser data, network information, system details, and application credentials.
 
-With this application, users can easily recover lost or forgotten Wi-Fi passwords and other login credentials, as well as browsing history, bookmarks, and other web data. This makes it easy to recover data quickly.
+## Features
 
-The data recovery process is secure, as the application does not store or share any sensitive data. Additionally, the application is highly efficient, with fast scanning and recovery times, enabling users to recover their lost data quickly and easily.
+- Recover browser passwords, history, and bookmarks.
+- Retrieve saved WiFi passwords and network information.
+- Extract system details.
+- Recover account credentials for Discord, Minecraft, Epic Games, Uplay, PostgreSQL, etc...
 
-# How to Setup?
+## Installation
 
-1. Install Python
-2. Run this command to use a Virtual Enviroment (This will help in a reduced compiled file size)
+Ensure you have Python installed (Python 3.9+ recommended).
 
-   ```
-   python -m pip install virtualenv
-   ```
+### 1. Clone the Repository
 
-3. Create a virtual enviroment
-
-   ```
-   virtualenv env
-   ```
-
-4. Activate the virtual enviroment
-
-   ```
-   env\Scripts\activate.bat
-   ```
-
-5. Install requirements
-
-   ```
-   pip install -r requirements.txt
-   ```
-
-6. Install PyInstaller to build the executable
-
-   ```
-   pip install pyinstaller
-   ```
-
-7. Run these commands to compile
-
-   - Normal Mode
-
-     ```
-     pyinstaller recover.py --noconfirm --onefile --name "Data Recovery" --console
-     ```
-
-   - Hidden Mode
-
-     ```
-     pyinstaller recover.py --noconfirm --onefile --name "Data Recovery" --windowed
-     ```
-
-8. Deactive the virtual enviroment
-
-   ```
-   deactivate
-   ```
-
-Your compiled `Data Recovery.exe` is available at `./dist`
-
-# Options
-
-```
-$ python .\recover.py --help
-
-usage: [-h] [--silent] [--verbose] [--log] [--all] [--browser-all] [--browser-passwords] [--browser-history] [--browser-bookmakrs] [--network-all] [--network-wifi]
-                  [--network-info] [--system-all]
-
-Data Recovery | Built by @hirusha-adi
-
-options:
-  -h, --help            show this help message and exit
-  --silent, -s          Silent Mode - No Console Output
-  --verbose, -v         Verbose - Display everything that happens
-  --log, -l             Log to file
-  --all, -a             Get All Information
-  --browser-all, -ba    Get Browser Passwords, Cookies, Cards and History and Bookmarks
-  --browser-passwords, -bp
-                        Get Browser Passwords, Cookies, Cards and History DB File
-  --browser-history, -bh
-                        Get Browser History
-  --browser-bookmakrs, -bb
-                        Get Browser Bookmarks
-  --network-all, -na    Get All Network Information and Wifi Passwords
-  --network-wifi, -nw   Get Wifi Passwords
-  --network-info, -ni   Get All Network Information
-  --system-all, -sa     Get All Network Information and Wifi Passwords
+```sh
+git clone https://github.com/hirusha-adi/Data-Recovery.git
+cd Data-Recovery
 ```
 
-# Use Cases
+### 2. Install Dependencies
 
-- ## Data Recovery
+```sh
+pip install -r requirements.txt
+```
 
-  - You can easily recover data that has been lost using this tool
+## Usage
 
-  - This is what this tool is made for
+The tool provides multiple commands for data recovery.
 
-  - I do not encourage this to be used in occasion except for Data Recovery Purposes
+### General Options
 
-- ## Data Stealer
+- `-s, --silent` : Silent mode (no console output).
+- `-v, --verbose` : Verbose mode (detailed logs).
+- `-l, --log` : Enable logging to a file.
 
-  https://user-images.githubusercontent.com/36286877/127731137-c9c871cc-6e6d-4f95-9540-d7fd4332d683.mp4
+### Commands
 
-  - I do not encourage anyone to use this tool for this malicious purpose and I am not responsible for anything done with this
-  - This can be compiled with PyInstaller using the `--windowed` argument to not show any window while this is running
+#### Recover Everything
 
-  - This can autorun on computers upto windows 10 if configured properly using tools like [SamLogic UBS AutoRun Creator](https://www.samlogic.net/usb-autorun-creator/usb-autorun-creator.htm)
+```sh
+python recover.py all
+```
 
-    - It can be downloaded here: [link 1](https://www.samlogic.net/usb-autorun-creator/usb-autorun-creator.htm) / [link 2](https://download.cnet.com/SamLogic-USB-AutoRun-Creator/3000-2094_4-75724123.html) / [link 3](https://www.softpedia.com/get/System/System-Miscellaneous/USB-AutoRun-Creator.shtml)
+#### Browser Data Recovery
 
-    - Select the file .exe file inside the `dist` folder ( after compiling with pyinstaller ), select the pendrive and Click on the USB device you have plugged in, Enter any name as the Label and finally click `Create`. Wait some time for the software to generate and copy the necessary files.
+```sh
+python recover.py browser [OPTIONS]
+```
 
-![image](https://user-images.githubusercontent.com/36286877/127734445-f196d1a0-3d30-4788-a14e-9a38bd061272.png)
+Options:
+- `-p, --passwords` : Recover saved browser passwords.
+- `-h, --history` : Recover browser history.
+- `-b, --bookmarks` : Recover bookmarks.
 
-# Other Versions
+Example:
+```sh
+python recover.py browser -p -h
+```
 
-- ## C++: [click here](https://github.com/hirusha-adi/Data-Recovery/tree/c++)
+#### Network Data Recovery
 
-  - Very Small Executable
-  - Comparatively faster than both Python Versions
+```sh
+python recover.py network [OPTIONS]
+```
 
-Font name: Pawp. https://manytools.org/hacker-tools/ascii-banner/
+Options:
+- `-w, --wifi` : Recover saved WiFi passwords.
+- `-i, --info` : Retrieve network information.
+
+Example:
+```sh
+python recover.py network -w
+```
+
+#### System Information Recovery
+
+```sh
+python recover.py system
+```
+
+#### Application Data Recovery
+
+```sh
+python recover.py apps [OPTIONS]
+```
+
+Options:
+- `-d, --discord` : Recover Discord tokens.
+- `-mc, --minecraft` : Recover Minecraft accounts.
+- `-eg, --epicgames` : Recover Epic Games accounts.
+- `-up, --uplay` : Recover Uplay accounts.
+- `-psql, --postgresql` : Recover PostgreSQL credentials.
+
+Example:
+```sh
+python recover.py apps -d -mc
+```
+
+## License
+
+This project is built by [@hirusha-adi](https://github.com/hirusha-adi). Usage of this tool must comply with ethical guidelines and legal restrictions.
+
+---
+
+⚠ **Disclaimer:** This tool is intended for personal use only. Unauthorized access to data without consent is illegal.
+
+
+(Font name: Pawp. https://manytools.org/hacker-tools/ascii-banner/)
