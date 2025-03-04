@@ -25,6 +25,9 @@ class PostgresSqlRecovery(ModuleManager):
         self.output_file = self.module_output / "psql.txt"
 
     def run(self) -> None:
+        """
+        References: https://github.com/AlessandroZ/LaZagne/blob/master/Windows/lazagne/softwares/databases/postgresql.py
+        """
         recovered = False
         if os.path.exists(self.psql_path):
             with open(self.psql_path) as f, open(self.output_file, "w") as out_file:
@@ -38,6 +41,8 @@ class PostgresSqlRecovery(ModuleManager):
                         recovered = True
                     except Exception:
                         pass
+        else:
+            self.mdebug(f"The pgpass.conf file not found at: {self.psql_path}")
 
         if recovered:
             self.mprint(f"Recovered PostgreSQL credentials and saved to {self.output_file}")
