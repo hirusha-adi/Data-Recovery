@@ -85,7 +85,7 @@ def recover_system(ctx: click.Context) -> None:
 @cli.command(name="apps", help="Recover application data")
 @click.option("--discord", "-d", is_flag=True, help="Recover Discord tokens")
 @click.option("--minecraft", "-mc", is_flag=True, help="Recover Minecraft accounts")
-@click.option("--epicgames", "-eg", is_flag=True, help="Recover Minecraft accounts")
+@click.option("--epicgames", "-eg", is_flag=True, help="Recover Epic Games accounts")
 @click.option("--uplay", "-up", is_flag=True, help="Recover Uplay accounts")
 @click.option("--postgresql", "-psql", is_flag=True, help="Recover PostgresSQL accounts")
 @click.pass_context
