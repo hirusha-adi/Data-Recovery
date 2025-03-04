@@ -9,7 +9,7 @@ from modules import (
     ChromiumRecovery, WebHistoryRecovery, WebBookmarksRecovery,  # Browser
     NetworkInfoRecovery, WifiPasswordRecovery,  # Network
     SystemInfoRecovery,  # System
-    DiscordRecovery, MinecraftRecovery, EpicGamesRecovery, UplayRecovery  # Applications
+    DiscordRecovery, MinecraftRecovery, EpicGamesRecovery, UplayRecovery, PostgresSqlRecovery  # Applications
 )
 
 
@@ -87,8 +87,9 @@ def recover_system(ctx: click.Context) -> None:
 @click.option("--minecraft", "-mc", is_flag=True, help="Recover Minecraft accounts")
 @click.option("--epicgames", "-eg", is_flag=True, help="Recover Minecraft accounts")
 @click.option("--uplay", "-up", is_flag=True, help="Recover Uplay accounts")
+@click.option("--postgresql", "-psql", is_flag=True, help="Recover PostgresSQL accounts")
 @click.pass_context
-def recover_apps(ctx: click.Context, discord: bool, minecraft: bool, epicgames: bool, uplay: bool) -> None:
+def recover_apps(ctx: click.Context, discord: bool, minecraft: bool, epicgames: bool, uplay: bool, postgresql: bool) -> None:
     """Recover application-related data"""
     if not (discord or minecraft or epicgames or uplay):
         click.echo("No application recovery options specified. Use --help for more info.")
@@ -102,6 +103,8 @@ def recover_apps(ctx: click.Context, discord: bool, minecraft: bool, epicgames: 
         EpicGamesRecovery().run()
     if uplay:
         UplayRecovery().run()
+    if postgresql:
+        PostgresSqlRecovery().run()
 
 if __name__ == "__main__":
     cli()
