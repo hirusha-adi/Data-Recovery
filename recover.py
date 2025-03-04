@@ -91,7 +91,7 @@ def recover_system(ctx: click.Context) -> None:
 @click.pass_context
 def recover_apps(ctx: click.Context, discord: bool, minecraft: bool, epicgames: bool, uplay: bool, postgresql: bool) -> None:
     """Recover application-related data"""
-    if not (discord or minecraft or epicgames or uplay):
+    if not (discord or minecraft or epicgames or uplay or postgresql):
         click.echo("No application recovery options specified. Use --help for more info.")
         sys.exit()
 
