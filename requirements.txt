@@ -1,5 +1,12 @@
-pywin32==306
+pywin32==307
 pycryptodome==3.17
 browser-history==0.3.2
 click==8.1.8
 loguru==0.7.3
+pywin32===307
+win32_setctime===1.2.0
+pycryptodome===3.17
+colorama===0.4.6
+browser_history===0.3.2
+loguru===0.7.3
+click===8.1.8
